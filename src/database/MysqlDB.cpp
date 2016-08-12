@@ -5,21 +5,22 @@
 #include "MysqlDB.h"
 
 MysqlDB::~MysqlDB() {
-    delete driver_;
     delete con_;
+    BOOST_LOG_TRIVIAL(info) << "Database: Mysql closed";
 }
 
 bool MysqlDB::connect(std::string username, std::string password) {
     driver_ = sql::mysql::get_mysql_driver_instance();
     try {
         con_ = driver_->connect("tcp://127.0.0.1:3306", username, password);
+        BOOST_LOG_TRIVIAL(info) << "Database: Connect Mysql";
         con_->setSchema(db_name_);
+        BOOST_LOG_TRIVIAL(info) << "Database: database selected";
     }
     catch (std::runtime_error e) {
         BOOST_LOG_TRIVIAL(error) << "Database: " << e.what();
         return false;
     }
-    BOOST_LOG_TRIVIAL(info) << "Database: Connect Mysql";
     return true;
 }
 

@@ -5,8 +5,8 @@
 #ifndef KEYMANAGEMENT_SJK1238FACTORY_H
 #define KEYMANAGEMENT_SJK1238FACTORY_H
 
-#include "HardwareFactoryInterface.h"
-#include "HardwareProductInterface.h"
+#include "../HardwareFactoryInterface.h"
+#include "../HardwareProductInterface.h"
 #include "SJK1238.h"
 #include <boost/log/trivial.hpp>
 

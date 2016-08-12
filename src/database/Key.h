@@ -12,24 +12,6 @@
 #include <random>
 #include <uuid/uuid.h>
 
-struct Camera {
-    Camera() = default;
-
-    Camera(std::string camera_id, std::string group, std::string public_key);
-
-    std::string camera_id_;
-    std::string group_;
-    std::string public_key_;
-};
-
-struct Client {
-    Client(std::string client_id_, std::string group_, std::string public_key);
-
-    std::string client_id_;
-    std::string group_;
-    std::string public_key_;
-};
-
 class Key {
 public:
     Key() = default;

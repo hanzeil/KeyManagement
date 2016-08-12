@@ -5,7 +5,7 @@
 #ifndef KEYMANAGEMENT_SJK1238_H
 #define KEYMANAGEMENT_SJK1238_H
 
-#include "HardwareFactoryInterface.h"
+#include "../HardwareFactoryInterface.h"
 #include <swsds.h>
 #include <boost/log/trivial.hpp>
 #include <algorithm>

@@ -6,7 +6,7 @@
 #define KEYMANAGEMENT_DB_PRODUCT_INTERFACE_H
 
 #include <string>
-#include "DataStructure.h"
+#include "Key.h"
 
 
 class DBProductInterface {

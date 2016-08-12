@@ -2,16 +2,7 @@
 // Created by root on 16-7-26.
 //
 
-#include "DataStructure.h"
-
-Camera::Camera(std::string camera_id, std::string group, std::string public_key)
-        : camera_id_(camera_id), group_(group), public_key_(public_key) {
-}
-
-Client::Client(std::string client_id_, std::string group_, std::string public_key)
-        : client_id_(client_id_), group_(group_), public_key_(public_key) {
-
-}
+#include "Key.h"
 
 Key::Key(unsigned char *key_id, unsigned char *key_value,
          unsigned int key_value_len,

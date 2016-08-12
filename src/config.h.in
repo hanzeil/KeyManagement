@@ -1,0 +1,13 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+//
+// These values are automatically set according to their cmake variables.
+//
+#cmakedefine DATABASE "@DATABASE@"
+#cmakedefine HARDWARE "@HARDWARE@"
+#cmakedefine MYSQL
+#cmakedefine SJK1238
+#cmakedefine SIMULATION
+
+#endif //CONFIG_H

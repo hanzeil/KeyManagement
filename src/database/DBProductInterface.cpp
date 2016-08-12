@@ -5,5 +5,4 @@
 #include "DBProductInterface.h"
 
 DBProductInterface::~DBProductInterface() {
-
 }
