@@ -13,19 +13,34 @@ Client::Client(std::string client_id_, std::string group_, std::string public_ke
 
 }
 
-Key::Key(Camera &camera, unsigned char *key_value) {
-    this->camera_ = camera;
-    this->key_value_ = reinterpret_cast<char *>(key_value);
-    auto time_c = time(NULL);
-    this->generated_time_ = time_c;
-    srand((unsigned int) time_c);
-    this->key_id_ = int2str(rand());
+Key::Key(unsigned char *key_id, unsigned char *key_value,
+         unsigned int key_value_len,
+         std::time_t generated_time)
+        : key_id_(key_id), key_value_(key_value),
+          key_value_len_(key_value_len),
+          generated_time_(generated_time) {
+
+};
+
+void Key::generate_key(unsigned char *key_value, unsigned int length) {
+    auto time_c = time(nullptr);
+    key_id_ = generateKeyId();
+    key_value_ = key_value;
+    key_value_len_ = length;
+    generated_time_ = time_c;
 }
 
-std::string int2str(const int &int_tmp) {
+std::string Key::int2str(const int &int_tmp) {
     std::stringstream stream;
     stream << int_tmp;
     std::string str_tmp;
     stream >> str_tmp;
     return str_tmp;
 }
+
+unsigned char *Key::generateKeyId() {
+    unsigned char *uu = new unsigned char[16];
+    uuid_generate(uu);
+    return uu;
+}
+

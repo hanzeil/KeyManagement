@@ -1,10 +1,14 @@
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <swsds.h>
 #include <cstring>
 #include "DBFactoryInterface.h"
 #include "MysqlFactory.h"
 #include "DBProductInterface.h"
+#include "HardwareFactoryInterface.h"
+#include "SJK1238Factory.h"
+#include "HardwareProductInterface.h"
 #include <chrono>
 
 using namespace std;
@@ -12,51 +16,27 @@ using namespace std;
 #define MAX_BLOCK_LEN 100
 
 int main() {
-    Camera c;
-    unsigned char key[] = "Hello world";
-    Key k(c, key);
+    unsigned char *key = NULL;
+    unsigned char *key_encrypted = NULL;
+    HardwareFactoryInterface *hFactory = new SJK1238Factory();
+    HardwareProductInterface *hardware = hFactory->createProduct();
+    if (hardware->openDevice()) {
+        key = hardware->generateKey(16);
+        for (auto i=0;i<16;i++){
+            std::cout << (int)key[i] << " ";
+        }
+        key_encrypted = hardware->keyEncryption(key, 16);
+    }
+    Key k;
+    k.generate_key(key_encrypted, 16);
     DBFactoryInterface *factory = new MysqlFactory();
     DBProductInterface *db = factory->createProduct();
     db->connect("keymanagement", "keymanagement");
-    db->insert_key(k);
-    /*
-    unsigned char key[128] = "Hello World";
-    Key k("key1", key);
-    std::cout<<db->insert_key(k);
-    */
-    //std::cout<<"d"<<std::endl;
-    /*
-    int iRet = -1;
-    void *pDevHandle = NULL;//设备句柄
-    void *pSesHandle = NULL;//会话句柄
-    void *pKeyHandle = NULL; //会话密钥句柄
-    unsigned int uiKeyIndex = 1; //存储公钥的索引值
-    unsigned int uiAlgID = SGD_SMS4_ECB;//可以替换为密码卡支持的任意一种对称算法识；
-    unsigned char ucIV[16] = {0};
-    ECCCipher pubKey;
-    iRet = SDF_OpenDevice(&pDevHandle);//打开设备句柄
-    if (iRet)
-        return iRet;
-    iRet = SDF_OpenSession(pDevHandle, &pSesHandle);//打开会话句柄
-    if (iRet)
-        return iRet;
-    //生成会话密钥并用ECC加密输出
-    iRet = SDF_GenerateKeyWithIPK_ECC(pSesHandle, uiKeyIndex, 256, &pubKey, &pKeyHandle);
-    if (iRet)
-        return iRet;
-    //导入会话密钥并用内部ECC私钥解密
-    iRet = SDF_ImportKeyWithISK_ECC(pSesHandle, uiKeyIndex, &pubKey, &pKeyHandle);
-    if (iRet)
-        return iRet;
-    iRet = SDF_CloseSession(pSesHandle);//关闭会话句柄
-    if (iRet)
-        return iRet;
-    iRet = SDF_CloseDevice(pDevHandle);//关闭设备句柄
-    if (iRet)
-        return iRet;
-    std::cout << "over" << std::endl;
-     */
+    db->insertKey(k);
+    Key *k2 = db->getKey(k.key_id_);
+    unsigned char *key2 = hardware->keyDecryption(k2->key_value_, k2->key_value_len_);
+    for (auto i=0;i<16;i++){
+        std::cout << (int)key2[i] << " ";
+    }
     return 0;
-
-
 }

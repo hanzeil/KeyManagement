@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.2)
 project(KeyManagement)
 
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lswsds -DBOOST_LOG_DYN_LINK")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lswsds -luuid -DBOOST_LOG_DYN_LINK")
 
 set(SOURCE_FILES main.cpp DataStructure.cpp DataStructure.h DBFactoryInterface.cpp DBFactoryInterface.h DBProductInterface.cpp DBProductInterface.h MysqlDB.cpp MysqlDB.h MysqlFactory.cpp MysqlFactory.h HardwareFactoryInterface.cpp HardwareFactoryInterface.h HardwareProductInterface.cpp HardwareProductInterface.h SJK1238.cpp SJK1238.h SJK1238Factory.cpp SJK1238Factory.h)
 add_executable(KeyManagement ${SOURCE_FILES})

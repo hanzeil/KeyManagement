@@ -23,14 +23,20 @@ bool MysqlDB::connect(std::string username, std::string password) {
     return true;
 }
 
-bool MysqlDB::insert_key(Key k) {
+bool MysqlDB::insertKey(Key k) {
     try {
-        auto pstmt = con_->prepareStatement("INSERT INTO " + this->key_table_name_ + " VALUES (?,?,?)");
-        pstmt->setString(1, k.key_id_);
-        pstmt->setString(2, k.key_value_);
-        pstmt->setString(3, from_unix_time(k.generated_time_));
-        pstmt->execute();
-        delete pstmt;
+        auto p_stmt = con_->prepareStatement("INSERT INTO " + this->key_table_name_ + " VALUES (?,?,?,?)");
+        char *tmp = reinterpret_cast<char *>(k.key_id_);
+        std::string key_id(tmp, tmp + 16);
+        tmp = reinterpret_cast<char *>(k.key_value_);
+        std::string key_value(tmp, tmp + k.key_value_len_);
+        p_stmt->setString(1, key_id);
+        p_stmt->setString(2, key_value);
+        p_stmt->setInt(3, k.key_value_len_);
+        p_stmt->setInt(4, k.generated_time_);
+        //p_stmt->setString(4, unixTime2MysqlTime(k.generated_time_));
+        p_stmt->execute();
+        delete p_stmt;
     }
     catch (std::runtime_error e) {
         BOOST_LOG_TRIVIAL(error) << "Database: " << e.what();
@@ -40,7 +46,44 @@ bool MysqlDB::insert_key(Key k) {
     return true;
 }
 
-std::string MysqlDB::from_unix_time(time_t unix_timestamp) {
+Key *MysqlDB::getKey(unsigned char *key_id) {
+    Key *k = nullptr;
+    try {
+        auto p_stmt = con_->prepareStatement("SELECT * FROM " + this->key_table_name_ + " WHERE key_id=?");
+        char *tmp = reinterpret_cast<char *>(key_id);
+        std::string key_id_str(tmp, tmp + 16);
+        p_stmt->setString(1, key_id_str);
+        auto res = p_stmt->executeQuery();
+        res->afterLast();
+        std::string key_value_str;
+        std::time_t generated_time;
+        unsigned int key_value_len;
+        if (res->previous()) {
+            key_value_str = res->getString("key_value");
+            key_value_len = (unsigned int) res->getInt("key_value_len");
+            generated_time = res->getInt("generated_time");
+            unsigned char *key_value = new unsigned char[key_value_len];
+            std::strncpy((char *) key_value,
+                         key_value_str.c_str(),
+                         key_value_len);
+            k = new Key(key_id, key_value,
+                        key_value_len, generated_time);
+        }
+        else {
+            return nullptr;
+        }
+    }
+
+    catch (std::runtime_error e) {
+        BOOST_LOG_TRIVIAL(error) << "Database: " << e.what();
+        return nullptr;
+    }
+    BOOST_LOG_TRIVIAL(info) << "Database: Get key from database by key id";
+    return k;
+
+}
+
+std::string MysqlDB::unixTime2MysqlTime(time_t unix_timestamp) {
     std::string result;
     struct tm t_tm = *localtime(&unix_timestamp);
     char s[20] = {0};
@@ -49,4 +92,21 @@ std::string MysqlDB::from_unix_time(time_t unix_timestamp) {
     return result;
 }
 
-
+std::time_t MysqlDB::mysqlTime2UnixTime(std::string mysql_time) {
+    char *tmp = const_cast<char *>(mysql_time.c_str());
+    tmp[4] = 0;
+    tmp[7] = 0;
+    tmp[10] = 0;
+    tmp[13] = 0;
+    tmp[16] = 0;
+    tmp[19] = 0;
+    struct tm t_tm;
+    t_tm.tm_year = std::atoi(tmp) - 1900;
+    t_tm.tm_mon = std::atoi(tmp + 5) - 1;
+    t_tm.tm_mday = std::atoi(tmp + 8);
+    t_tm.tm_hour = std::atoi(tmp + 11);
+    t_tm.tm_min = std::atoi(tmp + 14);
+    t_tm.tm_sec = std::atoi(tmp + 17);
+    time_t t = std::mktime(&t_tm);
+    return t;
+}

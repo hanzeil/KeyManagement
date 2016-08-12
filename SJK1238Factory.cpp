@@ -7,7 +7,7 @@
 SJK1238Factory::~SJK1238Factory() {
 }
 
-HardwareProductInterface *SJK1238Factory:: createProduct() {
-    BOOST_LOG_TRIVIAL(info) << "Database: Mysql selected";
+HardwareProductInterface *SJK1238Factory::createProduct() {
+    BOOST_LOG_TRIVIAL(info) << "Hardware: SJK1238 card selected";
     return new SJK1238();
 }

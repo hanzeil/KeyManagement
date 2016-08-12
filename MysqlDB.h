@@ -16,8 +16,10 @@
 #include <stdexcept>
 #include <boost/log/trivial.hpp>
 #include <string>
+#include <cstring>
 #include <sstream>
 #include <time.h>
+#include <cstdlib>
 
 class MysqlDB : public DBProductInterface {
 public:
@@ -27,16 +29,20 @@ public:
 
     bool connect(std::string username, std::string password);
 
-    bool insert_key(Key k);
+    bool insertKey(Key k);
+
+    Key *getKey(unsigned char *key_id);
 
 private:
+    static std::string unixTime2MysqlTime(time_t unix_timestamp);
+
+    static std::time_t mysqlTime2UnixTime(std::string mysql_time);
 
     sql::mysql::MySQL_Driver *driver_ = nullptr;
     sql::Connection *con_ = nullptr;
     std::string db_name_ = "symmetric_key";
     std::string key_table_name_ = "test";
 
-    static std::string from_unix_time(time_t unix_timestamp);
 };
 
 
