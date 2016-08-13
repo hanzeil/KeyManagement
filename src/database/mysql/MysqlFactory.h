@@ -5,7 +5,7 @@
 #ifndef KEYMANAGEMENT_MYSQLFACTORY_H
 #define KEYMANAGEMENT_MYSQLFACTORY_H
 
-#include "DBFactoryInterface.h"
+#include "../DBFactoryInterface.h"
 
 class MysqlFactory : public DBFactoryInterface {
 public:

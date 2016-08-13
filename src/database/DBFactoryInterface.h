@@ -7,7 +7,7 @@
 
 #include <string>
 #include "DBProductInterface.h"
-#include "MysqlDB.h"
+#include "mysql/MysqlDB.h"
 #include <boost/log/trivial.hpp>
 
 class DBFactoryInterface {

@@ -5,13 +5,20 @@
 #include <chrono>
 #include "config.h"
 #include "database/DBFactoryInterface.h"
-#include "database/MysqlFactory.h"
 #include "database/DBProductInterface.h"
 #include "hardware/HardwareFactoryInterface.h"
 #include "hardware/HardwareProductInterface.h"
 
+#ifdef MYSQL
+
+#include "database/mysql/MysqlFactory.h"
+
+#endif
+
 #ifdef SJK1238
+
 #include "hardware/sjk1238/SJK1238Factory.h"
+
 #endif
 
 #ifdef SIMULATION

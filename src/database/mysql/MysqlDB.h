@@ -5,7 +5,7 @@
 #ifndef KEYMANAGEMENT_MYSQL_DB_H
 #define KEYMANAGEMENT_MYSQL_DB_H
 
-#include "DBProductInterface.h"
+#include "../DBProductInterface.h"
 #include <mysql_connection.h>
 #include <mysql_driver.h>
 #include <cppconn/statement.h>

@@ -6,7 +6,7 @@ set(HARDWARE_LIB
         )
 
 if (HARDWARE MATCHES SJK1238)
-    add_subdirectory(SJK1238)
+    add_subdirectory(sjk1238)
     set(HARDWARE_LIB ${HARDWARE_LIB}
             sjk1238/SJK1238Factory.h
             sjk1238/SJK1238Factory.cpp
@@ -24,5 +24,4 @@ if (HARDWARE MATCHES SIMULATION)
             simulation/Simulation.h)
 endif (HARDWARE MATCHES SIMULATION)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lpthread -DBOOST_LOG_DYN_LINK")
 add_library(hardware STATIC ${HARDWARE_LIB})
