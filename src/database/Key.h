@@ -1,5 +1,7 @@
 //
-// Created by root on 16-7-26.
+// Copyright (c) 2016 航天二院爱威公司. All rights reserved.
+//
+// Author Hanzeil.
 //
 
 #ifndef KEYMANAGEMENT_DATA_STRUCTURE_H

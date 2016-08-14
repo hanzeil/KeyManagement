@@ -1,13 +1,16 @@
+//
+// Copyright (c) 2016 航天二院爱威公司. All rights reserved.
+//
+// Author Hanzeil.
+//
+//本文件是KeyManagement可执行程序的入口函数
+
+
+
 #include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <cstring>
-#include <chrono>
 #include "config.h"
 #include "database/DBFactoryInterface.h"
-#include "database/DBProductInterface.h"
 #include "hardware/HardwareFactoryInterface.h"
-#include "hardware/HardwareProductInterface.h"
 
 #ifdef MYSQL
 
@@ -54,6 +57,7 @@ int main() {
         }
         */
         key_encrypted = hardware->keyEncryption(key, 16);
+        // ll
     }
     Key k;
     k.generate_key(key_encrypted, 16);

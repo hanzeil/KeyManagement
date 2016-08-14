@@ -1,5 +1,7 @@
 //
-// Created by root on 12-10-7.
+// Copyright (c) 2016 航天二院爱威公司. All rights reserved.
+//
+// Author Hanzeil.
 //
 
 #include "MysqlDB.h"
