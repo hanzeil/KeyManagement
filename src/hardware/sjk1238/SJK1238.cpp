@@ -34,7 +34,7 @@ unsigned char *SJK1238::generateKey(unsigned int length) {
         BOOST_LOG_TRIVIAL(error) << "Hardware: Can't open a session.";
         return NULL;
     }
-    BOOST_LOG_TRIVIAL(info) << "Hardware: Open a session";
+    BOOST_LOG_TRIVIAL(debug) << "Hardware: Open a session";
     status = SDF_GenerateRandom(p_ses_handle, length, key);
     if (status) {
         BOOST_LOG_TRIVIAL(error) << "Error code: 0x" << std::hex << status;
@@ -48,7 +48,7 @@ unsigned char *SJK1238::generateKey(unsigned int length) {
         BOOST_LOG_TRIVIAL(error) << "Hardware: Can't close the session";
         return NULL;
     }
-    BOOST_LOG_TRIVIAL(info) << "Hardware: Close the session";
+    BOOST_LOG_TRIVIAL(debug) << "Hardware: Close the session";
     return key;
 }
 
@@ -68,7 +68,7 @@ unsigned char *SJK1238::keyEncryption(unsigned char *key, unsigned int length) {
         BOOST_LOG_TRIVIAL(error) << "Hardware: Can't open a session.";
         return NULL;
     }
-    BOOST_LOG_TRIVIAL(info) << "Hardware: Open a session";
+    BOOST_LOG_TRIVIAL(debug) << "Hardware: Open a session";
     /*读取主密钥*/
     if (master_key == NULL) {
         return NULL;
@@ -100,7 +100,7 @@ unsigned char *SJK1238::keyEncryption(unsigned char *key, unsigned int length) {
         BOOST_LOG_TRIVIAL(error) << "Hardware: Can't close the session";
         return NULL;
     }
-    BOOST_LOG_TRIVIAL(info) << "Hardware: Close the session";
+    BOOST_LOG_TRIVIAL(debug) << "Hardware: Close the session";
     delete master_key;
     return key_encrypted;
 }
@@ -121,7 +121,7 @@ unsigned char *SJK1238::keyDecryption(unsigned char *key_encrypted, unsigned int
         BOOST_LOG_TRIVIAL(error) << "Hardware: Can't open a session.";
         return NULL;
     }
-    BOOST_LOG_TRIVIAL(info) << "Hardware: Open a session";
+    BOOST_LOG_TRIVIAL(debug) << "Hardware: Open a session";
     status = SDF_ImportKey(p_ses_handle, masterKey, 16, &p_key_handle);//导入明文会话密钥
     if (status) {
         BOOST_LOG_TRIVIAL(error) << "Error code: 0x" << std::hex << status;
@@ -149,7 +149,7 @@ unsigned char *SJK1238::keyDecryption(unsigned char *key_encrypted, unsigned int
         BOOST_LOG_TRIVIAL(error) << "Hardware: Can't close the session";
         return NULL;
     }
-    BOOST_LOG_TRIVIAL(info) << "Hardware: Close the session";
+    BOOST_LOG_TRIVIAL(debug) << "Hardware: Close the session";
     delete masterKey;
     return key;
 }

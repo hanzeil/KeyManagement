@@ -52,7 +52,7 @@ int main() {
         for (auto i = 0; i < 16; i++) {
             std::cout << (int) key[i] << " ";
         }
-         */
+        */
         key_encrypted = hardware->keyEncryption(key, 16);
     }
     Key k;
