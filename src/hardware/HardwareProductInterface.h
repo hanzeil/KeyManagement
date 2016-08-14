@@ -17,10 +17,7 @@ public:
 
     virtual unsigned char *keyEncryption(unsigned char *key, unsigned int length)=0;
 
-    virtual unsigned char *keyDecryption(unsigned char *keyEncrypted, unsigned int length)=0;
-
-private:
-    virtual unsigned char *getMasterKey()=0;
+    virtual unsigned char *keyDecryption(unsigned char *key_encrypted, unsigned int length)=0;
 
 };
 

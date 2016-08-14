@@ -1,4 +1,4 @@
-set(DATABASE_LIB
+set(DATABASE_SOURCE_FILES
         DBFactoryInterface.h
         DBFactoryInterface.cpp
         DBProductInterface.h
@@ -8,7 +8,7 @@ set(DATABASE_LIB
 
 if (DATABASE MATCHES MYSQL)
     add_subdirectory(mysql)
-    set(DATABASE_LIB ${DATABASE_LIB}
+    set(DATABASE_SOURCE_FILES ${DATABASE_SOURCE_FILES}
             mysql/MysqlFactory.h
             mysql/MysqlFactory.cpp
             mysql/MysqlDB.h
@@ -16,8 +16,9 @@ if (DATABASE MATCHES MYSQL)
             )
 endif (DATABASE MATCHES MYSQL)
 
-add_library(database STATIC ${DATABASE_LIB})
+add_library(database STATIC ${DATABASE_SOURCE_FILES})
 
+# library
 if (DATABASE MATCHES MYSQL)
     # Mysql connector
     find_library(MYSQLCPPCONN mysqlcppconn-static)

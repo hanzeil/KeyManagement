@@ -2,6 +2,7 @@
 set(SOURCE_FILES main.cpp)
 add_executable(KeyManagement ${SOURCE_FILES})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 #For Boost
 find_library(BOOST_LOG boost_log)
 add_definitions(-DBOOST_LOG_DYN_LINK)

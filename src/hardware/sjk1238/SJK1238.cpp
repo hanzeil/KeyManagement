@@ -10,6 +10,7 @@ SJK1238::~SJK1238() {
         BOOST_LOG_TRIVIAL(error) << "Error code: 0x" << std::hex << status;
         BOOST_LOG_TRIVIAL(error) << "Hardware: Can't close the device";
     }
+    BOOST_LOG_TRIVIAL(info) << "Hardware: Close the device";
 }
 
 bool SJK1238::openDevice() {
@@ -156,7 +157,7 @@ unsigned char *SJK1238::keyDecryption(unsigned char *key_encrypted, unsigned int
 unsigned char *SJK1238::getMasterKey() {
     char *buffer = new char[16];
     std::ifstream f(
-            "/root/ClionProjects/KeyManagement/MasterKey", std::ifstream::binary);
+            "../../../MasterKey", std::ifstream::binary);
     f.read(buffer, 16);
     f.close();
     unsigned char *master_key = reinterpret_cast<unsigned char *>(buffer);

@@ -31,7 +31,7 @@ private:
     unsigned char *getMasterKey();
 
     void *p_dev_handle_ = nullptr;//设备句柄
-    unsigned int ui_alg_id_ = SGD_SMS4_ECB; //加密算法
+    unsigned int ui_alg_id_ = SGD_SMS4_CBC; //加密算法
 };
 
 #endif //KEYMANAGEMENT_SJK1238_H

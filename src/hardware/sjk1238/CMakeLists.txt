@@ -1,5 +1,1 @@
-set(SJK1238_LIB
-        SJK1238.h
-        SJK1238.cpp
-        SJK1238Factory.h
-        SJK1238Factory.cpp)
+aux_source_directory(. SJK1238_SOURCE_FILES)
