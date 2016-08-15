@@ -1,7 +1,11 @@
 //
+// Created by Hanzeil on 16-8-15.
+//
 // Copyright (c) 2016 航天二院爱威公司. All rights reserved.
 //
 // Author Hanzeil.
+//
+// The description of this file is in the header file.
 //
 
 #include "Key.h"
@@ -15,24 +19,21 @@ Key::Key(unsigned char *key_id, unsigned char *key_value,
 
 };
 
-void Key::generate_key(unsigned char *key_value, unsigned int length) {
+Key::~Key() {
+    delete key_id_;
+    delete key_value_;
+}
+
+Key::Key(unsigned char *key_value, unsigned int length) {
     auto time_c = time(nullptr);
-    key_id_ = generateKeyId();
+    key_id_ = GenerateKeyId();
     key_value_ = key_value;
     key_value_len_ = length;
     generated_time_ = time_c;
 }
 
-std::string Key::int2str(const int &int_tmp) {
-    std::stringstream stream;
-    stream << int_tmp;
-    std::string str_tmp;
-    stream >> str_tmp;
-    return str_tmp;
-}
-
-unsigned char *Key::generateKeyId() {
-    unsigned char *uu = new unsigned char[16];
+unsigned char *Key::GenerateKeyId() {
+    unsigned char *uu = new unsigned char[kKeyIdLen];
     uuid_generate(uu);
     return uu;
 }

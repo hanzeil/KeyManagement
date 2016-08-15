@@ -1,9 +1,14 @@
 //
+// Created by Hanzeil on 16-8-15.
+//
 // Copyright (c) 2016 航天二院爱威公司. All rights reserved.
 //
 // Author Hanzeil.
 //
+// The description of this file is in the header file.
+//
 
+#include <stdlib.h>
 #include "MysqlDB.h"
 
 MysqlDB::~MysqlDB() {
@@ -11,7 +16,7 @@ MysqlDB::~MysqlDB() {
     BOOST_LOG_TRIVIAL(info) << "Database: Mysql closed";
 }
 
-bool MysqlDB::connect(std::string username, std::string password) {
+bool MysqlDB::Connect(std::string username, std::string password) {
     driver_ = sql::mysql::get_mysql_driver_instance();
     try {
         con_ = driver_->connect("tcp://127.0.0.1:3306", username, password);
@@ -26,11 +31,11 @@ bool MysqlDB::connect(std::string username, std::string password) {
     return true;
 }
 
-bool MysqlDB::insertKey(Key k) {
+bool MysqlDB::InsertKey(Key &k) {
     try {
         auto p_stmt = con_->prepareStatement("INSERT INTO " + this->key_table_name_ + " VALUES (?,?,?,?)");
         char *tmp = reinterpret_cast<char *>(k.key_id_);
-        std::string key_id(tmp, tmp + 16);
+        std::string key_id(tmp, tmp + Key::kKeyIdLen);
         tmp = reinterpret_cast<char *>(k.key_value_);
         std::string key_value(tmp, tmp + k.key_value_len_);
         p_stmt->setString(1, key_id);
@@ -49,30 +54,35 @@ bool MysqlDB::insertKey(Key k) {
     return true;
 }
 
-Key *MysqlDB::getKey(unsigned char *key_id) {
+Key *MysqlDB::GetKey(unsigned char *key_id) {
     Key *k = nullptr;
     try {
         auto p_stmt = con_->prepareStatement("SELECT * FROM " + this->key_table_name_ + " WHERE key_id=?");
         char *tmp = reinterpret_cast<char *>(key_id);
-        std::string key_id_str(tmp, tmp + 16);
+        std::string key_id_str(tmp, tmp + Key::kKeyIdLen);
         p_stmt->setString(1, key_id_str);
         auto res = p_stmt->executeQuery();
         res->afterLast();
         std::string key_value_str;
         std::time_t generated_time;
-        unsigned int key_value_len;
+        unsigned int key_value_len = 0;
         if (res->previous()) {
             key_value_str = res->getString("key_value");
             key_value_len = (unsigned int) res->getInt("key_value_len");
             generated_time = res->getInt("generated_time");
-            unsigned char *key_value = new unsigned char[key_value_len];
-            std::strncpy((char *) key_value,
-                         key_value_str.c_str(),
-                         key_value_len);
-            k = new Key(key_id, key_value,
+            unsigned char *key_value_cpy = new unsigned char[key_value_len];
+            std::memcpy((char *) key_value_cpy,
+                        key_value_str.c_str(),
+                        key_value_len);
+            unsigned char *key_id_cpy = new unsigned char[Key::kKeyIdLen];
+            std::memcpy((char *) key_id_cpy,
+                        (char *) key_id,
+                        Key::kKeyIdLen);
+            k = new Key(key_id_cpy, key_value_cpy,
                         key_value_len, generated_time);
         }
         else {
+            BOOST_LOG_TRIVIAL(error) << "Database: No query result";
             return nullptr;
         }
     }
@@ -86,7 +96,7 @@ Key *MysqlDB::getKey(unsigned char *key_id) {
 
 }
 
-std::string MysqlDB::unixTime2MysqlTime(time_t unix_timestamp) {
+std::string MysqlDB::UnixTime2MysqlTime(time_t unix_timestamp) {
     std::string result;
     struct tm t_tm = *localtime(&unix_timestamp);
     char s[20] = {0};
@@ -95,7 +105,7 @@ std::string MysqlDB::unixTime2MysqlTime(time_t unix_timestamp) {
     return result;
 }
 
-std::time_t MysqlDB::mysqlTime2UnixTime(std::string mysql_time) {
+std::time_t MysqlDB::MysqlTime2UnixTime(std::string mysql_time) {
     char *tmp = const_cast<char *>(mysql_time.c_str());
     tmp[4] = 0;
     tmp[7] = 0;

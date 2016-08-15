@@ -7,7 +7,7 @@
 #cmakedefine DATABASE "@DATABASE@"
 #cmakedefine HARDWARE "@HARDWARE@"
 #cmakedefine MYSQL
-#cmakedefine SJK1238
+#cmakedefine SJK_1238
 #cmakedefine SIMULATION
 
 #endif //CONFIG_H

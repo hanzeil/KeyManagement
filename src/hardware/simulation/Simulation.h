@@ -1,4 +1,6 @@
 //
+// Created by Hanzeil on 16-8-15.
+//
 // Copyright (c) 2016 航天二院爱威公司. All rights reserved.
 //
 // Author Hanzeil.
@@ -22,18 +24,18 @@ public:
 
     ~Simulation();
 
-    bool openDevice();
+    bool OpenDevice();
 
-    unsigned char *generateKey(unsigned int length);
+    unsigned char *GenerateKey(unsigned int length);
 
-    unsigned char *keyEncryption(unsigned char *key, unsigned int length);
+    unsigned char *KeyEncryption(unsigned char *key, unsigned int length);
 
-    unsigned char *keyDecryption(unsigned char *key_encrypted, unsigned int length);
+    unsigned char *KeyDecryption(unsigned char *key_encrypted, unsigned int length);
 
 private:
-    unsigned char *getMasterKey();
+    unsigned char *GetMasterKey();
 
-    void handleErrors();
+    void HandleErrors();
 
     bool device_status = false;
 };

@@ -1,4 +1,6 @@
 //
+// Created by Hanzeil on 16-8-15.
+//
 // Copyright (c) 2016 航天二院爱威公司. All rights reserved.
 //
 // Author Hanzeil.
@@ -29,16 +31,16 @@ public:
 
     ~MysqlDB();
 
-    bool connect(std::string username, std::string password);
+    bool Connect(std::string username, std::string password);
 
-    bool insertKey(Key k);
+    bool InsertKey(Key &k);
 
-    Key *getKey(unsigned char *key_id);
+    Key *GetKey(unsigned char *key_id);
 
 private:
-    static std::string unixTime2MysqlTime(time_t unix_timestamp);
+    static std::string UnixTime2MysqlTime(time_t unix_timestamp);
 
-    static std::time_t mysqlTime2UnixTime(std::string mysql_time);
+    static std::time_t MysqlTime2UnixTime(std::string mysql_time);
 
     sql::mysql::MySQL_Driver *driver_ = nullptr;
     sql::Connection *con_ = nullptr;

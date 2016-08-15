@@ -5,7 +5,7 @@ set(HARDWARE_SOURCE_FILES
         HardwareProductInterface.cpp
         )
 
-if (SJK1238)
+if (SJK_1238)
     add_subdirectory(sjk1238)
     set(HARDWARE_SOURCE_FILES ${HARDWARE_SOURCE_FILES}
             sjk1238/SJK1238Factory.h
@@ -13,7 +13,7 @@ if (SJK1238)
             sjk1238/SJK1238.h
             sjk1238/SJK1238.cpp
             )
-endif (SJK1238)
+endif (SJK_1238)
 
 if (SIMULATION)
     add_subdirectory(simulation)
@@ -27,11 +27,11 @@ endif (SIMULATION)
 add_library(hardware STATIC ${HARDWARE_SOURCE_FILES})
 
 # library
-if (SJK1238)
+if (SJK_1238)
     find_library(SWSDS swsds)
     target_link_libraries(hardware
             ${SWSDS})
-endif (SJK1238)
+endif (SJK_1238)
 
 if (SIMULATION)
     find_library(CRYPTO crypto)

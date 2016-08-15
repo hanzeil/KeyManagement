@@ -1,11 +1,15 @@
 //
+// Created by Hanzeil on 16-8-15.
+//
 // Copyright (c) 2016 航天二院爱威公司. All rights reserved.
 //
 // Author Hanzeil.
 //
+// 该文件描述的是密钥（被加密）的数据结构和相关操作
+//
 
-#ifndef KEYMANAGEMENT_DATA_STRUCTURE_H
-#define KEYMANAGEMENT_DATA_STRUCTURE_H
+#ifndef KEYMANAGEMENT_KEY_H
+#define KEYMANAGEMENT_KEY_H
 
 #include <string>
 #include <sstream>
@@ -14,25 +18,40 @@
 #include <random>
 #include <uuid/uuid.h>
 
+// 类Key是密钥的数据结构和相关操作。支持以下几种操作：
+// 从给定的所有必须属性构造一个Key的对象
+// 给定key_value和其长度构造一个Key对象（key_id随机生成）
+// 随机生成一个唯一的key_value
+// Sample usage:
+// Key k("key_sample", key_len);
 class Key {
 public:
+    // 默认构造函数
     Key() = default;
 
+    // 析构函数
+    ~Key();
+
+    // 通过指定Key需要的所有属性来构造Key
     Key(unsigned char *key_id,
         unsigned char *key_value, unsigned int key_value_len,
         std::time_t generated_time);
 
-    void generate_key(unsigned char *key_value, unsigned int length);
+    // 给定key_value和其长度构造一个Key对象（key_id随机生成）
+    Key(unsigned char *key_value, unsigned int length);
 
+    // 每个key的唯一标识， 默认NULL
     unsigned char *key_id_ = nullptr;
     unsigned char *key_value_ = nullptr;
     unsigned int key_value_len_ = 0;
     std::time_t generated_time_ = 0;
+    static const unsigned int kKeyIdLen = 16;
 private:
-    std::string int2str(const int &int_tmp);
+    // 随机生成一个永不重复Key id的函数，并返回
+    // Key id的长度由类成员常量kKeyIdLen决定
+    unsigned char *GenerateKeyId();
 
-    unsigned char *generateKeyId();
 };
 
 
-#endif //KEYMANAGEMENT_DATA_STRUCTURE_H
+#endif //KEYMANAGEMENT_KEY_H
