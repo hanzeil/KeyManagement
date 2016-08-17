@@ -67,7 +67,6 @@ int main() {
     DBFactoryInterface *factory = new MysqlFactory();
     DBProductInterface *db = factory->CreateProduct();
     db->Connect("keymanagement", "keymanagement");
-    db->InitTable();
     db->InsertKey(k);
     Key *k2 = db->GetKey(k.key_id_);
     unsigned char *key2 = hardware->KeyDecryption(k2->key_value_, k2->key_value_len_);

@@ -35,10 +35,16 @@ public:
     //插入成功则返回true
     virtual bool InsertKey(Key &k)=0;
 
-    //根据Key id从数据库查找key并以Key类型的指针返回.
+    //根据Key id从Mysql查找key并以Key类型的指针返回.
+    //Key类型和其中的key_value, key_id的空间均在该函数中分配
+    //参数key_id的空间没有释放，需要调用者继续管理
     //如果查找失败，返回NULL
     virtual Key *GetKey(unsigned char *key_id)=0;
 
+    //根据Key id从Mysql删除该字段.
+    //参数key_id的空间没有释放，需要调用者继续管理
+    //如果删除成功，返回true
+    virtual bool DeleteKey(unsigned char *key_id)=0;
 };
 
 

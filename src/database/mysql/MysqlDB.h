@@ -58,6 +58,11 @@ public:
     //如果查找失败，返回NULL
     Key *GetKey(unsigned char *key_id);
 
+    //根据Key id从Mysql删除该字段.
+    //参数key_id的空间没有释放，需要调用者继续管理
+    //如果删除成功，返回true
+    bool DeleteKey(unsigned char *key_id);
+
 private:
     //将time_t格式的时间戳转换为Mysql的DateTime类型的时间格式
     //返回格式为 %Y/%m/%d %H:%M:%S

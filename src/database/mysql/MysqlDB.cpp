@@ -97,6 +97,7 @@ Key *MysqlDB::GetKey(unsigned char *key_id) {
         std::string key_value_str;
         std::time_t generated_time;
         unsigned int key_value_len = 0;
+        delete p_stmt;
         // 如果有查询结果
         if (res->previous()) {
             key_value_str = res->getString("key_value");
@@ -129,6 +130,24 @@ Key *MysqlDB::GetKey(unsigned char *key_id) {
     BOOST_LOG_TRIVIAL(info) << "Database: Get key from database by key id";
     return k;
 
+}
+
+bool MysqlDB::DeleteKey(unsigned char *key_id) {
+    try {
+        auto p_stmt = con_->prepareStatement("DELETE FROM " + this->key_table_name_ + " WHERE key_id=?");
+        // tmp为了将unsigned char 转换为std::string
+        char *tmp = reinterpret_cast<char *>(key_id);
+        std::string key_id_str(tmp, tmp + Key::kKeyIdLen);
+        p_stmt->setString(1, key_id_str);
+        p_stmt->execute();
+        delete p_stmt;
+    }
+    catch (std::runtime_error e) {
+        BOOST_LOG_TRIVIAL(error) << "Database: " << e.what();
+        return false;
+    }
+    BOOST_LOG_TRIVIAL(info) << "Database: Delete a line from database by key id";
+    return true;
 }
 
 // 将time_t转换为tm格式，然后用strftime打印在字符串中
