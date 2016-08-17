@@ -8,10 +8,8 @@
 // The description of this file is in the header file.
 //
 
-#include "HardwareFactoryInterface.h"
+#include "EncryptionDeviceProductInterface.h"
 
-HardwareFactoryInterface::~HardwareFactoryInterface() {
+EncryptionDeviceProductInterface::~EncryptionDeviceProductInterface() {
 
 }
-
-

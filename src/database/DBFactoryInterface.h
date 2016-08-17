@@ -5,6 +5,8 @@
 //
 // Author Hanzeil.
 //
+// 数据库工厂接口，可以生产多种数据库接口，目前支持Mysql
+//
 
 #ifndef KEYMANAGEMENT_DB_FACTORY_INTERFACE_H
 #define KEYMANAGEMENT_DB_FACTORY_INTERFACE_H

@@ -5,22 +5,24 @@
 //
 // Author Hanzeil.
 //
+// 生产Simulation产品的具体工厂
+//
 
 #ifndef KEYMANAGEMENT_SIMULATIONFACTORY_H
 #define KEYMANAGEMENT_SIMULATIONFACTORY_H
 
-#include "../HardwareFactoryInterface.h"
+#include "../EncryptionDeviceFactoryInterface.h"
 #include "Simulation.h"
 #include <boost/log/trivial.hpp>
 
-class SimulationFactory : public HardwareFactoryInterface {
+class SimulationFactory : public EncrpytionDeviceFactoryInterface {
 public:
 
     explicit SimulationFactory() = default;
 
     ~SimulationFactory();
 
-    HardwareProductInterface *CreateProduct();
+    EncryptionDeviceProductInterface *CreateProduct();
 };
 
 

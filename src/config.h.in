@@ -4,8 +4,6 @@
 //
 // These values are automatically set according to their cmake variables.
 //
-#cmakedefine DATABASE "@DATABASE@"
-#cmakedefine HARDWARE "@HARDWARE@"
 #cmakedefine MYSQL
 #cmakedefine SJK_1238
 #cmakedefine SIMULATION

@@ -26,28 +26,27 @@
 // Key k("key_sample", key_len);
 class Key {
 public:
-    // 默认构造函数
-    Key() = default;
+    explicit Key() = default;
 
-    // 析构函数
     ~Key();
 
     // 通过指定Key需要的所有属性来构造Key
-    Key(unsigned char *key_id,
-        unsigned char *key_value, unsigned int key_value_len,
-        std::time_t generated_time);
+    explicit Key(unsigned char *key_id,
+                 unsigned char *key_value, size_t key_value_len,
+                 std::time_t generated_time);
 
     // 给定key_value和其长度构造一个Key对象（key_id随机生成）
-    Key(unsigned char *key_value, unsigned int length);
+    explicit Key(unsigned char *key_value, size_t key_value_len);
 
     // 每个key的唯一标识， 默认NULL
     unsigned char *key_id_ = nullptr;
     unsigned char *key_value_ = nullptr;
-    unsigned int key_value_len_ = 0;
+    size_t key_value_len_ = 0;
     std::time_t generated_time_ = 0;
-    static const unsigned int kKeyIdLen = 16;
+    static const size_t kKeyIdLen = 16;
 private:
     // 随机生成一个永不重复Key id的函数，并返回
+    // 函数分配了unsigned char[kKeyIdLen]的空间，需要调用者释放
     // Key id的长度由类成员常量kKeyIdLen决定
     unsigned char *GenerateKeyId();
 

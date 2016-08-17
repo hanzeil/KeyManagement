@@ -5,6 +5,8 @@
 //
 // Author Hanzeil.
 //
+// 生产Mysql产品的具体工厂
+//
 
 #ifndef KEYMANAGEMENT_MYSQLFACTORY_H
 #define KEYMANAGEMENT_MYSQLFACTORY_H

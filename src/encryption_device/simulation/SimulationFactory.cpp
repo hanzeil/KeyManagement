@@ -15,7 +15,7 @@ SimulationFactory::~SimulationFactory() {
 };
 
 
-HardwareProductInterface *SimulationFactory::CreateProduct() {
+EncryptionDeviceProductInterface *SimulationFactory::CreateProduct() {
     BOOST_LOG_TRIVIAL(info) << "Hardware: Simulation selected";
     return new Simulation();
 };
