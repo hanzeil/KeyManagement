@@ -23,7 +23,7 @@ public:
 
     ~SJK1238Factory();
 
-    HardwareProductInterface *CreateProduct();
+    EncryptionDeviceProductInterface *CreateProduct();
 };
 
 

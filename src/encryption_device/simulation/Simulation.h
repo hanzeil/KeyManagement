@@ -30,6 +30,14 @@ class Simulation : public EncryptionDeviceProductInterface {
 public:
     explicit Simulation() = default;
 
+    //拷贝构造函数
+    //阻止拷贝
+    Simulation(const Simulation &) = delete;
+
+    //拷贝赋值函数
+    //阻止拷贝
+    Simulation &operator=(const Simulation &)= delete;
+
     ~Simulation();
 
     //打开Simulation设备

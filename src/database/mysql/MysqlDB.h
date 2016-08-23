@@ -38,6 +38,14 @@ class MysqlDB : public DBProductInterface {
 public:
     explicit MysqlDB() = default;
 
+    //拷贝构造函数
+    //阻止拷贝
+    MysqlDB(const MysqlDB &) = delete;
+
+    //拷贝赋值函数
+    //阻止赋值
+    MysqlDB &operator=(MysqlDB &)= delete;
+
     ~MysqlDB();
 
     // 连接mysql

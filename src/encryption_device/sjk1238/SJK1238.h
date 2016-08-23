@@ -31,6 +31,14 @@ public:
 
     explicit SJK1238() = default;
 
+    //拷贝构造函数
+    //阻止拷贝
+    SJK1238(const SJK1238 &) = delete;
+
+    //拷贝赋值函数
+    //阻止拷贝
+    SJK1238 &operator=(const SJK1238 &)= delete;
+
     ~SJK1238();
 
     //打开SJK1238设备

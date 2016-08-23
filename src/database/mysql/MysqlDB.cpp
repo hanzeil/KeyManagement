@@ -11,7 +11,6 @@
 #include <stdlib.h>
 #include "MysqlDB.h"
 
-// 关闭Mysql的连接
 MysqlDB::~MysqlDB() {
     delete con_;
     BOOST_LOG_TRIVIAL(info) << "Database: Mysql closed";

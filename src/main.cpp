@@ -47,7 +47,7 @@ int main() {
     unsigned char *key_encrypted = NULL;
 
 #ifdef SJK_1238
-    HardwareFactoryInterface *hFactory = new SJK1238Factory();
+    EncrpytionDeviceFactoryInterface *hFactory = new SJK1238Factory();
     EncryptionDeviceProductInterface *hardware = hFactory->CreateProduct();
 #endif
 
@@ -61,9 +61,12 @@ int main() {
         for (auto i = 0; i < 16; i++) {
             std::cout << (int) key[i] << " ";
         }
+        std::cout << std::endl;
         key_encrypted = hardware->KeyEncryption(key, 16);
     }
     Key k(key_encrypted, 16);
+    Key k3;
+    k3 = k;
     DBFactoryInterface *factory = new MysqlFactory();
     DBProductInterface *db = factory->CreateProduct();
     db->Connect("keymanagement", "keymanagement");
