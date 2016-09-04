@@ -36,7 +36,7 @@
 // delete db;
 class MysqlDB : public DBProductInterface {
 public:
-    explicit MysqlDB() = default;
+    MysqlDB() = default;
 
     //拷贝构造函数
     //阻止拷贝

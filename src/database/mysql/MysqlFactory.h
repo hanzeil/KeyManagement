@@ -15,7 +15,7 @@
 
 class MysqlFactory : public DBFactoryInterface {
 public:
-    explicit MysqlFactory() = default;
+    MysqlFactory() = default;
 
     ~MysqlFactory();
 

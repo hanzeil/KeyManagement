@@ -19,7 +19,7 @@
 class SJK1238Factory : public EncrpytionDeviceFactoryInterface {
 public:
 
-    explicit SJK1238Factory() = default;
+    SJK1238Factory() = default;
 
     ~SJK1238Factory();
 

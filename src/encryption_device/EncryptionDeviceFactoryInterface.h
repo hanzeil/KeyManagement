@@ -15,7 +15,7 @@
 
 class EncrpytionDeviceFactoryInterface {
 public:
-    explicit EncrpytionDeviceFactoryInterface() = default;
+    EncrpytionDeviceFactoryInterface() = default;
 
     virtual ~EncrpytionDeviceFactoryInterface();
 

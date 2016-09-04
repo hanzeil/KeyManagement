@@ -53,13 +53,13 @@ public:
     //加密结果为unsigned char *,大小与加密前的长度相同，
     //加密后的密钥的空间由该函数产生，需要调用者管理
     //如果加密失败，返回NULL
-    unsigned char *KeyEncryption(unsigned char *key, unsigned int length);
+    unsigned char *KeyEncryption(unsigned char *key, size_t length);
 
     //给定一个密钥key和密钥长度length, 用主密钥将密钥解密
     //解密结果为unsigned char *,大小与解密前的长度相同，
     //解密后的密钥的空间由该函数产生，需要调用者管理
     //如果解密失败，返回NULL
-    unsigned char *KeyDecryption(unsigned char *key_encrypted, unsigned int length);
+    unsigned char *KeyDecryption(unsigned char *key_encrypted, size_t length);
 
 private:
     //调试时暂时用来获取主密钥的函数

@@ -19,7 +19,7 @@
 // DBProductInterface *db=new MysqlDB()
 class DBProductInterface {
 public:
-    explicit DBProductInterface() = default;
+    DBProductInterface() = default;
 
     virtual ~DBProductInterface();
 

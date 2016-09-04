@@ -18,7 +18,7 @@
 class SimulationFactory : public EncrpytionDeviceFactoryInterface {
 public:
 
-    explicit SimulationFactory() = default;
+    SimulationFactory() = default;
 
     ~SimulationFactory();
 

@@ -11,9 +11,11 @@
 #ifndef KEYMANAGEMENT_ENCRYPTION_DEVICE_PRODUCT_INTERFACE_H
 #define KEYMANAGEMENT_ENCRYPTION_DEVICE_PRODUCT_INTERFACE_H
 
+#include <iostream>
+
 class EncryptionDeviceProductInterface {
 public:
-    explicit EncryptionDeviceProductInterface() = default;
+    EncryptionDeviceProductInterface() = default;
 
     virtual ~EncryptionDeviceProductInterface();
 
@@ -26,11 +28,11 @@ public:
 
     //给定一个密钥key和密钥长度length, 用主密钥将密钥加密
     //如果加密失败，返回NULL
-    virtual unsigned char *KeyEncryption(unsigned char *key, unsigned int length)=0;
+    virtual unsigned char *KeyEncryption(unsigned char *key, size_t length)=0;
 
     //给定一个密钥key和密钥长度length, 用主密钥将密钥解密
     //如果解密失败，返回NULL
-    virtual unsigned char *KeyDecryption(unsigned char *key_encrypted, unsigned int length)=0;
+    virtual unsigned char *KeyDecryption(unsigned char *key_encrypted, size_t length)=0;
 
 };
 

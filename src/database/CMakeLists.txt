@@ -11,8 +11,7 @@ if (MYSQL)
             mysql/MysqlFactory.h
             mysql/MysqlFactory.cpp
             mysql/MysqlDB.h
-            mysql/MysqlDB.cpp
-            )
+            mysql/MysqlDB.cpp)
 endif (MYSQL)
 
 add_library(database STATIC ${DATABASE_SOURCE_FILES})

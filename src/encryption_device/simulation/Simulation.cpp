@@ -40,7 +40,7 @@ unsigned char *Simulation::GenerateKey(unsigned int length) {
 // Openssl crypto API
 // AES_set_encrypt_key
 // AES_cbc_encrypt
-unsigned char *Simulation::KeyEncryption(unsigned char *key, unsigned int length) {
+unsigned char *Simulation::KeyEncryption(unsigned char *key, size_t length) {
     unsigned char puc_iv[AES_BLOCK_SIZE] = {0};
     auto master_key = GetMasterKey(); //获取主密钥
     AES_KEY aes_encrpyt_key;
@@ -65,7 +65,7 @@ unsigned char *Simulation::KeyEncryption(unsigned char *key, unsigned int length
 // Openssl crypto API
 // AES_set_decrypt_key
 // AES_cbc_encrypt
-unsigned char *Simulation::KeyDecryption(unsigned char *key_encrypted, unsigned int length) {
+unsigned char *Simulation::KeyDecryption(unsigned char *key_encrypted, size_t length) {
     unsigned char puc_iv[AES_BLOCK_SIZE] = {0};
     auto master_key = GetMasterKey(); //获取主密钥
     AES_KEY aes_decrpyt_key;

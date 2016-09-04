@@ -18,7 +18,7 @@
 
 class DBFactoryInterface {
 public:
-    explicit DBFactoryInterface() = default;
+    DBFactoryInterface() = default;
 
     virtual ~DBFactoryInterface();
 

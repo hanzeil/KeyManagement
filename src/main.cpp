@@ -15,6 +15,8 @@
 #include "config.h"
 #include "database/DBFactoryInterface.h"
 #include "encryption_device/EncryptionDeviceFactoryInterface.h"
+#include "tcp/server.h"
+#include <boost/asio.hpp>
 
 #ifdef MYSQL
 
@@ -38,7 +40,28 @@ using namespace std;
 
 #define MAX_BLOCK_LEN 100
 
-int main() {
+int main(int argc, char *argv[]) {
+    try {
+        // Check command line arguments.
+        if (argc != 4) {
+            std::cerr << "Usage: http_server <address> <port> <doc_root>\n";
+            std::cerr << "  For IPv4, try:\n";
+            std::cerr << "    receiver 0.0.0.0 80 .\n";
+            std::cerr << "  For IPv6, try:\n";
+            std::cerr << "    receiver 0::0 80 .\n";
+            return 1;
+        }
+
+        // Initialise the server.
+        http::server::server s(argv[1], argv[2], argv[3]);
+
+        // Run the server until stopped.
+        s.run();
+    }
+    catch (std::exception &e) {
+        std::cerr << "exception: " << e.what() << "\n";
+    }
+    /*
     namespace logging = boost::log;
     logging::core::get()->set_filter(
             logging::trivial::severity >= logging::trivial::info);
@@ -77,5 +100,6 @@ int main() {
         std::cout << (int) key2[i] << " ";
     }
     delete k2;
+     */
     return 0;
 }
