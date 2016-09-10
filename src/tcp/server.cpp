@@ -13,13 +13,14 @@
 namespace http {
     namespace server {
         server::server(const std::string &address, const std::string &port,
-                       const std::string &doc_root)
+                       const std::string &doc_root, size_t thread_pool_size)
                 : io_service_(),
                   signals_(io_service_),
                   acceptor_(io_service_),
                   connection_manager_(),
                   socket_(io_service_),
-                  request_handler_(doc_root) {
+                  request_handler_(),
+                  thread_pool_size_(thread_pool_size) {
             // Register to handle the signals that indicate when the server should exit.
             // It is safe to register for the same signal multiple times in a program,
             // provided all registration for the specified signal is made through Asio.
@@ -43,11 +44,20 @@ namespace http {
         }
 
         void server::run() {
-            // The io_service::run() call will block until all asynchronous operations
-            // have finished. While the server is running, there is always at least one
-            // asynchronous operation outstanding: the asynchronous accept call waiting
-            // for new incoming connections.
-            io_service_.run();
+            // Create a pool of threads to run all of the io_service
+            std::vector<std::shared_ptr<boost::thread> > threads;
+            for (size_t i = 0; i < thread_pool_size_; i++) {
+                std::shared_ptr<boost::thread> thread(new boost::thread(
+                        boost::bind(&boost::asio::io_service::run,
+                                    &io_service_)
+                ));
+                threads.push_back(thread);
+            }
+
+            // Wait for all threads in the pool to exit
+            for (size_t i = 0; i < threads.size(); i++) {
+                threads[i]->join();
+            }
         }
 
         void server::do_accept() {

@@ -14,9 +14,11 @@ add_definitions(-DBOOST_LOG_DYN_LINK)
 add_subdirectory(database)
 add_subdirectory(encryption_device)
 add_subdirectory(tcp)
+add_subdirectory(handler)
 target_link_libraries(KeyManagement
         database
         encryption_device
         tcp
+        handler
         ${BOOST_LOG}
         ${BOOST_SYSTEM})

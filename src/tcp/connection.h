@@ -10,13 +10,16 @@
 #ifndef KEYMANAGEMENT_CONNECTION_H
 #define KEYMANAGEMENT_CONNECTION_H
 
+#include <iostream>
 #include <array>
 #include <memory>
 #include <boost/asio.hpp>
-#include "reply.h"
+#include "Reply.h"
+#include "Request.h"
 #include "request.h"
-#include "request_handler.h"
+#include "RequestHandler.h"
 #include "request_parser.h"
+#include "RequestParser.h"
 
 namespace http {
     namespace server {
@@ -33,7 +36,7 @@ namespace http {
 
             /// Construct a connection with the given socket.
             explicit connection(boost::asio::ip::tcp::socket socket,
-                                connection_manager &manager, request_handler &handler);
+                                connection_manager &manager, RequestHandler &handler);
 
             /// Start the first asynchronous operation for the connection.
             void start();
@@ -55,19 +58,19 @@ namespace http {
             connection_manager &connection_manager_;
 
             /// The handler used to process the incoming request.
-            request_handler &request_handler_;
+            RequestHandler &request_handler_;
 
             /// Buffer for incoming data.
             std::array<char, 8192> buffer_;
 
             /// The incoming request.
-            request request_;
+            Request request_;
 
             /// The parser for the incoming request.
-            request_parser request_parser_;
+            RequestParser request_parser_;
 
             /// The reply to be sent back to the client.
-            reply reply_;
+            Reply reply_;
         };
 
         typedef std::shared_ptr<connection> connection_ptr;

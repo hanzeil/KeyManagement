@@ -16,16 +16,18 @@
 #include "mysql/MysqlDB.h"
 #include <boost/log/trivial.hpp>
 
-class DBFactoryInterface {
-public:
-    DBFactoryInterface() = default;
+namespace database {
 
-    virtual ~DBFactoryInterface();
+    class DBFactoryInterface {
+    public:
+        DBFactoryInterface() = default;
 
-    virtual DBProductInterface *CreateProduct()=0;
-};
+        virtual ~DBFactoryInterface();
 
+        virtual DBProductInterface *CreateProduct()=0;
+    };
 
+}
 
 
 #endif //KEYMANAGEMENT_DB_FACTORY_INTERFACE_H

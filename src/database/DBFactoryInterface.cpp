@@ -10,6 +10,9 @@
 
 #include "DBFactoryInterface.h"
 
-DBFactoryInterface::~DBFactoryInterface() {
+namespace database {
+
+    DBFactoryInterface::~DBFactoryInterface() {
+    }
 }
 

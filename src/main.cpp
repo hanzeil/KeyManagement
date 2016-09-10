@@ -7,6 +7,9 @@
 //
 // 本文件是KeyManagement可执行程序的入口函数
 
+#include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/exceptions.hpp>
@@ -41,19 +44,24 @@ using namespace std;
 #define MAX_BLOCK_LEN 100
 
 int main(int argc, char *argv[]) {
+    namespace logging = boost::log;
+    logging::core::get()->set_filter(
+            logging::trivial::severity >= logging::trivial::info);
+    /*
     try {
         // Check command line arguments.
-        if (argc != 4) {
+        if (argc != 5) {
             std::cerr << "Usage: http_server <address> <port> <doc_root>\n";
             std::cerr << "  For IPv4, try:\n";
-            std::cerr << "    receiver 0.0.0.0 80 .\n";
+            std::cerr << "    receiver 0.0.0.0 80 1 .\n";
             std::cerr << "  For IPv6, try:\n";
-            std::cerr << "    receiver 0::0 80 .\n";
+            std::cerr << "    receiver 0::0 80 1 .\n";
             return 1;
         }
 
         // Initialise the server.
-        http::server::server s(argv[1], argv[2], argv[3]);
+        size_t num_threads = boost::lexical_cast<std::size_t>(argv[3]);
+        http::server::server s(argv[1], argv[2], argv[4], num_threads);
 
         // Run the server until stopped.
         s.run();
@@ -61,13 +69,7 @@ int main(int argc, char *argv[]) {
     catch (std::exception &e) {
         std::cerr << "exception: " << e.what() << "\n";
     }
-    /*
-    namespace logging = boost::log;
-    logging::core::get()->set_filter(
-            logging::trivial::severity >= logging::trivial::info);
-
-    unsigned char *key = NULL;
-    unsigned char *key_encrypted = NULL;
+     */
 
 #ifdef SJK_1238
     EncrpytionDeviceFactoryInterface *hFactory = new SJK1238Factory();
@@ -79,27 +81,25 @@ int main(int argc, char *argv[]) {
     EncryptionDeviceProductInterface *hardware = hFactory->CreateProduct();
 #endif
 
-    if (hardware->OpenDevice()) {
-        key = hardware->GenerateKey(16);
-        for (auto i = 0; i < 16; i++) {
-            std::cout << (int) key[i] << " ";
-        }
-        std::cout << std::endl;
-        key_encrypted = hardware->KeyEncryption(key, 16);
+    hardware->OpenDevice();
+    auto key = hardware->GenerateKey(16);
+    for (auto i = 0; i < 16; i++) {
+        std::cout << (int) key[i] << " ";
     }
-    Key k(key_encrypted, 16);
+    std::cout << std::endl;
+    auto key_encrypted = hardware->KeyEncryption(key);
+    Key k(std::move(key_encrypted));
     Key k3;
     k3 = k;
-    DBFactoryInterface *factory = new MysqlFactory();
-    DBProductInterface *db = factory->CreateProduct();
+    database::DBFactoryInterface *factory = new database::MysqlFactory();
+    database::DBProductInterface *db = factory->CreateProduct();
     db->Connect("keymanagement", "keymanagement");
     db->InsertKey(k);
-    Key *k2 = db->GetKey(k.key_id_);
-    unsigned char *key2 = hardware->KeyDecryption(k2->key_value_, k2->key_value_len_);
+
+    Key k2 = db->GetKey(k.key_id_);
+    auto key2 = hardware->KeyDecryption(k2.key_value_);
     for (auto i = 0; i < 16; i++) {
         std::cout << (int) key2[i] << " ";
     }
-    delete k2;
-     */
     return 0;
 }

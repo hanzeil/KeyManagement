@@ -10,13 +10,12 @@
 #include <utility>
 #include <vector>
 #include "connection_manager.h"
-#include "request_handler.h"
 
 namespace http {
     namespace server {
 
         connection::connection(boost::asio::ip::tcp::socket socket,
-                               connection_manager &manager, request_handler &handler)
+                               connection_manager &manager, RequestHandler &handler)
                 : socket_(std::move(socket)),
                   connection_manager_(manager),
                   request_handler_(handler) {
@@ -35,6 +34,18 @@ namespace http {
             socket_.async_read_some(boost::asio::buffer(buffer_),
                                     [this, self](boost::system::error_code ec, std::size_t bytes_transferred) {
                                         if (!ec) {
+                                            RequestParser::result_type result;
+                                            std::tie(result, std::ignore) = request_parser_.parse(
+                                                    request_, buffer_.data(), buffer_.data() + bytes_transferred);
+                                            request_parser_.reset();
+                                            std::cout << request_.method << std::endl;
+                                            std::cout << request_.length << std::endl;
+                                            if (result == RequestParser::good) {
+                                                std::cout << "good" << std::endl;
+                                                request_handler_.handle_request(request_, reply_);
+                                            }
+                                            do_read();
+                                            /*
                                             request_parser::result_type result;
                                             std::tie(result, std::ignore) = request_parser_.parse(
                                                     request_, buffer_.data(), buffer_.data() + bytes_transferred);
@@ -50,6 +61,7 @@ namespace http {
                                             else {
                                                 do_read();
                                             }
+                                             */
                                         }
                                         else if (ec != boost::asio::error::operation_aborted) {
                                             connection_manager_.stop(shared_from_this());
@@ -59,6 +71,8 @@ namespace http {
 
         void connection::do_write() {
             auto self(shared_from_this());
+            socket_.async_write_some()
+            /*
             boost::asio::async_write(socket_, reply_.to_buffers(),
                                      [this, self](boost::system::error_code ec, std::size_t) {
                                          if (!ec) {
@@ -72,6 +86,7 @@ namespace http {
                                              connection_manager_.stop(shared_from_this());
                                          }
                                      });
+                                     */
         }
 
     } // namespace server

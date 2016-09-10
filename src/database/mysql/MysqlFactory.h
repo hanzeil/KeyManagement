@@ -13,14 +13,16 @@
 
 #include "../DBFactoryInterface.h"
 
-class MysqlFactory : public DBFactoryInterface {
-public:
-    MysqlFactory() = default;
+namespace database {
 
-    ~MysqlFactory();
+    class MysqlFactory : public DBFactoryInterface {
+    public:
+        MysqlFactory() = default;
 
-    DBProductInterface *CreateProduct();
-};
+        ~MysqlFactory();
 
+        DBProductInterface *CreateProduct();
+    };
+}
 
 #endif //KEYMANAGEMENT_MYSQLFACTORY_H

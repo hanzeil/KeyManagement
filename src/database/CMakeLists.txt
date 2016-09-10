@@ -3,8 +3,8 @@ set(DATABASE_SOURCE_FILES
         DBFactoryInterface.cpp
         DBProductInterface.h
         DBProductInterface.cpp
-        Key.h
-        Key.cpp)
+        ../Key.h
+        ../Key.cpp)
 if (MYSQL)
     add_subdirectory(mysql)
     set(DATABASE_SOURCE_FILES ${DATABASE_SOURCE_FILES}

@@ -10,10 +10,13 @@
 
 #include "MysqlFactory.h"
 
-MysqlFactory::~MysqlFactory() {
-}
+namespace database {
 
-DBProductInterface* MysqlFactory::CreateProduct() {
-    BOOST_LOG_TRIVIAL(info) << "Database: Mysql selected";
-    return new MysqlDB();
+    MysqlFactory::~MysqlFactory() {
+    }
+
+    DBProductInterface *MysqlFactory::CreateProduct() {
+        BOOST_LOG_TRIVIAL(info) << "Database: Mysql selected";
+        return new MysqlDB();
+    }
 }

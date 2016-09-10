@@ -1,5 +1,5 @@
 //
-// Created by Hanzeil on 16-8-15.
+// Created by Hanzeil on 16-9-5.
 //
 // Copyright (c) 2016 航天二院爱威公司. All rights reserved.
 //
@@ -8,10 +8,11 @@
 // The description of this file is in the header file.
 //
 
-#include "DBProductInterface.h"
 
-namespace database {
+#include "Reply.h"
 
-    DBProductInterface::~DBProductInterface() {
+namespace http {
+    namespace server {
+        Reply
     }
 }
