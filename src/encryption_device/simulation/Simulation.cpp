@@ -23,69 +23,90 @@ bool Simulation::OpenDevice() {
 
 // random 标准库
 // random_device 真随机数
-unsigned char *Simulation::GenerateKey(unsigned int length) {
+KeyValueType Simulation::GenerateKey(std::size_t length) {
     if (!device_status) {
         BOOST_LOG_TRIVIAL(error) << "Hardware: Device is not opened yet";
-        return NULL;
     }
-    unsigned char *key = new unsigned char[length];
+    unsigned char *key_unc = new unsigned char[length];
     std::random_device rd;
     for (auto i = 0; i < length; i++) {
-        key[i] = (unsigned char) rd();
+        key_unc[i] = (unsigned char) rd();
     }
     BOOST_LOG_TRIVIAL(info) << "Hardware: Generate a random key";
+    KeyValueType key;
+    for (std::size_t i = 0; i < Key::kKeyValueLen; i++) {
+        key[i] = key_unc[i];
+    }
+    delete key_unc;
     return key;
 }
 
 // Openssl crypto API
 // AES_set_encrypt_key
 // AES_cbc_encrypt
-unsigned char *Simulation::KeyEncryption(unsigned char *key, size_t length) {
+KeyValueType Simulation::KeyEncryption(KeyValueType &key) {
+    std::size_t length = Key::kKeyValueLen;
     unsigned char puc_iv[AES_BLOCK_SIZE] = {0};
+    unsigned char *key_unc = new unsigned char[length];
+    for (std::size_t i = 0; i < Key::kKeyIdLen; i++) {
+        key_unc[i] = key[i];
+    }
     auto master_key = GetMasterKey(); //获取主密钥
     AES_KEY aes_encrpyt_key;
     if (!device_status) {
         BOOST_LOG_TRIVIAL(error) << "Hardware: Device is not opened yet";
-        return NULL;
     }
     auto status = AES_set_encrypt_key(master_key, 128,
                                       &aes_encrpyt_key);  //得到加密主密钥
     if (status) {
         HandleErrors();
-        return NULL;
     }
-    unsigned char *key_encrypted = new unsigned char[length];
-    AES_cbc_encrypt(key, key_encrypted, length, &aes_encrpyt_key,
+    unsigned char *key_unc_encrypted = new unsigned char[length];
+    AES_cbc_encrypt(key_unc, key_unc_encrypted, length, &aes_encrpyt_key,
                     puc_iv, AES_ENCRYPT);  //用主密钥加密
     BOOST_LOG_TRIVIAL(info) << "Hardware: Encrypt the key using the master key";
+    KeyValueType key_encrypted;
+    for (std::size_t i = 0; i < Key::kKeyValueLen; i++) {
+        key_encrypted[i] = key_unc_encrypted[i];
+    }
+    delete key_unc;
     delete master_key;
+    delete key_unc_encrypted;
     return key_encrypted;
 }
 
 // Openssl crypto API
 // AES_set_decrypt_key
 // AES_cbc_encrypt
-unsigned char *Simulation::KeyDecryption(unsigned char *key_encrypted, size_t length) {
+KeyValueType Simulation::KeyDecryption(KeyValueType &key_encrypted) {
+    std::size_t length = Key::kKeyValueLen;
     unsigned char puc_iv[AES_BLOCK_SIZE] = {0};
     auto master_key = GetMasterKey(); //获取主密钥
+    unsigned char *key_unc_encrypted = new unsigned char[length];
+    for (std::size_t i = 0; i < Key::kKeyIdLen; i++) {
+        key_unc_encrypted[i] = key_encrypted[i];
+    }
     AES_KEY aes_decrpyt_key;
     if (!device_status) {
         BOOST_LOG_TRIVIAL(error) << "Hardware: Device is not opened yet";
-        return NULL;
     }
     auto status = AES_set_decrypt_key(master_key, 128,
                                       &aes_decrpyt_key);  //得到加密主密钥
     if (status) {
         HandleErrors();
-        return NULL;
     }
-    unsigned char *key = new unsigned char[length];
-    AES_cbc_encrypt(key_encrypted, key, length, &aes_decrpyt_key,
+    unsigned char *key_unc = new unsigned char[length];
+    AES_cbc_encrypt(key_unc_encrypted, key_unc, length, &aes_decrpyt_key,
                     puc_iv, AES_DECRYPT);  //用主密钥解密
     BOOST_LOG_TRIVIAL(info) << "Hardware: Decrypt the key using the master key";
+    KeyValueType key;
+    for (std::size_t i = 0; i < Key::kKeyValueLen; i++) {
+        key[i] = key_unc[i];
+    }
     delete master_key;
+    delete key_unc_encrypted;
+    delete key_unc;
     return key;
-
 }
 
 unsigned char *Simulation::GetMasterKey() {

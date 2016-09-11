@@ -13,6 +13,8 @@
 
 namespace http {
     namespace server {
-        Reply
+        boost::asio::const_buffer Reply::to_buffer() {
+
+        }
     }
 }

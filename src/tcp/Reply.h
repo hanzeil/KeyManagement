@@ -11,6 +11,7 @@
 #define KEYMANAGEMENT_REPLY_H
 
 #include <string>
+#include <boost/asio.hpp>
 
 namespace http {
     namespace server {
@@ -20,7 +21,7 @@ namespace http {
             std::string method;
 
             /// The content to be sent in the reply.
-            std::string content;
+            boost::asio::const_buffer content;
 
             /// Convert the reply into buffer.
             boost::asio::const_buffer to_buffer();

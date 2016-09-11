@@ -71,7 +71,6 @@ namespace http {
 
         void connection::do_write() {
             auto self(shared_from_this());
-            socket_.async_write_some()
             /*
             boost::asio::async_write(socket_, reply_.to_buffers(),
                                      [this, self](boost::system::error_code ec, std::size_t) {
