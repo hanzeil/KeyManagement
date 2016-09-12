@@ -16,42 +16,35 @@ namespace handler {
 
     KeyHandler::KeyHandler() {
 
+#ifdef SJK_1238
+        hFactory_ = std::make_shared<SJK1238Factory>();
+#endif
+
+#ifdef SIMULATION
+        hFactory_ = std::make_shared<Simulation>();
+#endif
+        hardware_ = hFactory_->CreateProduct();
+
+#ifdef MYSQL
+        dbfactory_ = std::make_shared<database::MysqlFactory>();
+#endif
+        db_ = dbfactory_->CreateProduct();
+
+        if (!hardware_->OpenDevice()) {
+            throw ("error");
+        }
+
+        db_->Connect("keymanagement", "keymanagement");
     }
 
     Key KeyHandler::CreateKey() {
 
-#ifdef SJK_1238
-        EncrpytionDeviceFactoryInterface *hFactory = new SJK1238Factory();
-#endif
-
-#ifdef SIMULATION
-        EncrpytionDeviceFactoryInterface *hFactory = new SimulationFactory();
-#endif
-
-        EncryptionDeviceProductInterface *hardware = hFactory->CreateProduct();
-
-        if (!hardware->OpenDevice()) {
-            delete hFactory;
-            delete hardware;
-            throw ("error");
-        }
-        auto key_value = hardware->GenerateKey(Key::kKeyValueLen);
+        auto key_value = hardware_->GenerateKey(Key::kKeyValueLen);
         Key key(key_value);
         auto key_encrypted = key;
-        key.key_value_ = hardware->KeyEncryption(key_value);
-
-#ifdef MYSQL
-        database::DBFactoryInterface *dbfactory = new database::MysqlFactory();
-#endif
-
-        database::DBProductInterface *db = dbfactory->CreateProduct();
-        db->Connect("keymanagement", "keymanagement");
-        db->InsertKey(key_encrypted);
-        delete hFactory;
-        delete hardware;
-        delete dbfactory;
-        delete db;
-        return std::move(key);
+        key.key_value_ = hardware_->KeyEncryption(key_value);
+        db_->InsertKey(key_encrypted);
+        return key;
     }
 
     Key KeyHandler::FindKeyByID(KeyIdType key_id) {

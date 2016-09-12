@@ -23,7 +23,7 @@ public:
 
     ~SJK1238Factory();
 
-    EncryptionDeviceProductInterface *CreateProduct();
+    std::shared_ptr<EncryptionDeviceProductInterface> CreateProduct();
 };
 
 

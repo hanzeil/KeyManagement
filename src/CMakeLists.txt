@@ -16,9 +16,9 @@ add_subdirectory(encryption_device)
 add_subdirectory(tcp)
 add_subdirectory(handler)
 target_link_libraries(KeyManagement
-        database
-        encryption_device
         tcp
         handler
+        database
+        encryption_device
         ${BOOST_LOG}
         ${BOOST_SYSTEM})

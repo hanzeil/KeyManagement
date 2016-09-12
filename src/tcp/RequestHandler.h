@@ -39,6 +39,7 @@ namespace http {
             };
 
         private:
+            handler::KeyHandler key_handler_;
         };
 
     } // namespace server

@@ -15,7 +15,7 @@ SimulationFactory::~SimulationFactory() {
 };
 
 
-EncryptionDeviceProductInterface *SimulationFactory::CreateProduct() {
+std::shared_ptr<EncryptionDeviceProductInterface> SimulationFactory::CreateProduct() {
     BOOST_LOG_TRIVIAL(info) << "Hardware: Simulation selected";
-    return new Simulation();
+    return std::make_shared<Simulation>();
 };

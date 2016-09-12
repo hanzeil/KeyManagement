@@ -29,6 +29,12 @@ namespace http {
             socket_.close();
         }
 
+        void connection::Reset() {
+            request_parser_.reset();
+            request_.Reset();
+            reply_.Reset();
+        }
+
         void connection::do_read() {
             auto self(shared_from_this());
             socket_.async_read_some(boost::asio::buffer(buffer_),
@@ -37,31 +43,12 @@ namespace http {
                                             RequestParser::result_type result;
                                             std::tie(result, std::ignore) = request_parser_.parse(
                                                     request_, buffer_.data(), buffer_.data() + bytes_transferred);
-                                            request_parser_.reset();
-                                            std::cout << request_.method << std::endl;
-                                            std::cout << request_.length << std::endl;
+                                            self->Reset();
                                             if (result == RequestParser::good) {
                                                 std::cout << "good" << std::endl;
                                                 request_handler_.handle_request(request_, reply_);
                                             }
-                                            do_read();
-                                            /*
-                                            request_parser::result_type result;
-                                            std::tie(result, std::ignore) = request_parser_.parse(
-                                                    request_, buffer_.data(), buffer_.data() + bytes_transferred);
-
-                                            if (result == request_parser::good) {
-                                                request_handler_.handle_request(request_, reply_);
-                                                do_write();
-                                            }
-                                            else if (result == request_parser::bad) {
-                                                reply_ = reply::stock_reply(reply::bad_request);
-                                                do_write();
-                                            }
-                                            else {
-                                                do_read();
-                                            }
-                                             */
+                                            do_write();
                                         }
                                         else if (ec != boost::asio::error::operation_aborted) {
                                             connection_manager_.stop(shared_from_this());
@@ -71,21 +58,24 @@ namespace http {
 
         void connection::do_write() {
             auto self(shared_from_this());
-            /*
             boost::asio::async_write(socket_, reply_.to_buffers(),
-                                     [this, self](boost::system::error_code ec, std::size_t) {
+                                     [this, self](boost::system::error_code ec, std::size_t len) {
                                          if (!ec) {
+                                             do_read();
+                                             /*
                                              // Initiate graceful connection closure.
                                              boost::system::error_code ignored_ec;
                                              socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both,
                                                               ignored_ec);
+                                                              */
                                          }
 
+                                         /*
                                          if (ec != boost::asio::error::operation_aborted) {
                                              connection_manager_.stop(shared_from_this());
                                          }
+                                          */
                                      });
-                                     */
         }
 
     } // namespace server

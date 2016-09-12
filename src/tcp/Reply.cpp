@@ -13,8 +13,19 @@
 
 namespace http {
     namespace server {
-        boost::asio::const_buffer Reply::to_buffer() {
+        void Reply::Reset() {
+            content.clear();
+        }
 
+        void Reply::to_content(Key &key) {
+            content += std::string(key.key_id_.cbegin(),
+                                   key.key_id_.cend());
+            content += std::string(key.key_value_.cbegin(),
+                                   key.key_value_.cend());
+        }
+
+        boost::asio::const_buffers_1 Reply::to_buffers() {
+            return boost::asio::buffer(content);
         }
     }
 }

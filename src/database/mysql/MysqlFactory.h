@@ -21,7 +21,7 @@ namespace database {
 
         ~MysqlFactory();
 
-        DBProductInterface *CreateProduct();
+        std::shared_ptr<DBProductInterface> CreateProduct();
     };
 }
 

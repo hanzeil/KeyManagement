@@ -15,7 +15,7 @@
 SJK1238Factory::~SJK1238Factory() {
 }
 
-EncryptionDeviceProductInterface *SJK1238Factory::CreateProduct() {
+std::shared_ptr<EncryptionDeviceProductInterface> SJK1238Factory::CreateProduct() {
     BOOST_LOG_TRIVIAL(info) << "Hardware: sjk1238 card selected";
-    return new SJK1238();
+    return std::make_shared<SJK1238>();
 }

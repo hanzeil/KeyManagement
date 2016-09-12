@@ -15,8 +15,8 @@ namespace database {
     MysqlFactory::~MysqlFactory() {
     }
 
-    DBProductInterface *MysqlFactory::CreateProduct() {
+    std::shared_ptr<DBProductInterface> MysqlFactory::CreateProduct() {
         BOOST_LOG_TRIVIAL(info) << "Database: Mysql selected";
-        return new MysqlDB();
+        return std::make_shared<MysqlDB>();
     }
 }

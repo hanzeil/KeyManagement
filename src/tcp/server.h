@@ -12,6 +12,7 @@
 
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
+#include <boost/lexical_cast.hpp>
 #include <string>
 #include "connection.h"
 #include "connection_manager.h"
@@ -54,8 +55,8 @@ namespace http {
             /// The connection manager which owns all live connections.
             connection_manager connection_manager_;
 
-            /// The next socket to be accepted.
-            boost::asio::ip::tcp::socket socket_;
+            /// The next connection.
+            connection_ptr new_connection_;
 
             /// The handler for all incoming requests.
             RequestHandler request_handler_;

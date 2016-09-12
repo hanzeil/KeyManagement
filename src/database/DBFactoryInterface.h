@@ -24,7 +24,7 @@ namespace database {
 
         virtual ~DBFactoryInterface();
 
-        virtual DBProductInterface *CreateProduct()=0;
+        virtual std::shared_ptr<DBProductInterface> CreateProduct()=0;
     };
 
 }

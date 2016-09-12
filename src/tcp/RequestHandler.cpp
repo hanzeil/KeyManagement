@@ -23,8 +23,8 @@ namespace http {
 
         void RequestHandler::handle_request(const Request &req, Reply &rep) {
             if (req.method == "CreateKey") {
-                handler::KeyHandler key_handler;
-                auto key = key_handler.CreateKey();
+                auto key = key_handler_.CreateKey();
+                rep.to_content(key);
             }
             else if (req.method == "FindKeyByID") {
 

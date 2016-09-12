@@ -10,6 +10,7 @@
 #ifndef KEYMANAGEMENT_KEYHANDLER_H
 #define KEYMANAGEMENT_KEYHANDLER_H
 
+#include <memory>
 #include "config.h"
 #include "../Key.h"
 #include "../database/DBFactoryInterface.h"
@@ -46,6 +47,12 @@ namespace handler {
         Key CreateKey();
 
         Key FindKeyByID(KeyIdType key_id);
+
+    private:
+        std::shared_ptr<EncrpytionDeviceFactoryInterface> hFactory_;
+        std::shared_ptr<EncryptionDeviceProductInterface> hardware_;
+        std::shared_ptr<database::DBFactoryInterface> dbfactory_;
+        std::shared_ptr<database::DBProductInterface> db_;
     };
 
 }

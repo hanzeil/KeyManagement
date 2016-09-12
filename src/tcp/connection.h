@@ -44,12 +44,16 @@ namespace http {
             /// Stop all asynchronous operations associated with the connection.
             void stop();
 
+
         private:
             /// Perform an asynchronous read operation.
             void do_read();
 
             /// Perform an asynchronous write operation.
             void do_write();
+
+            /// Reset Request and Reply object
+            void Reset();
 
             /// Socket for the connection.
             boost::asio::ip::tcp::socket socket_;

@@ -10,21 +10,28 @@
 #ifndef KEYMANAGEMENT_REPLY_H
 #define KEYMANAGEMENT_REPLY_H
 
+#include <iostream>
 #include <string>
+#include <vector>
 #include <boost/asio.hpp>
+#include "../Key.h"
 
 namespace http {
     namespace server {
 
 
         struct Reply {
-            std::string method;
-
             /// The content to be sent in the reply.
-            boost::asio::const_buffer content;
+            std::string content;
+
+            void Reset();
 
             /// Convert the reply into buffer.
-            boost::asio::const_buffer to_buffer();
+            boost::asio::const_buffers_1 to_buffers();
+
+            /// Conver the reply into string
+            void to_content(Key &);
+
         };
     }
 }

@@ -107,7 +107,7 @@ namespace database {
                 // new Key
                 Key key(std::move(key_id), std::move(key_value_arr),
                          generated_time);
-                return std::move(key);
+                return key;
             }
             else {
                 BOOST_LOG_TRIVIAL(error) << "Database: No query result";

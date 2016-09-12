@@ -62,7 +62,7 @@ KeyValueType SJK1238::GenerateKey(std::size_t length) {
         key[i] = key_unc[i];
     }
     delete key_unc;
-    return std::move(key);
+    return key;
 }
 
 // SJK1238 API
@@ -122,7 +122,7 @@ KeyValueType SJK1238::KeyEncryption(
     delete master_key;
     delete key_unc_encrypted;
     delete key_unc;
-    return std::move(key_encrypted);
+    return key_encrypted;
 }
 
 KeyValueType SJK1238::KeyDecryption(
@@ -182,7 +182,7 @@ KeyValueType SJK1238::KeyDecryption(
     delete masterKey;
     delete key_unc;
     delete key_unc_encrypted;
-    return std::move(key);
+    return key;
 }
 
 unsigned char *SJK1238::GetMasterKey() {

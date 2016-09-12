@@ -11,6 +11,7 @@
 #ifndef KEYMANAGEMENT_ENCRYPTION_DEVICE_FACTORY_INTERFACE_H
 #define KEYMANAGEMENT_ENCRYPTION_DEVICE_FACTORY_INTERFACE_H
 
+#include <memory>
 #include "EncryptionDeviceProductInterface.h"
 
 class EncrpytionDeviceFactoryInterface {
@@ -19,7 +20,7 @@ public:
 
     virtual ~EncrpytionDeviceFactoryInterface();
 
-    virtual EncryptionDeviceProductInterface *CreateProduct()=0;
+    virtual std::shared_ptr<EncryptionDeviceProductInterface> CreateProduct()=0;
 };
 
 

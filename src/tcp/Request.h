@@ -19,8 +19,10 @@ namespace http {
 /// A request received from a client.
         struct Request {
             std::string method;
-            int16_t length;
+            size_t length;
             std::vector<char> data;
+
+            void Reset();
         };
 
     } // namespace server

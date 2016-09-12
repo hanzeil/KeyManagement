@@ -32,7 +32,7 @@ namespace http {
                         if (input == 'a') {
                             state_ = length_1;
                             req.method = "CreateKey";
-                            return indeterminate;
+                            return good;
                         }
                         else if (input == 'b') {
                             state_ = length_1;
@@ -61,7 +61,7 @@ namespace http {
                     }
                     else {
                         state_ = data;
-                        req.length = (unsigned int) tmp_c * 256 + (unsigned int) input;
+                        req.length = (std::size_t) tmp_c * 256 + (std::size_t) input;
                         return indeterminate;
                     }
                 case data:
@@ -69,7 +69,6 @@ namespace http {
                         return bad;
                     }
                     if (input == '\r') {
-                        std::cout<<"~~"<<std::endl;
                         state_ = expecting_newline_2;
                         return indeterminate;
                     }
@@ -77,7 +76,6 @@ namespace http {
                     return indeterminate;
                 case expecting_newline_2:
                     if (input == '\n') {
-                        std::cout<<"~~~~"<<std::endl;
                         return good;
                     }
                     else {

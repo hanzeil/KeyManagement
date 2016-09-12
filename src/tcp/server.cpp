@@ -46,6 +46,7 @@ namespace http {
         void server::run() {
             // Create a pool of threads to run all of the io_service
             std::vector<std::shared_ptr<boost::thread> > threads;
+            std::cout << thread_pool_size_ << std::endl;
             for (size_t i = 0; i < thread_pool_size_; i++) {
                 std::shared_ptr<boost::thread> thread(new boost::thread(
                         boost::bind(&boost::asio::io_service::run,
@@ -61,6 +62,7 @@ namespace http {
         }
 
         void server::do_accept() {
+            new_connection_.reset();
             acceptor_.async_accept(socket_,
                                    [this](boost::system::error_code ec) {
                                        // Check whether the server was stopped by a signal before this
@@ -70,6 +72,8 @@ namespace http {
                                        }
 
                                        if (!ec) {
+                                           std::cout << getpid() << std::endl;
+                                           sleep(5);
                                            connection_manager_.start(std::make_shared<connection>(
                                                    std::move(socket_), connection_manager_, request_handler_));
                                        }

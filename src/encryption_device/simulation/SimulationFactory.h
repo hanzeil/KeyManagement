@@ -22,7 +22,7 @@ public:
 
     ~SimulationFactory();
 
-    EncryptionDeviceProductInterface *CreateProduct();
+    std::shared_ptr<EncryptionDeviceProductInterface> CreateProduct();
 };
 
 
