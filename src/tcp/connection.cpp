@@ -14,9 +14,9 @@
 namespace http {
     namespace server {
 
-        connection::connection(boost::asio::ip::tcp::socket socket,
+        connection::connection(boost::asio::io_service &io_service,
                                connection_manager &manager, RequestHandler &handler)
-                : socket_(std::move(socket)),
+                : socket_(io_service),
                   connection_manager_(manager),
                   request_handler_(handler) {
         }
@@ -61,6 +61,7 @@ namespace http {
             boost::asio::async_write(socket_, reply_.to_buffers(),
                                      [this, self](boost::system::error_code ec, std::size_t len) {
                                          if (!ec) {
+                                             std::cout<<reply_.content<<std::endl;
                                              do_read();
                                              /*
                                              // Initiate graceful connection closure.

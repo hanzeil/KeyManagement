@@ -27,10 +27,14 @@ namespace http {
                 rep.to_content(key);
             }
             else if (req.method == "FindKeyByID") {
-
+                KeyIdType key_id;
+                for (std::size_t i = 0; i < Key::kKeyIdLen; i++) {
+                    key_id[i] = req.data[i];
+                }
+                auto key = key_handler_.FindKeyByID(key_id);
+                rep.to_content(key);
             }
             else if (req.method == "CertAuthority") {
-
             }
         }
     }

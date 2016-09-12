@@ -22,6 +22,7 @@ namespace http {
                                    key.key_id_.cend());
             content += std::string(key.key_value_.cbegin(),
                                    key.key_value_.cend());
+
         }
 
         boost::asio::const_buffers_1 Reply::to_buffers() {

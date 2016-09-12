@@ -16,9 +16,7 @@
 #include <boost/asio.hpp>
 #include "Reply.h"
 #include "Request.h"
-#include "request.h"
 #include "RequestHandler.h"
-#include "request_parser.h"
 #include "RequestParser.h"
 
 namespace http {
@@ -35,7 +33,7 @@ namespace http {
             connection &operator=(const connection &) = delete;
 
             /// Construct a connection with the given socket.
-            explicit connection(boost::asio::ip::tcp::socket socket,
+            explicit connection(boost::asio::io_service &io_service,
                                 connection_manager &manager, RequestHandler &handler);
 
             /// Start the first asynchronous operation for the connection.
@@ -44,6 +42,8 @@ namespace http {
             /// Stop all asynchronous operations associated with the connection.
             void stop();
 
+            /// Socket for the connection.
+            boost::asio::ip::tcp::socket socket_;
 
         private:
             /// Perform an asynchronous read operation.
@@ -55,9 +55,6 @@ namespace http {
             /// Reset Request and Reply object
             void Reset();
 
-            /// Socket for the connection.
-            boost::asio::ip::tcp::socket socket_;
-
             /// The manager for this connection.
             connection_manager &connection_manager_;
 
@@ -65,7 +62,7 @@ namespace http {
             RequestHandler &request_handler_;
 
             /// Buffer for incoming data.
-            std::array<char, 8192> buffer_;
+            std::array<unsigned char, 8192> buffer_;
 
             /// The incoming request.
             Request request_;

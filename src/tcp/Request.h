@@ -20,7 +20,7 @@ namespace http {
         struct Request {
             std::string method;
             size_t length;
-            std::vector<char> data;
+            std::vector<unsigned char> data;
 
             void Reset();
         };

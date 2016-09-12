@@ -14,4 +14,12 @@ set(TCP_SOURCE_FILES
         server.cpp
         server.h)
 
+find_library(BOOST_SYSTEM boost_system)
+
+find_library(BOOST_THREAD boost_thread)
+
 add_library(tcp STATIC ${TCP_SOURCE_FILES})
+
+target_link_libraries(tcp
+        ${BOOST_SYSTEM}
+        ${BOOST_THREAD})

@@ -6,7 +6,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 #For Boost
 include_directories("/usr/local/lib/boost-1.61/")
 find_library(BOOST_LOG boost_log)
-find_library(BOOST_SYSTEM boost_system)
 add_definitions(-DBOOST_LOG_DYN_LINK)
 
 
@@ -20,5 +19,4 @@ target_link_libraries(KeyManagement
         handler
         database
         encryption_device
-        ${BOOST_LOG}
-        ${BOOST_SYSTEM})
+        ${BOOST_LOG})

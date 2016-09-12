@@ -21,7 +21,7 @@ namespace handler {
 #endif
 
 #ifdef SIMULATION
-        hFactory_ = std::make_shared<Simulation>();
+        hFactory_ = std::make_shared<SimulationFactory>();
 #endif
         hardware_ = hFactory_->CreateProduct();
 
@@ -48,6 +48,7 @@ namespace handler {
     }
 
     Key KeyHandler::FindKeyByID(KeyIdType key_id) {
+        return db_->GetKey(key_id);
     }
 
 }

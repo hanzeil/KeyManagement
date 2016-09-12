@@ -39,5 +39,6 @@ configure_file(
 )
 
 add_subdirectory(src bin)
+add_subdirectory(KeyManagement-test-client)
 
 

@@ -18,7 +18,6 @@ namespace http {
                   signals_(io_service_),
                   acceptor_(io_service_),
                   connection_manager_(),
-                  socket_(io_service_),
                   request_handler_(),
                   thread_pool_size_(thread_pool_size) {
             // Register to handle the signals that indicate when the server should exit.
@@ -62,8 +61,8 @@ namespace http {
         }
 
         void server::do_accept() {
-            new_connection_.reset();
-            acceptor_.async_accept(socket_,
+            new_connection_ = std::make_shared<connection>(io_service_, connection_manager_, request_handler_);
+            acceptor_.async_accept(new_connection_->socket_,
                                    [this](boost::system::error_code ec) {
                                        // Check whether the server was stopped by a signal before this
                                        // completion handler had a chance to run.
@@ -72,10 +71,8 @@ namespace http {
                                        }
 
                                        if (!ec) {
-                                           std::cout << getpid() << std::endl;
-                                           sleep(5);
-                                           connection_manager_.start(std::make_shared<connection>(
-                                                   std::move(socket_), connection_manager_, request_handler_));
+                                           std::cout << pthread_self() << std::endl;
+                                           connection_manager_.start(new_connection_);
                                        }
 
                                        do_accept();
