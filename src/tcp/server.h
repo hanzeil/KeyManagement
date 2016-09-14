@@ -12,11 +12,14 @@
 
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
+#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <string>
+#include <map>
 #include "connection.h"
 #include "connection_manager.h"
 #include "RequestHandler.h"
+#include "ThreadTask.h"
 
 namespace http {
     namespace server {
@@ -62,7 +65,9 @@ namespace http {
             RequestHandler request_handler_;
 
             /// the number of threads
-            size_t thread_pool_size_;
+            std::size_t thread_pool_size_;
+
+            std::map<boost::thread::id, std::shared_ptr<ThreadTask>> thread_tasks_;
         };
 
     } // namespace server

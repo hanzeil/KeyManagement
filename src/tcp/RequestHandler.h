@@ -11,6 +11,7 @@
 #define KEYMANAGEMENT_REQUESTHANDLER_H
 
 #include <string>
+#include "ThreadTask.h"
 #include "../handler/KeyHandler.h"
 
 namespace http {
@@ -32,14 +33,17 @@ namespace http {
             /// Handle a request and produce a reply.
             void handle_request(const Request &req, Reply &rep);
 
+            void BindThreadTask(std::shared_ptr<ThreadTask> task);
+
             enum status {
                 ca1,
                 ca2,
                 key_handle,
             };
 
+
         private:
-            handler::KeyHandler key_handler_;
+            std::shared_ptr<handler::KeyHandler> key_handler_;
         };
 
     } // namespace server

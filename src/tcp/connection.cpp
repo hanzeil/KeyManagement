@@ -40,12 +40,12 @@ namespace http {
             socket_.async_read_some(boost::asio::buffer(buffer_),
                                     [this, self](boost::system::error_code ec, std::size_t bytes_transferred) {
                                         if (!ec) {
+                                            std::cout << "bytes_transferred: " << bytes_transferred << std::endl;
                                             RequestParser::result_type result;
                                             std::tie(result, std::ignore) = request_parser_.parse(
                                                     request_, buffer_.data(), buffer_.data() + bytes_transferred);
                                             self->Reset();
                                             if (result == RequestParser::good) {
-                                                std::cout << "good" << std::endl;
                                                 request_handler_.handle_request(request_, reply_);
                                             }
                                             do_write();
@@ -61,7 +61,6 @@ namespace http {
             boost::asio::async_write(socket_, reply_.to_buffers(),
                                      [this, self](boost::system::error_code ec, std::size_t len) {
                                          if (!ec) {
-                                             std::cout<<reply_.content<<std::endl;
                                              do_read();
                                              /*
                                              // Initiate graceful connection closure.

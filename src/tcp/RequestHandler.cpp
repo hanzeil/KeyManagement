@@ -23,7 +23,7 @@ namespace http {
 
         void RequestHandler::handle_request(const Request &req, Reply &rep) {
             if (req.method == "CreateKey") {
-                auto key = key_handler_.CreateKey();
+                auto key = key_handler_->CreateKey();
                 rep.to_content(key);
             }
             else if (req.method == "FindKeyByID") {
@@ -31,11 +31,15 @@ namespace http {
                 for (std::size_t i = 0; i < Key::kKeyIdLen; i++) {
                     key_id[i] = req.data[i];
                 }
-                auto key = key_handler_.FindKeyByID(key_id);
+                auto key = key_handler_->FindKeyByID(key_id);
                 rep.to_content(key);
             }
             else if (req.method == "CertAuthority") {
             }
+        }
+
+        void RequestHandler::BindThreadTask(std::shared_ptr<ThreadTask> task) {
+            key_handler_ = std::make_shared<handler::KeyHandler>(task->db_, task->hardware_);
         }
     }
 }

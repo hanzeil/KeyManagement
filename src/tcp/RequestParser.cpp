@@ -47,40 +47,19 @@ namespace http {
                         return bad;
                     }
                 case length_1:
-                    if (!is_char(input)) {
-                        return bad;
-                    }
-                    else {
-                        tmp_c = input;
-                        state_ = length_2;
-                        return indeterminate;
-                    }
+                    tmp_c = input;
+                    state_ = length_2;
+                    return indeterminate;
                 case length_2:
-                    if (!is_char(input)) {
-                        return bad;
-                    }
-                    else {
-                        state_ = data;
-                        req.length = (std::size_t) tmp_c * 256 + (std::size_t) input;
-                        return indeterminate;
-                    }
+                    state_ = data;
+                    req.length = (std::size_t) tmp_c * 256 + (std::size_t) input;
+                    return indeterminate;
                 case data:
-                    if (!is_char(input)) {
-                        return bad;
-                    }
-                    if (input == '\r') {
-                        state_ = expecting_newline_2;
-                        return indeterminate;
+                    if (req.data.size() == req.length) {
+                        return good;
                     }
                     req.data.push_back(input);
                     return indeterminate;
-                case expecting_newline_2:
-                    if (input == '\n') {
-                        return good;
-                    }
-                    else {
-                        return bad;
-                    }
                 default:
                     return bad;
             }

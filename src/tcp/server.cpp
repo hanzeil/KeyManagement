@@ -45,13 +45,14 @@ namespace http {
         void server::run() {
             // Create a pool of threads to run all of the io_service
             std::vector<std::shared_ptr<boost::thread> > threads;
-            std::cout << thread_pool_size_ << std::endl;
-            for (size_t i = 0; i < thread_pool_size_; i++) {
+            for (std::size_t i = 0; i < thread_pool_size_; i++) {
+                auto thread_task = std::make_shared<ThreadTask>(io_service_);
                 std::shared_ptr<boost::thread> thread(new boost::thread(
-                        boost::bind(&boost::asio::io_service::run,
-                                    &io_service_)
+                        boost::bind(&ThreadTask::run,
+                                    thread_task)
                 ));
                 threads.push_back(thread);
+                thread_tasks_.insert({thread->get_id(), thread_task});
             }
 
             // Wait for all threads in the pool to exit
@@ -71,7 +72,9 @@ namespace http {
                                        }
 
                                        if (!ec) {
-                                           std::cout << pthread_self() << std::endl;
+                                           auto thread_task = thread_tasks_.at(
+                                                   boost::this_thread::get_id());
+                                           request_handler_.BindThreadTask(thread_task);
                                            connection_manager_.start(new_connection_);
                                        }
 

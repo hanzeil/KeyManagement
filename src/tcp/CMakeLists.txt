@@ -1,4 +1,6 @@
 set(TCP_SOURCE_FILES
+        ThreadTask.cpp
+        ThreadTask.h
         connection.cpp
         connection.h
         connection_manager.cpp

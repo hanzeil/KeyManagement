@@ -72,6 +72,7 @@ namespace http {
 
             /// The reply to be sent back to the client.
             Reply reply_;
+
         };
 
         typedef std::shared_ptr<connection> connection_ptr;

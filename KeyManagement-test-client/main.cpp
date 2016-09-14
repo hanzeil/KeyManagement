@@ -1,14 +1,17 @@
 #include <sys/types.h>
+#include <netdb.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <string>
 #include <iostream>
-#include <boost/asio.hpp>
 
-using boost::asio::ip::tcp;
 enum {
     max_length = 1024
 };
@@ -54,43 +57,27 @@ int main(int argc, char *argv[]) {
     n = read(sockfd, buffer, 255);
     if (n < 0)
         error("ERROR reading from socket");
-    printf("%s\n", buffer);
-    return 0;
-    /*
-    try {
-        if (argc != 3) {
-            std::cerr << "Usage: blocking_tcp_echo_client <host> <port>\n";
-            return 1;
-        }
-
-        boost::asio::io_service io_service;
-
-        tcp::socket s(io_service);
-        tcp::resolver resolver(io_service);
-        boost::asio::connect(s, resolver.resolve({argv[1], argv[2]}));
-
-        std::cout << "Enter message: ";
-        char request[max_length] = {'a'};
-        size_t request_length = std::strlen(request);
-        boost::asio::write(s, boost::asio::buffer(request, request_length));
-
-        unsigned char reply[max_length];
-        size_t reply_length = boost::asio::read(s,
-                                                boost::asio::buffer(reply, request_length));
-        std::cout << "Reply is: ";
-        std::cout << reply_length << std::endl;
-        std::cout<<(int)reply[0]<<std::endl;
-        reply_length = boost::asio::read(s,
-                                                boost::asio::buffer(reply, request_length));
-        std::cout << "Reply is: ";
-        std::cout << reply_length << std::endl;
-        std::cout<<(int)reply[0]<<std::endl;
-        std::cout << "\n";
+    for (size_t i=0;i<n;i++){
+        std::cout<<(int)buffer[i]<<" ";
     }
-    catch (std::exception &e) {
-        std::cerr << "Exception: " << e.what() << "\n";
+    std::cout<<std::endl;
+    char key_id[16];
+    memcpy(key_id, buffer, 16);
+    buffer[0] = 'b';
+    buffer[1] = 0x00;
+    buffer[2] = 0x10;
+    memcpy(buffer + 3, key_id, 16);
+    n = write(sockfd, buffer, 19);
+    std::cout << n << std::endl;
+    if (n < 0)
+        error("ERROR writing to socket");
+    bzero(buffer, 256);
+    n = read(sockfd, buffer, 255);
+    if (n < 0)
+        error("ERROR reading from socket");
+    for (size_t i=0;i<n;i++){
+        std::cout<<(int)buffer[i]<<" ";
     }
-
-    */
+    std::cout<<std::endl;
     return 0;
 }

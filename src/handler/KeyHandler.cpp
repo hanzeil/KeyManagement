@@ -14,27 +14,10 @@
 namespace handler {
 
 
-    KeyHandler::KeyHandler() {
-
-#ifdef SJK_1238
-        hFactory_ = std::make_shared<SJK1238Factory>();
-#endif
-
-#ifdef SIMULATION
-        hFactory_ = std::make_shared<SimulationFactory>();
-#endif
-        hardware_ = hFactory_->CreateProduct();
-
-#ifdef MYSQL
-        dbfactory_ = std::make_shared<database::MysqlFactory>();
-#endif
-        db_ = dbfactory_->CreateProduct();
-
-        if (!hardware_->OpenDevice()) {
-            throw ("error");
-        }
-
-        db_->Connect("keymanagement", "keymanagement");
+    KeyHandler::KeyHandler(std::shared_ptr<database::DBProductInterface> db,
+                           std::shared_ptr<EncryptionDeviceProductInterface> hardware)
+            : db_(db),
+              hardware_(hardware) {
     }
 
     Key KeyHandler::CreateKey() {
@@ -42,13 +25,15 @@ namespace handler {
         auto key_value = hardware_->GenerateKey(Key::kKeyValueLen);
         Key key(key_value);
         auto key_encrypted = key;
-        key.key_value_ = hardware_->KeyEncryption(key_value);
+        key_encrypted.key_value_ = hardware_->KeyEncryption(key_value);
         db_->InsertKey(key_encrypted);
         return key;
     }
 
     Key KeyHandler::FindKeyByID(KeyIdType key_id) {
-        return db_->GetKey(key_id);
+        Key key = db_->GetKey(key_id);
+        key.key_value_ = hardware_->KeyDecryption(key.key_value_);
+        return key;
     }
 
 }

@@ -40,7 +40,7 @@ namespace http {
             std::tuple<result_type, InputIterator> parse(Request &req,
                                                          InputIterator begin,
                                                          InputIterator end) {
-                while (begin != end) {
+                while (begin <= end) {
                     result_type result = consume(req, *begin++);
                     if (result == good || result == bad)
                         return std::make_tuple(result, begin);
@@ -61,8 +61,6 @@ namespace http {
                 length_1,
                 length_2,
                 data,
-                expecting_newline_1,
-                expecting_newline_2
             } state_;
 
             /// 暂存解析的字符结果
