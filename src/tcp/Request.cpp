@@ -8,6 +8,8 @@
 namespace tcp {
 
     void Request::Reset() {
+        method.clear();
+        length = 0;
         data.clear();
     }
 }
