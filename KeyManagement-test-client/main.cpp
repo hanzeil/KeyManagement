@@ -21,7 +21,14 @@ void error(std::string msg) {
     std::cout << msg << std::endl;
 }
 
+struct Test {
+    char method[2] = "f";
+    uint16_t length = 16;
+    char data[16] = "0";
+};
+
 int main(int argc, char *argv[]) {
+    Test test;
     int sockfd, portno;
     ssize_t n;
 
@@ -49,7 +56,7 @@ int main(int argc, char *argv[]) {
     if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
         error("ERROR connecting");
     printf("Please enter the message: ");
-    char buffer[256] = {'a'};
+    char buffer[256] = {'c'};
     n = write(sockfd, buffer, strlen(buffer));
     if (n < 0)
         error("ERROR writing to socket");
@@ -57,17 +64,13 @@ int main(int argc, char *argv[]) {
     n = read(sockfd, buffer, 255);
     if (n < 0)
         error("ERROR reading from socket");
-    for (size_t i=0;i<n;i++){
-        std::cout<<(int)buffer[i]<<" ";
+    for (size_t i = 0; i < n; i++) {
+        std::cout << (int) buffer[i] << " ";
     }
-    std::cout<<std::endl;
-    char key_id[16];
-    memcpy(key_id, buffer, 16);
-    buffer[0] = 'b';
-    buffer[1] = 0x00;
-    buffer[2] = 0x10;
-    memcpy(buffer + 3, key_id, 16);
-    n = write(sockfd, buffer, 19);
+    std::cout << std::endl;
+    memcpy(test.data, buffer, 16);
+    test.data[3] = 0;
+    n = write(sockfd, &test, sizeof(test));
     std::cout << n << std::endl;
     if (n < 0)
         error("ERROR writing to socket");
@@ -75,9 +78,9 @@ int main(int argc, char *argv[]) {
     n = read(sockfd, buffer, 255);
     if (n < 0)
         error("ERROR reading from socket");
-    for (size_t i=0;i<n;i++){
-        std::cout<<(int)buffer[i]<<" ";
+    for (size_t i = 0; i < n; i++) {
+        std::cout << (int) buffer[i] << " ";
     }
-    std::cout<<std::endl;
+    std::cout << std::endl;
     return 0;
 }

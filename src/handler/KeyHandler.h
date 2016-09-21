@@ -25,14 +25,14 @@ namespace handler {
         KeyHandler &operator=(const KeyHandler &)= delete;
 
         KeyHandler(std::shared_ptr<database::DBProductInterface> db,
-        std::shared_ptr<EncryptionDeviceProductInterface> hardware);
+                   std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware);
 
         Key CreateKey();
 
         Key FindKeyByID(KeyIdType key_id);
 
     private:
-        std::shared_ptr<EncryptionDeviceProductInterface> hardware_;
+        std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware_;
         std::shared_ptr<database::DBProductInterface> db_;
     };
 

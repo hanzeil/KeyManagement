@@ -12,10 +12,13 @@
 
 #include "SJK1238Factory.h"
 
-SJK1238Factory::~SJK1238Factory() {
-}
+namespace encryption_device {
 
-std::shared_ptr<EncryptionDeviceProductInterface> SJK1238Factory::CreateProduct() {
-    BOOST_LOG_TRIVIAL(info) << "Hardware: sjk1238 card selected";
-    return std::make_shared<SJK1238>();
+    SJK1238Factory::~SJK1238Factory() {
+    }
+
+    std::shared_ptr<EncryptionDeviceProductInterface> SJK1238Factory::CreateProduct() {
+        BOOST_LOG_TRIVIAL(info) << "Hardware: sjk1238 card selected";
+        return std::make_shared<SJK1238>();
+    }
 }

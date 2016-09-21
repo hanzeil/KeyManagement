@@ -5,11 +5,9 @@
 //
 #include "Request.h"
 
-namespace http {
-    namespace server {
+namespace tcp {
 
-        void Request::Reset() {
-            data.clear();
-        }
+    void Request::Reset() {
+        data.clear();
     }
 }

@@ -15,15 +15,18 @@
 #include "Simulation.h"
 #include <boost/log/trivial.hpp>
 
-class SimulationFactory : public EncrpytionDeviceFactoryInterface {
-public:
+namespace encryption_device {
 
-    SimulationFactory() = default;
+    class SimulationFactory : public EncrpytionDeviceFactoryInterface {
+    public:
 
-    ~SimulationFactory();
+        SimulationFactory() = default;
 
-    std::shared_ptr<EncryptionDeviceProductInterface> CreateProduct();
-};
+        ~SimulationFactory();
+
+        std::shared_ptr<EncryptionDeviceProductInterface> CreateProduct();
+    };
+}
 
 
 #endif //KEYMANAGEMENT_SIMULATIONFACTORY_H

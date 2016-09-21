@@ -11,34 +11,43 @@
 
 #include "ThreadTask.h"
 
-namespace http {
-    namespace server {
-        ThreadTask::ThreadTask(boost::asio::io_service &io_service)
-                : io_service_(io_service) {
-        }
+namespace tcp {
+    ThreadTask::ThreadTask(boost::asio::io_service &io_service)
+            : io_service_(io_service) {
+    }
 
-        void ThreadTask::run() {
+    void ThreadTask::Run() {
 
 #ifdef MYSQL
-            dbfactory_ = std::make_shared<database::MysqlFactory>();
+        dbfactory_ = std::make_shared<database::MysqlFactory>();
 #endif
-            db_ = dbfactory_->CreateProduct();
+        db_ = dbfactory_->CreateProduct();
+        try {
             db_->Connect("keymanagement", "keymanagement");
+        }
+        catch (std::runtime_error e) {
+            BOOST_LOG_TRIVIAL(fatal) << e.what();
+            _exit(111);
+        }
 
 #ifdef SJK_1238
-            hFactory_ = std::make_shared<SJK1238Factory>();
+        hFactory_ = std::make_shared<encryption_device::SJK1238Factory>();
 #endif
 
 #ifdef SIMULATION
-            hFactory_ = std::make_shared<SimulationFactory>();
+        hFactory_ = std::make_shared<encryption_device::SimulationFactory>();
 #endif
-            hardware_ = hFactory_->CreateProduct();
+        hardware_ = hFactory_->CreateProduct();
 
-            if (!hardware_->OpenDevice()) {
-                throw ("error");
-            }
-
-            io_service_.run();
+        try {
+            hardware_->OpenDevice();
         }
+        catch (std::runtime_error e) {
+            BOOST_LOG_TRIVIAL(fatal) << e.what();
+            _exit(5);
+        }
+
+
+        io_service_.run();
     }
 }

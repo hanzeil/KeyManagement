@@ -10,8 +10,10 @@
 
 #include "EncryptionDeviceFactoryInterface.h"
 
-EncrpytionDeviceFactoryInterface::~EncrpytionDeviceFactoryInterface() {
+namespace encryption_device {
+
+    EncrpytionDeviceFactoryInterface::~EncrpytionDeviceFactoryInterface() {
+
+    }
 
 }
-
-

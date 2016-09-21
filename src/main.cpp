@@ -15,7 +15,7 @@
 #include <boost/log/exceptions.hpp>
 #include <boost/log/utility/setup/file.hpp>
 #include <iostream>
-#include "tcp/server.h"
+#include "tcp/Server.h"
 #include <boost/asio.hpp>
 
 using namespace std;
@@ -28,21 +28,18 @@ int main(int argc, char *argv[]) {
             logging::trivial::severity >= logging::trivial::info);
     try {
         // Check command line arguments.
-        if (argc != 5) {
-            std::cerr << "Usage: http_server <address> <port> <doc_root>\n";
-            std::cerr << "  For IPv4, try:\n";
-            std::cerr << "    receiver 0.0.0.0 80 1 .\n";
-            std::cerr << "  For IPv6, try:\n";
-            std::cerr << "    receiver 0::0 80 1 .\n";
+        if (argc != 4) {
+            std::cerr << "Usage: Server <address> <port>\n";
+            std::cerr << "    receiver 0.0.0.0 80 1\n";
             return 1;
         }
 
         // Initialise the server.
         size_t num_threads = boost::lexical_cast<std::size_t>(argv[3]);
-        http::server::server s(argv[1], argv[2], argv[4], num_threads);
+        tcp::Server s(argv[1], argv[2], num_threads);
 
         // Run the server until stopped.
-        s.run();
+        s.Run();
     }
     catch (std::exception &e) {
         std::cerr << "exception: " << e.what() << "\n";

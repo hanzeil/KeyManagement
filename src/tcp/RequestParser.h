@@ -13,59 +13,58 @@
 #include <iostream>
 #include <tuple>
 
-namespace http {
-    namespace server {
+namespace tcp {
 
-        struct Request;
+    struct Request;
 
 /// Parser for incoming requests.
-        class RequestParser {
-        public:
-            /// Construct ready to parse the request method.
-            RequestParser();
+    class RequestParser {
+    public:
+        /// Construct ready to parse the request method.
+        RequestParser();
 
-            /// Reset to initial parser state.
-            void reset();
+        /// Reset to initial parser state.
+        void Reset();
 
-            /// Result of parse.
-            enum result_type {
-                good, bad, indeterminate
-            };
-
-            /// Parse some data. The enum return value is good when a complete request has
-            /// been parsed, bad if the data is invalid, indeterminate when more data is
-            /// required. The InputIterator return value indicates how much of the input
-            /// has been consumed.
-            template<typename InputIterator>
-            std::tuple<result_type, InputIterator> parse(Request &req,
-                                                         InputIterator begin,
-                                                         InputIterator end) {
-                while (begin <= end) {
-                    result_type result = consume(req, *begin++);
-                    if (result == good || result == bad)
-                        return std::make_tuple(result, begin);
-                }
-                return std::make_tuple(indeterminate, begin);
-            };
-
-        private:
-            /// Handle the next character of input.
-            result_type consume(Request &req, char input);
-
-            /// Check if a byte is an protocol character.
-            static bool is_char(int c);
-
-            /// The current state of the parser.
-            enum state {
-                method,
-                length_1,
-                length_2,
-                data,
-            } state_;
-
-            /// 暂存解析的字符结果
-            char tmp_c;
+        /// Result of parse.
+        enum ResultType {
+            good, bad, indeterminate
         };
-    }
+
+        /// Parse some data. The enum return value is good when a complete request has
+        /// been parsed, bad if the data is invalid, indeterminate when more data is
+        /// required. The InputIterator return value indicates how much of the input
+        /// has been consumed.
+        template<typename InputIterator>
+        std::tuple<ResultType, InputIterator> Parse(Request &req,
+                                                     InputIterator begin,
+                                                     InputIterator end) {
+            while (begin <= end) {
+                ResultType result = Consume(req, *begin++);
+                if (result == good || result == bad)
+                    return std::make_tuple(result, begin);
+            }
+            return std::make_tuple(indeterminate, begin);
+        };
+
+    private:
+        /// Handle the next character of input.
+        ResultType Consume(Request &req, char input);
+
+        /// Check if a byte is an protocol character.
+        static bool IsChar(int c);
+
+        /// The current state of the parser.
+        enum State {
+            method_1,
+            method_2,
+            length_1,
+            length_2,
+            data,
+        } state_;
+
+        /// 暂存解析的字符结果
+        char tmp_c_;
+    };
 }
 #endif //KEYMANAGEMENT_REQUESTPARSER_H

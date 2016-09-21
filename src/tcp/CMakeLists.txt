@@ -1,10 +1,10 @@
 set(TCP_SOURCE_FILES
         ThreadTask.cpp
         ThreadTask.h
-        connection.cpp
-        connection.h
-        connection_manager.cpp
-        connection_manager.h
+        Connection.cpp
+        Connection.h
+        ConnectionManager.cpp
+        ConnectionManager.h
         Request.cpp
         Request.h
         Reply.cpp
@@ -13,8 +13,8 @@ set(TCP_SOURCE_FILES
         RequestHandler.h
         RequestParser.cpp
         RequestParser.h
-        server.cpp
-        server.h)
+        Server.cpp
+        Server.h)
 
 find_library(BOOST_SYSTEM boost_system)
 

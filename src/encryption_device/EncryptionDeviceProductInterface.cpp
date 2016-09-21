@@ -10,6 +10,9 @@
 
 #include "EncryptionDeviceProductInterface.h"
 
-EncryptionDeviceProductInterface::~EncryptionDeviceProductInterface() {
+namespace encryption_device {
 
+    EncryptionDeviceProductInterface::~EncryptionDeviceProductInterface() {
+
+    }
 }

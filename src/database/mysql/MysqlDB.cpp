@@ -8,7 +8,6 @@
 // The description of this file is in the header file.
 //
 
-#include <stdlib.h>
 #include "MysqlDB.h"
 
 namespace database {
@@ -19,7 +18,7 @@ namespace database {
     }
 
 // 连接到Mysql后，使用数据库_db_name_
-    bool MysqlDB::Connect(std::string username, std::string password) {
+    void MysqlDB::Connect(std::string username, std::string password) {
         driver_ = sql::mysql::get_mysql_driver_instance();
         try {
             con_ = driver_->connect("tcp://127.0.0.1:3306", username, password);
@@ -28,13 +27,12 @@ namespace database {
             BOOST_LOG_TRIVIAL(info) << "Database: database selected";
         }
         catch (std::runtime_error e) {
-            BOOST_LOG_TRIVIAL(error) << "Database: " << e.what();
-            return false;
+            throw std::runtime_error(std::string("Database: ")
+                                     + e.what());
         }
-        return true;
     }
 
-    bool MysqlDB::InitTable() {
+    void MysqlDB::InitTable() {
         try {
             auto stmt = con_->createStatement();
             stmt->execute("DROP TABLE IF EXISTS "
@@ -51,14 +49,14 @@ namespace database {
             delete stmt;
         }
         catch (std::runtime_error e) {
-            BOOST_LOG_TRIVIAL(error) << "Database: " << e.what();
-            return false;
+            throw std::runtime_error(std::string("Database: ")
+                                     + e.what());
         }
     }
 
 // 将Key中的key_id和key_value转换为std::string
 // 方便执行SQL语句
-    bool MysqlDB::InsertKey(Key &key) {
+    void MysqlDB::InsertKey(Key &key) {
         try {
             auto p_stmt = con_->prepareStatement("INSERT INTO "
                                                  + this->key_table_name_
@@ -76,11 +74,10 @@ namespace database {
             delete p_stmt;
         }
         catch (std::runtime_error e) {
-            BOOST_LOG_TRIVIAL(error) << "Database: " << e.what();
-            return false;
+            throw std::runtime_error(std::string("Database: ")
+                                     + e.what());
         }
         BOOST_LOG_TRIVIAL(info) << "Database: Insert key";
-        return true;
     }
 
     Key MysqlDB::GetKey(KeyIdType key_id) {
@@ -106,22 +103,21 @@ namespace database {
 
                 // new Key
                 Key key(std::move(key_id), std::move(key_value_arr),
-                         generated_time);
+                        generated_time);
+                BOOST_LOG_TRIVIAL(info) << "Database: Get key from database by key id";
                 return key;
             }
             else {
-                BOOST_LOG_TRIVIAL(error) << "Database: No query result";
+                throw std::runtime_error("Database: Empty Set");
             }
+        } catch (std::runtime_error e) {
+            throw std::runtime_error(std::string("Database: ")
+                                     + e.what());
         }
-
-        catch (std::runtime_error e) {
-            BOOST_LOG_TRIVIAL(error) << "Database: " << e.what();
-        }
-        BOOST_LOG_TRIVIAL(info) << "Database: Get key from database by key id";
 
     }
 
-    bool MysqlDB::DeleteKey(unsigned char *key_id) {
+    void MysqlDB::DeleteKey(unsigned char *key_id) {
         try {
             auto p_stmt = con_->prepareStatement("DELETE FROM " + this->key_table_name_ + " WHERE key_id=?");
             // tmp为了将unsigned char 转换为std::string
@@ -132,11 +128,10 @@ namespace database {
             delete p_stmt;
         }
         catch (std::runtime_error e) {
-            BOOST_LOG_TRIVIAL(error) << "Database: " << e.what();
-            return false;
+            throw std::runtime_error(std::string("Database: ")
+                                     + e.what());
         }
         BOOST_LOG_TRIVIAL(info) << "Database: Delete a line from database by key id";
-        return true;
     }
 
 // 将time_t转换为tm格式，然后用strftime打印在字符串中

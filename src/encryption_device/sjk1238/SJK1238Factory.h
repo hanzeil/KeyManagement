@@ -16,15 +16,18 @@
 #include "SJK1238.h"
 #include <boost/log/trivial.hpp>
 
-class SJK1238Factory : public EncrpytionDeviceFactoryInterface {
-public:
+namespace encryption_device {
 
-    SJK1238Factory() = default;
+    class SJK1238Factory : public EncrpytionDeviceFactoryInterface {
+    public:
 
-    ~SJK1238Factory();
+        SJK1238Factory() = default;
 
-    std::shared_ptr<EncryptionDeviceProductInterface> CreateProduct();
-};
+        ~SJK1238Factory();
 
+        std::shared_ptr<EncryptionDeviceProductInterface> CreateProduct();
+    };
+
+}
 
 #endif //KEYMANAGEMENT_SJK1238FACTORY_H

@@ -10,6 +10,7 @@
 #define KEYMANAGEMENT_SIMULATION_H
 
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include "../EncryptionDeviceProductInterface.h"
 #include <boost/log/trivial.hpp>
@@ -17,6 +18,8 @@
 #include <openssl/aes.h>
 #include <openssl/err.h>
 
+
+namespace encryption_device {
 
 // 此类继承并实现了EncryptionDeviceProductInterface接口
 // 通过openssl/aes加密库实现
@@ -26,52 +29,54 @@
 // device.OpenDevice();
 // auto key = device.GenerateKey(16);
 // delete device;
-class Simulation : public EncryptionDeviceProductInterface {
-public:
-    explicit Simulation() = default;
+    class Simulation : public EncryptionDeviceProductInterface {
+    public:
+        explicit Simulation() = default;
 
-    //拷贝构造函数
-    //阻止拷贝
-    Simulation(const Simulation &) = delete;
+        //拷贝构造函数
+        //阻止拷贝
+        Simulation(const Simulation &) = delete;
 
-    //拷贝赋值函数
-    //阻止拷贝
-    Simulation &operator=(const Simulation &)= delete;
+        //拷贝赋值函数
+        //阻止拷贝
+        Simulation &operator=(const Simulation &)= delete;
 
-    ~Simulation();
+        ~Simulation();
 
-    //打开Simulation设备
-    //如果打开成功，返回true
-    bool OpenDevice();
+        //打开Simulation设备
+        //如果打开成功，返回true
+        void OpenDevice();
 
-    //随机产生一个unsigned char* 类型的密钥，并返回
-    //密钥的空间由该函数产生，需要调用者管理
-    //如果产生失败，返回NULL
-    KeyValueType GenerateKey(std::size_t length);
+        //随机产生一个unsigned char* 类型的密钥，并返回
+        //密钥的空间由该函数产生，需要调用者管理
+        //如果产生失败，返回NULL
+        KeyValueType GenerateKey(std::size_t length);
 
-    //给定一个密钥key和密钥长度length, 用主密钥将密钥加密
-    //加密结果为unsigned char *,大小与加密前的长度相同，
-    //加密后的密钥的空间由该函数产生，需要调用者管理
-    //如果加密失败，返回NULL
-    KeyValueType KeyEncryption(KeyValueType &key);
+        //给定一个密钥key和密钥长度length, 用主密钥将密钥加密
+        //加密结果为unsigned char *,大小与加密前的长度相同，
+        //加密后的密钥的空间由该函数产生，需要调用者管理
+        //如果加密失败，返回NULL
+        KeyValueType KeyEncryption(KeyValueType &key);
 
-    //给定一个密钥key和密钥长度length, 用主密钥将密钥解密
-    //解密结果为unsigned char *,大小与解密前的长度相同，
-    //解密后的密钥的空间由该函数产生，需要调用者管理
-    //如果解密失败，返回NULL
-    KeyValueType KeyDecryption(KeyValueType &key);
+        //给定一个密钥key和密钥长度length, 用主密钥将密钥解密
+        //解密结果为unsigned char *,大小与解密前的长度相同，
+        //解密后的密钥的空间由该函数产生，需要调用者管理
+        //如果解密失败，返回NULL
+        KeyValueType KeyDecryption(KeyValueType &key);
 
-private:
-    //调试时暂时用来获取主密钥的函数
-    //主密钥的空间由该函数产生，需要调用者管理
-    unsigned char *GetMasterKey();
+    private:
+        //调试时暂时用来获取主密钥的函数
+        //主密钥的空间由该函数产生，需要调用者管理
+        unsigned char *GetMasterKey();
 
-    //处理openssl出现的错误
-    void HandleErrors();
+        //处理openssl出现的错误
+        void HandleErrors();
 
-    //模拟设备是否打开
-    bool device_status = false;
-};
+        //模拟设备是否打开
+        bool device_status = false;
+    };
+
+}
 
 
 #endif //KEYMANAGEMENT_SIMULATION_H

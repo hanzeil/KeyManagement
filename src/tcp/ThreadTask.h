@@ -12,7 +12,9 @@
 
 #include "config.h"
 #include <boost/asio.hpp>
+#include <cstdlib>
 #include "../database/DBFactoryInterface.h"
+#include "../encryption_device/EncryptionDeviceFactoryInterface.h"
 
 #ifdef MYSQL
 
@@ -26,30 +28,34 @@
 
 #endif
 
-namespace http {
-    namespace server {
+#ifdef SIMULATION
 
-        class ThreadTask {
-        public:
+#include "../encryption_device/simulation/SimulationFactory.h"
 
-            ThreadTask(boost::asio::io_service &io_service);
+#endif
 
-            void run();
+namespace tcp {
 
-            std::shared_ptr<database::DBProductInterface> db_;
+    class ThreadTask {
+    public:
 
-            std::shared_ptr<EncryptionDeviceProductInterface> hardware_;
+        ThreadTask(boost::asio::io_service &io_service);
 
-        private:
+        void Run();
 
-            std::shared_ptr<database::DBFactoryInterface> dbfactory_;
+        std::shared_ptr<database::DBProductInterface> db_;
 
-            std::shared_ptr<EncrpytionDeviceFactoryInterface> hFactory_;
+        std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware_;
 
-            boost::asio::io_service &io_service_;
-        };
+    private:
 
-    }
+        std::shared_ptr<database::DBFactoryInterface> dbfactory_;
+
+        std::shared_ptr<encryption_device::EncrpytionDeviceFactoryInterface> hFactory_;
+
+        boost::asio::io_service &io_service_;
+    };
+
 }
 
 #endif //KEYMANAGEMENT_MYIOSERVICE_H

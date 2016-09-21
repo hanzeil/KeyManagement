@@ -11,22 +11,24 @@
 
 #include "Reply.h"
 
-namespace http {
-    namespace server {
-        void Reply::Reset() {
-            content.clear();
-        }
+namespace tcp {
+    void Reply::Reset() {
+        content.clear();
+    }
 
-        void Reply::to_content(Key &key) {
-            content += std::string(key.key_id_.cbegin(),
-                                   key.key_id_.cend());
-            content += std::string(key.key_value_.cbegin(),
-                                   key.key_value_.cend());
+    void Reply::ToContent(Key &key) {
+        content += std::string(key.key_id_.cbegin(),
+                               key.key_id_.cend());
+        content += std::string(key.key_value_.cbegin(),
+                               key.key_value_.cend());
 
-        }
+    }
 
-        boost::asio::const_buffers_1 Reply::to_buffers() {
-            return boost::asio::buffer(content);
-        }
+    boost::asio::const_buffers_1 Reply::ToBuffers() {
+        return boost::asio::buffer(content);
+    }
+
+    void Reply::ErrorContent() {
+        content.push_back(0);
     }
 }

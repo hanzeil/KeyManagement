@@ -14,14 +14,17 @@
 #include <memory>
 #include "EncryptionDeviceProductInterface.h"
 
-class EncrpytionDeviceFactoryInterface {
-public:
-    EncrpytionDeviceFactoryInterface() = default;
+namespace encryption_device {
 
-    virtual ~EncrpytionDeviceFactoryInterface();
+    class EncrpytionDeviceFactoryInterface {
+    public:
+        EncrpytionDeviceFactoryInterface() = default;
 
-    virtual std::shared_ptr<EncryptionDeviceProductInterface> CreateProduct()=0;
-};
+        virtual ~EncrpytionDeviceFactoryInterface();
 
+        virtual std::shared_ptr<EncryptionDeviceProductInterface> CreateProduct()=0;
+    };
+
+}
 
 #endif //KEYMANAGEMENT_ENCRYPTION_DEVICE_FACTORY_INTERFACE_H

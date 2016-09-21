@@ -15,30 +15,33 @@
 #include <array>
 #include "../Key.h"
 
-class EncryptionDeviceProductInterface {
-public:
-    EncryptionDeviceProductInterface() = default;
+namespace encryption_device {
 
-    virtual ~EncryptionDeviceProductInterface();
+    class EncryptionDeviceProductInterface {
+    public:
+        EncryptionDeviceProductInterface() = default;
 
-    //打开硬件设备
-    virtual bool OpenDevice()=0;
+        virtual ~EncryptionDeviceProductInterface();
 
-    //随机产生一个unsigned char* 类型的密钥，并返回
-    //如果产生失败，返回NULL
-    virtual KeyValueType GenerateKey(std::size_t length)=0;
+        //打开硬件设备
+        virtual void OpenDevice()=0;
 
-    //给定一个密钥key和密钥长度length, 用主密钥将密钥加密
-    //如果加密失败，返回NULL
-    virtual KeyValueType KeyEncryption(
-            KeyValueType &)=0;
+        //随机产生一个unsigned char* 类型的密钥，并返回
+        //如果产生失败，返回NULL
+        virtual KeyValueType GenerateKey(std::size_t length)=0;
 
-    //给定一个密钥key和密钥长度length, 用主密钥将密钥解密
-    //如果解密失败，返回NULL
-    virtual KeyValueType KeyDecryption(
-            KeyValueType &)=0;
+        //给定一个密钥key和密钥长度length, 用主密钥将密钥加密
+        //如果加密失败，返回NULL
+        virtual KeyValueType KeyEncryption(
+                KeyValueType &)=0;
 
-};
+        //给定一个密钥key和密钥长度length, 用主密钥将密钥解密
+        //如果解密失败，返回NULL
+        virtual KeyValueType KeyDecryption(
+                KeyValueType &)=0;
 
+    };
+}
 
 #endif //KEYMANAGEMENT_ENCRYPTION_DEVICE_PRODUCT_INTERFACE_H
+

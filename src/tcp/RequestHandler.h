@@ -14,40 +14,43 @@
 #include "ThreadTask.h"
 #include "../handler/KeyHandler.h"
 
-namespace http {
-    namespace server {
+namespace tcp {
 
-        struct Reply;
-        struct Request;
+    struct Reply;
+    struct Request;
 
 /// The common handler for all incoming requests.
-        class RequestHandler {
-        public:
-            RequestHandler(const RequestHandler &) = delete;
+    class RequestHandler {
+    public:
+        RequestHandler(const RequestHandler &) = delete;
 
-            RequestHandler &operator=(const RequestHandler &) = delete;
+        RequestHandler &operator=(const RequestHandler &) = delete;
 
-            /// Construct with a directory containing files to be served.
-            explicit RequestHandler();
+        /// Construct with a directory containing files to be served.
+        explicit RequestHandler();
 
-            /// Handle a request and produce a reply.
-            void handle_request(const Request &req, Reply &rep);
+        /// Handle a request and produce a reply.
+        void HandleRequest(const Request &req, Reply &rep);
 
-            void BindThreadTask(std::shared_ptr<ThreadTask> task);
+        void ReplyError(Reply &rep);
 
-            enum status {
-                ca1,
-                ca2,
-                key_handle,
-            };
+        void BindThreadTask(std::shared_ptr<ThreadTask> task);
+
+        void Reset();
+
+        enum Status {
+            identifity_authentication_1,
+            identifity_authentication_2,
+            key_handle,
+            error
+        } status_;
 
 
-        private:
-            std::shared_ptr<handler::KeyHandler> key_handler_;
-        };
+    private:
+        std::shared_ptr<handler::KeyHandler> key_handler_;
+    };
 
-    } // namespace server
-} // namespace http
+} // namespace tcp
 
 
 #endif //KEYMANAGEMENT_REQUESTHANDLER_H

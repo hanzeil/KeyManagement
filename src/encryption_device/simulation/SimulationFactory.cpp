@@ -10,12 +10,15 @@
 
 #include "SimulationFactory.h"
 
-SimulationFactory::~SimulationFactory() {
+namespace encryption_device {
 
-};
+    SimulationFactory::~SimulationFactory() {
+
+    };
 
 
-std::shared_ptr<EncryptionDeviceProductInterface> SimulationFactory::CreateProduct() {
-    BOOST_LOG_TRIVIAL(info) << "Hardware: Simulation selected";
-    return std::make_shared<Simulation>();
-};
+    std::shared_ptr<EncryptionDeviceProductInterface> SimulationFactory::CreateProduct() {
+        BOOST_LOG_TRIVIAL(info) << "Hardware: Simulation selected";
+        return std::make_shared<Simulation>();
+    };
+}

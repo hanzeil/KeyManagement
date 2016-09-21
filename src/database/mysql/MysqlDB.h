@@ -53,15 +53,15 @@ namespace database {
 
         // 连接mysql
         // 连接成功则返回true
-        bool Connect(std::string username, std::string password);
+        void Connect(std::string username, std::string password);
 
         // 新建Key表
         // 如果新建成功则返回true
-        bool InitTable();
+        void InitTable();
 
         //插入一个Key到Mysql
         //插入成功则返回true
-        bool InsertKey(Key &key);
+        void InsertKey(Key &key);
 
         //根据Key id从Mysql查找key并以Key类型的指针返回.
         //Key类型和其中的key_value, key_id的空间均在该函数中分配
@@ -72,7 +72,7 @@ namespace database {
         //根据Key id从Mysql删除该字段.
         //参数key_id的空间没有释放，需要调用者继续管理
         //如果删除成功，返回true
-        bool DeleteKey(unsigned char *key_id);
+        void DeleteKey(unsigned char *key_id);
 
     private:
         //将time_t格式的时间戳转换为Mysql的DateTime类型的时间格式
@@ -89,7 +89,7 @@ namespace database {
 
         //driver_->connector()返回的连接对象
         //默认为NULL
-        sql::Connection *con_ = nullptr;
+        sql::Connection  *con_ = nullptr;
 
         //数据所在的数据库名称
         std::string db_name_ = "symmetric_key";

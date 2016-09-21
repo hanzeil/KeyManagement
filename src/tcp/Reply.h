@@ -16,23 +16,24 @@
 #include <boost/asio.hpp>
 #include "../Key.h"
 
-namespace http {
-    namespace server {
+namespace tcp {
 
 
-        struct Reply {
-            /// The content to be sent in the reply.
-            std::string content;
+    struct Reply {
+        /// The content to be sent in the reply.
+        std::string content;
 
-            void Reset();
+        void Reset();
 
-            /// Convert the reply into buffer.
-            boost::asio::const_buffers_1 to_buffers();
+        /// Convert the reply into buffer.
+        boost::asio::const_buffers_1 ToBuffers();
 
-            /// Conver the reply into string
-            void to_content(Key &);
+        /// Conver the reply into string
+        void ToContent(Key &);
 
-        };
-    }
+        /// Conver the error reply into string
+        void ErrorContent();
+
+    };
 }
 #endif //KEYMANAGEMENT_REPLY_H
