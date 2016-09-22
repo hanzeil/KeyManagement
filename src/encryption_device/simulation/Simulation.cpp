@@ -20,12 +20,12 @@ namespace encryption_device {
     void Simulation::OpenDevice() {
         device_status = true;
         BOOST_LOG_TRIVIAL(info) << "Hardware: Open device";
-        return true;
     }
 
 // random 标准库
 // random_device 真随机数
-    KeyValueType Simulation::GenerateKey(std::size_t length) {
+    KeyValueType Simulation::GenerateKey() {
+        std::size_t length = Key::kKeyValueLen;
         if (!device_status) {
             std::stringstream ss;
             ss << "Hardware: Device is not opened yet";
@@ -115,6 +115,14 @@ namespace encryption_device {
         delete key_unc_encrypted;
         delete key_unc;
         return key;
+    }
+
+    MasterKey Simulation::GenerateMasterKeyWithKEK() {
+
+    }
+
+    void Simulation::ImportMasterKey(MasterKey master_key_encrypted) {
+
     }
 
     unsigned char *Simulation::GetMasterKey() {

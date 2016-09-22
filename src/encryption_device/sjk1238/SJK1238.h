@@ -51,7 +51,7 @@ namespace encryption_device {
         //随机产生一个unsigned char* 类型的密钥，并返回
         //密钥的空间由该函数产生，需要调用者管理
         //如果产生失败，返回NULL
-        KeyValueType GenerateKey(std::size_t length);
+        KeyValueType GenerateKey();
 
         //给定一个密钥key和密钥长度length, 用主密钥将密钥加密并返回
         //加密结果为unsigned char *,大小与加密前的长度相同，
@@ -67,16 +67,21 @@ namespace encryption_device {
         KeyValueType KeyDecryption(
                 KeyValueType &);
 
+        MasterKey GenerateMasterKeyWithKEK();
+
+        void ImportMasterKey(MasterKey master_key_encrypted);
+
     private:
-        //调试时暂时用来获取主密钥的函数
-        //主密钥的空间由该函数产生，需要调用者管理
-        unsigned char *GetMasterKey();
 
         //SJK1238设备句柄，用法见SJK1238 API文档
-        void *p_dev_handle_;
+        void *p_dev_handle_ = nullptr;
+
+        void *p_ses_handle_ = nullptr;
 
         //定义加密算法，可以选择SM1或者SM4两种对称算法
         unsigned int ui_alg_id_ = SGD_SMS4_CBC; //加密算法
+
+        void *master_key_handle_ = nullptr;
 
     };
 }

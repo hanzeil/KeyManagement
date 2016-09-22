@@ -50,7 +50,7 @@ namespace encryption_device {
         //随机产生一个unsigned char* 类型的密钥，并返回
         //密钥的空间由该函数产生，需要调用者管理
         //如果产生失败，返回NULL
-        KeyValueType GenerateKey(std::size_t length);
+        KeyValueType GenerateKey();
 
         //给定一个密钥key和密钥长度length, 用主密钥将密钥加密
         //加密结果为unsigned char *,大小与加密前的长度相同，
@@ -63,6 +63,10 @@ namespace encryption_device {
         //解密后的密钥的空间由该函数产生，需要调用者管理
         //如果解密失败，返回NULL
         KeyValueType KeyDecryption(KeyValueType &key);
+
+        MasterKey GenerateMasterKeyWithKEK();
+
+        void ImportMasterKey(MasterKey master_key_encrypted);
 
     private:
         //调试时暂时用来获取主密钥的函数

@@ -65,11 +65,17 @@ int main(int argc, char *argv[]) {
     if (n < 0)
         error("ERROR reading from socket");
     for (size_t i = 0; i < n; i++) {
-        std::cout << (int) buffer[i] << " ";
+        std::cout << (int) (unsigned char) buffer[i] << " ";
     }
     std::cout << std::endl;
     memcpy(test.data, buffer, 16);
-    test.data[3] = 0;
+    //unsigned char key_id[16] = {215, 230, 235, 72,
+    //                            58, 188, 65, 170,
+    //                            186, 50, 76, 3,
+    //                            251, 224, 46, 152};
+    //for (std::size_t i = 0; i < 16; i++) {
+    //    test.data[i] = key_id[i];
+    //}
     n = write(sockfd, &test, sizeof(test));
     std::cout << n << std::endl;
     if (n < 0)
@@ -79,7 +85,7 @@ int main(int argc, char *argv[]) {
     if (n < 0)
         error("ERROR reading from socket");
     for (size_t i = 0; i < n; i++) {
-        std::cout << (int) buffer[i] << " ";
+        std::cout << (int) (unsigned char) buffer[i] << " ";
     }
     std::cout << std::endl;
     return 0;

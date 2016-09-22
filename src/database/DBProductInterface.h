@@ -47,6 +47,10 @@ namespace database {
         //参数key_id的空间没有释放，需要调用者继续管理
         //如果删除成功，返回true
         virtual void DeleteKey(unsigned char *key_id)=0;
+
+        virtual MasterKey GetMasterKey()=0;
+
+        virtual void InsertMasterKey(MasterKey master_key)=0;
     };
 
 }

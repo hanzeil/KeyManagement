@@ -43,9 +43,9 @@ namespace tcp {
                                     if (!ec) {
                                         std::cout << "bytes_transferred: " << bytes_transferred << std::endl;
                                         RequestParser::ResultType result;
+                                        self->Reset();
                                         std::tie(result, std::ignore) = request_parser_.Parse(
                                                 request_, buffer_.data(), buffer_.data() + bytes_transferred);
-                                        self->Reset();
                                         if (result == RequestParser::good) {
                                             request_handler_.HandleRequest(request_, reply_);
                                         }

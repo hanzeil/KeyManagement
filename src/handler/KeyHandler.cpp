@@ -22,7 +22,7 @@ namespace handler {
 
     Key KeyHandler::CreateKey() {
         try {
-            auto key_value = hardware_->GenerateKey(Key::kKeyValueLen);
+            auto key_value = hardware_->GenerateKey();
             Key key(key_value);
             auto key_encrypted = key;
             key_encrypted.key_value_ = hardware_->KeyEncryption(key_value);

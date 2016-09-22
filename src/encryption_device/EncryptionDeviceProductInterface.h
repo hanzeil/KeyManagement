@@ -28,7 +28,7 @@ namespace encryption_device {
 
         //随机产生一个unsigned char* 类型的密钥，并返回
         //如果产生失败，返回NULL
-        virtual KeyValueType GenerateKey(std::size_t length)=0;
+        virtual KeyValueType GenerateKey()=0;
 
         //给定一个密钥key和密钥长度length, 用主密钥将密钥加密
         //如果加密失败，返回NULL
@@ -40,6 +40,9 @@ namespace encryption_device {
         virtual KeyValueType KeyDecryption(
                 KeyValueType &)=0;
 
+        virtual MasterKey GenerateMasterKeyWithKEK()=0;
+
+        virtual void ImportMasterKey(MasterKey master_key_encrypted)=0;
     };
 }
 

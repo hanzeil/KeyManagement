@@ -18,9 +18,52 @@
 #include "tcp/Server.h"
 #include <boost/asio.hpp>
 
+#include "database/DBFactoryInterface.h"
+#include "encryption_device/EncryptionDeviceFactoryInterface.h"
+
+#ifdef MYSQL
+
+#include "database/mysql/MysqlFactory.h"
+
+#endif
+
+#ifdef SJK_1238
+
+#include "encryption_device/sjk1238/SJK1238Factory.h"
+
+#endif
+
+#ifdef SIMULATION
+
+#include "encryption_device/simulation/SimulationFactory.h"
+
+#endif
+
 using namespace std;
 
 #define MAX_BLOCK_LEN 100
+
+void init() {
+
+#ifdef MYSQL
+    auto dbfactory = std::make_shared<database::MysqlFactory>();
+#endif
+    auto db = dbfactory->CreateProduct();
+
+    db->Connect("keymanagement", "keymanagement");
+    db->InitTable();
+#ifdef SJK_1238
+    auto hFactory = std::make_shared<encryption_device::SJK1238Factory>();
+#endif
+
+#ifdef SIMULATION
+    auto hFactory = std::make_shared<encryption_device::SimulationFactory>();
+#endif
+    auto hardware = hFactory->CreateProduct();
+    hardware->OpenDevice();
+    auto master_key_encrypted = hardware->GenerateMasterKeyWithKEK();
+    db->InsertMasterKey(master_key_encrypted);
+}
 
 int main(int argc, char *argv[]) {
     namespace logging = boost::log;

@@ -38,6 +38,9 @@ public:
     //Key_value的长度，对称密钥的默认长度，16个字节
     static const size_t kKeyValueLen = 16;
 
+    //Master Key Value的长度，对称密钥的默认长度，16个字节
+    static const size_t kMasterKeyValueLen = 16;
+
     typedef std::array<unsigned char, Key::kKeyValueLen> KeyValueType;
     typedef std::array<unsigned char, Key::kKeyIdLen> KeyIdType;
 
@@ -83,4 +86,5 @@ private:
 
 typedef std::array<unsigned char, Key::kKeyValueLen> KeyValueType;
 typedef std::array<unsigned char, Key::kKeyIdLen> KeyIdType;
+typedef std::array<unsigned char, Key::kMasterKeyValueLen> MasterKey;
 #endif //KEYMANAGEMENT_DATABASE_KEY_H
