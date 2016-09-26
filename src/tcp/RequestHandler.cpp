@@ -18,7 +18,7 @@
 
 namespace tcp {
     RequestHandler::RequestHandler()
-            : status_(identifity_authentication_1) {
+            : status_(authentication_1) {
     }
 
     void RequestHandler::HandleRequest(const Request &req, Reply &rep) {
@@ -32,8 +32,7 @@ namespace tcp {
                 rep.ErrorContent();
                 status_ = error;
             }
-        }
-        else if (req.method == "FindKeyByID") {
+        } else if (req.method == "FindKeyByID") {
             KeyIdType key_id;
             for (std::size_t i = 0; i < Key::kKeyIdLen; i++) {
                 key_id[i] = req.data[i];
@@ -47,8 +46,10 @@ namespace tcp {
                 rep.ErrorContent();
                 status_ = error;
             }
-        }
-        else if (req.method == "CertAuthority") {
+        } else if (req.method == "Authentication1") {
+
+        } else if (req.method == "Authentication2") {
+
         }
     }
 
@@ -63,6 +64,6 @@ namespace tcp {
     }
 
     void RequestHandler::Reset() {
-        status_ = identifity_authentication_1;
+        status_ = authentication_1;
     }
 }

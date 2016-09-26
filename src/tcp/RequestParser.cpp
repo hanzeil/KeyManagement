@@ -21,26 +21,48 @@ namespace tcp {
         state_ = method_1;
     }
 
-    RequestParser::ResultType RequestParser::Consume(Request &req, char input) {
+    RequestParser::ResultType RequestParser::Consume(Request &req, unsigned char input) {
         switch (state_) {
             case method_1:
-                if (!IsChar(input)) {
-                    return bad;
+                if (input == 'c') {
+                    req.method = "CreateKey";
+                    return good;
                 }
-                else {
-                    if (input == 'c') {
-                        req.method = "CreateKey";
-                        return good;
-                    }
-                    else if (input == 'f') {
-                        state_ = method_2;
-                        req.method = "FindKeyByID";
-                        return indeterminate;
-                    }
-                    return bad;
+                else if (input == 'f') {
+                    state_ = method_2;
+                    req.method = "FindKeyByID";
+                    return indeterminate;
                 }
+                else if (input == 'a') {
+                    state_ = method_2;
+                    req.method = "Authentication";
+                    return indeterminate;
+                }
+                return bad;
             case method_2:
                 state_ = length_1;
+                if (req.method == "Authentication") {
+                    if (input == '1') {
+                        req.method = "Authentication1";
+                        state_ = data_alternate;
+                        return indeterminate;
+                    }
+                    else if (input == '2') {
+                        state_ = data;
+                        req.length = 16;
+                        req.method = "Authentication2";
+                        return indeterminate;
+                    }
+                    else {
+                        return bad;
+                    }
+                }
+                return indeterminate;
+            case data_alternate:
+                req.data_alternate.push_back(input);
+                if (req.data_alternate.size() == 16) {
+                    state_ = length_1;
+                }
                 return indeterminate;
             case length_1:
                 tmp_c_ = input;
@@ -60,9 +82,5 @@ namespace tcp {
                 return bad;
         }
 
-    }
-
-    bool RequestParser::IsChar(int c) {
-        return c >= 0 && c <= 127;
     }
 }

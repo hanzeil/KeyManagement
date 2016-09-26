@@ -22,9 +22,10 @@ void error(std::string msg) {
 }
 
 struct Test {
-    char method[2] = "f";
-    uint16_t length = 16;
-    char data[16] = "0";
+    char method[2] = {'a','1'};
+    char rand[16]="123456789abcdef";
+    uint16_t length = 1600;
+    char data[1600] = "0";
 };
 
 int main(int argc, char *argv[]) {
@@ -57,7 +58,8 @@ int main(int argc, char *argv[]) {
         error("ERROR connecting");
     printf("Please enter the message: ");
     char buffer[256] = {'c'};
-    n = write(sockfd, buffer, strlen(buffer));
+    // n = write(sockfd, buffer, strlen(buffer));
+    n = write(sockfd, &test, sizeof(test));
     if (n < 0)
         error("ERROR writing to socket");
     bzero(buffer, 256);
@@ -68,6 +70,7 @@ int main(int argc, char *argv[]) {
         std::cout << (int) (unsigned char) buffer[i] << " ";
     }
     std::cout << std::endl;
+    /*
     memcpy(test.data, buffer, 16);
     //unsigned char key_id[16] = {215, 230, 235, 72,
     //                            58, 188, 65, 170,
@@ -88,5 +91,6 @@ int main(int argc, char *argv[]) {
         std::cout << (int) (unsigned char) buffer[i] << " ";
     }
     std::cout << std::endl;
+     */
     return 0;
 }

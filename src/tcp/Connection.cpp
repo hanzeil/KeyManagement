@@ -48,13 +48,11 @@ namespace tcp {
                                                 request_, buffer_.data(), buffer_.data() + bytes_transferred);
                                         if (result == RequestParser::good) {
                                             request_handler_.HandleRequest(request_, reply_);
-                                        }
-                                        else {
+                                        } else {
                                             request_handler_.ReplyError(reply_);
                                         }
                                         DoWrite();
-                                    }
-                                    else if (ec != boost::asio::error::operation_aborted) {
+                                    } else if (ec != boost::asio::error::operation_aborted) {
                                         connection_manager_.Stop(shared_from_this());
                                     }
                                 });
@@ -70,8 +68,7 @@ namespace tcp {
                                              socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both,
                                                               ignored_ec);
                                              connection_manager_.Stop(shared_from_this());
-                                         }
-                                         else {
+                                         } else {
                                              DoRead();
                                          }
                                      }

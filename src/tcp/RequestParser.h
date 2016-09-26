@@ -48,24 +48,9 @@ namespace tcp {
             return std::make_tuple(indeterminate, begin);
         };
 
-        template<typename InputIterator>
-        std::tuple<ResultType, InputIterator> ParseIdenAuth1(Request &req,
-                                                             InputIterator begin,
-                                                             InputIterator end) {
-            while (begin <= end) {
-                ResultType result = Consume(req, *begin++);
-                if (result == good || result == bad)
-                    return std::make_tuple(result, begin);
-            }
-            return std::make_tuple(indeterminate, begin);
-        };
-
     private:
         /// Handle the next character of input.
-        ResultType Consume(Request &req, char input);
-
-        /// Check if a byte is an protocol character.
-        static bool IsChar(int c);
+        ResultType Consume(Request &req, unsigned char input);
 
         /// The current state of the parser.
         enum State {
@@ -74,6 +59,7 @@ namespace tcp {
             length_1,
             length_2,
             data,
+            data_alternate,
         } state_;
 
         /// 暂存解析的字符结果

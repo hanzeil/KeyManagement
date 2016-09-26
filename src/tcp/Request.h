@@ -20,6 +20,7 @@ namespace tcp {
         std::string method;
         size_t length;
         std::vector<unsigned char> data;
+        std::vector<unsigned char> data_alternate;
 
         void Reset();
     };

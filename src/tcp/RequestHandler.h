@@ -34,17 +34,13 @@ namespace tcp {
 
         void ReplyError(Reply &rep);
 
-        void HandleIdenAuth1(const Request &req, Reply &rep);
-
-        void HandleIdenAuth2(const Request &req, Reply &rep);
-
         void BindThreadTask(std::shared_ptr<ThreadTask> task);
 
         void Reset();
 
         enum Status {
-            identifity_authentication_1,
-            identifity_authentication_2,
+            authentication_1,
+            authentication_2,
             key_handle,
             error
         } status_;
