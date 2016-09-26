@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <tuple>
+#include "Request.h"
 
 namespace tcp {
 
@@ -37,8 +38,20 @@ namespace tcp {
         /// has been consumed.
         template<typename InputIterator>
         std::tuple<ResultType, InputIterator> Parse(Request &req,
-                                                     InputIterator begin,
-                                                     InputIterator end) {
+                                                    InputIterator begin,
+                                                    InputIterator end) {
+            while (begin <= end) {
+                ResultType result = Consume(req, *begin++);
+                if (result == good || result == bad)
+                    return std::make_tuple(result, begin);
+            }
+            return std::make_tuple(indeterminate, begin);
+        };
+
+        template<typename InputIterator>
+        std::tuple<ResultType, InputIterator> ParseIdenAuth1(Request &req,
+                                                             InputIterator begin,
+                                                             InputIterator end) {
             while (begin <= end) {
                 ResultType result = Consume(req, *begin++);
                 if (result == good || result == bad)

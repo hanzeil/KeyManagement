@@ -14,7 +14,8 @@ set(TCP_SOURCE_FILES
         RequestParser.cpp
         RequestParser.h
         Server.cpp
-        Server.h)
+        Server.h
+        )
 
 find_library(BOOST_SYSTEM boost_system)
 
