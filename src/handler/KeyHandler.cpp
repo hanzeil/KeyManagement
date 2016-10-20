@@ -24,9 +24,8 @@ namespace handler {
         try {
             auto key_value = hardware_->GenerateKey();
             Key key(key_value);
-            auto key_encrypted = key;
-            key_encrypted.key_value_ = hardware_->KeyEncryption(key_value);
-            db_->InsertKey(key_encrypted);
+            key.key_value_enc_ = hardware_->KeyEncryption(key_value);
+            db_->InsertKey(key);
             return key;
         }
         catch (std::runtime_error e) {
@@ -37,7 +36,7 @@ namespace handler {
     Key KeyHandler::FindKeyByID(KeyIdType key_id) {
         try {
             auto key = db_->GetKey(key_id);
-            key.key_value_ = hardware_->KeyDecryption(key.key_value_);
+            key.key_value_ = hardware_->KeyDecryption(key.key_value_enc_);
             return key;
         }
         catch (std::runtime_error e) {

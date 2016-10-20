@@ -38,22 +38,32 @@ public:
     //Key_value的长度，对称密钥的默认长度，16个字节
     static const size_t kKeyValueLen = 16;
 
+    //加密后的密文长度，由于主密钥是128字节RSA，所以密文也是128个字节
+    static const size_t kKeyValueEncLen = 128;
+
     //Master Key Value的长度，对称密钥的默认长度，16个字节
     static const size_t kMasterKeyValueLen = 16;
 
     typedef std::array<unsigned char, Key::kKeyValueLen> KeyValueType;
     typedef std::array<unsigned char, Key::kKeyIdLen> KeyIdType;
+    typedef std::array<unsigned char, Key::kKeyValueEncLen> KeyValueEncType;
 
     Key() = default;
 
-    // 通过指定Key需要的所有属性(unsigned char *)来构造Key
+    // 通过指定Key的明文(unsigned char *)来构造Key
     Key(unsigned char *key_id,
         unsigned char *key_value,
         std::time_t generated_time);
 
-    // 通过指定Key需要的所有属性(std::array)来构造Key
+    // 通过指定Key的明文(std::array)来构造Key
     Key(KeyIdType key_id,
         KeyValueType key_value,
+        std::time_t
+        generated_time);
+
+    // 通过指定Key的密文(std::array)来构造Key
+    Key(KeyIdType key_id,
+        KeyValueEncType key_value_enc,
         std::time_t
         generated_time);
 
@@ -68,6 +78,9 @@ public:
 
     // key_value
     KeyValueType key_value_;
+
+    //
+    KeyValueEncType key_value_enc_;
 
     std::time_t generated_time_ = 0;
 private:
@@ -86,5 +99,5 @@ private:
 
 typedef std::array<unsigned char, Key::kKeyValueLen> KeyValueType;
 typedef std::array<unsigned char, Key::kKeyIdLen> KeyIdType;
-typedef std::array<unsigned char, Key::kMasterKeyValueLen> MasterKey;
+typedef std::array<unsigned char, Key::kKeyValueEncLen> KeyValueEncType;
 #endif //KEYMANAGEMENT_DATABASE_KEY_H

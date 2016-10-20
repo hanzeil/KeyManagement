@@ -21,15 +21,31 @@ void error(std::string msg) {
     std::cout << msg << std::endl;
 }
 
-struct Test {
-    char method[2] = {'a','1'};
-    char rand[16]="123456789abcdef";
+struct DataPack1 {
+    char method[2] = {'a', '1'};
+    char rand[16] = "123456789abcdef";
     uint16_t length = 1600;
     char data[1600] = "0";
 };
 
+struct DataPack2 {
+    char method[2] = {'a', '2'};
+    char rand[16] = "123456789abcdef";
+};
+
+struct Request1 {
+    char method[2] = {'c', 0};
+};
+
+struct Request2 {
+    char method[2] = {'f', 0};
+    uint16_t length = 16;
+    unsigned char key_id[16];
+};
+
 int main(int argc, char *argv[]) {
-    Test test;
+    DataPack1 data_pack1;
+    DataPack2 data_pack2;
     int sockfd, portno;
     ssize_t n;
 
@@ -58,8 +74,9 @@ int main(int argc, char *argv[]) {
         error("ERROR connecting");
     printf("Please enter the message: ");
     char buffer[256] = {'c'};
-    // n = write(sockfd, buffer, strlen(buffer));
-    n = write(sockfd, &test, sizeof(test));
+
+    //Authentation1
+    n = write(sockfd, &data_pack1, sizeof(data_pack1));
     if (n < 0)
         error("ERROR writing to socket");
     bzero(buffer, 256);
@@ -70,17 +87,9 @@ int main(int argc, char *argv[]) {
         std::cout << (int) (unsigned char) buffer[i] << " ";
     }
     std::cout << std::endl;
-    /*
-    memcpy(test.data, buffer, 16);
-    //unsigned char key_id[16] = {215, 230, 235, 72,
-    //                            58, 188, 65, 170,
-    //                            186, 50, 76, 3,
-    //                            251, 224, 46, 152};
-    //for (std::size_t i = 0; i < 16; i++) {
-    //    test.data[i] = key_id[i];
-    //}
-    n = write(sockfd, &test, sizeof(test));
-    std::cout << n << std::endl;
+
+    //Authentation2
+    n = write(sockfd, &data_pack2, sizeof(data_pack2));
     if (n < 0)
         error("ERROR writing to socket");
     bzero(buffer, 256);
@@ -91,6 +100,34 @@ int main(int argc, char *argv[]) {
         std::cout << (int) (unsigned char) buffer[i] << " ";
     }
     std::cout << std::endl;
-     */
+
+    //Request1
+    Request1 request1;
+    n = write(sockfd, &request1, sizeof(request1));
+    if (n < 0)
+        error("ERROR writing to socket");
+    bzero(buffer, 256);
+    n = read(sockfd, buffer, 255);
+    if (n < 0)
+        error("ERROR reading from socket");
+    for (size_t i = 16; i < n; i++) {
+        std::cout << (int) (unsigned char) buffer[i] << " ";
+    }
+    std::cout << std::endl;
+
+    //Request2
+    Request2 request2;
+    memcpy(request2.key_id, buffer, 16);
+    n = write(sockfd, &request2, sizeof(request2));
+    if (n < 0)
+        error("ERROR writing to socket");
+    bzero(buffer, 256);
+    n = read(sockfd, buffer, 255);
+    if (n < 0)
+        error("ERROR reading from socket");
+    for (size_t i = 16; i < n; i++) {
+        std::cout << (int) (unsigned char) buffer[i] << " ";
+    }
+    std::cout << std::endl;
     return 0;
 }

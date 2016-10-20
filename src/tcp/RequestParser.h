@@ -11,6 +11,7 @@
 #define KEYMANAGEMENT_REQUESTPARSER_H
 
 #include <iostream>
+#include "../handler/AuthenticationHandler.h"
 #include <tuple>
 #include "Request.h"
 

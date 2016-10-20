@@ -32,17 +32,13 @@ namespace encryption_device {
 
         //给定一个密钥key和密钥长度length, 用主密钥将密钥加密
         //如果加密失败，返回NULL
-        virtual KeyValueType KeyEncryption(
+        virtual KeyValueEncType KeyEncryption(
                 KeyValueType &)=0;
 
         //给定一个密钥key和密钥长度length, 用主密钥将密钥解密
         //如果解密失败，返回NULL
         virtual KeyValueType KeyDecryption(
-                KeyValueType &)=0;
-
-        virtual MasterKey GenerateMasterKeyWithKEK()=0;
-
-        virtual void ImportMasterKey(MasterKey master_key_encrypted)=0;
+                KeyValueEncType &)=0;
     };
 }
 

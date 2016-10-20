@@ -13,6 +13,7 @@
 #include <string>
 #include "ThreadTask.h"
 #include "../handler/KeyHandler.h"
+#include "../handler/AuthenticationHandler.h"
 
 namespace tcp {
 
@@ -47,6 +48,7 @@ namespace tcp {
 
 
     private:
+        std::shared_ptr<handler::AuthenticationHandler> auth_handler;
         std::shared_ptr<handler::KeyHandler> key_handler_;
     };
 

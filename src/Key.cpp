@@ -26,6 +26,14 @@ Key::Key(KeyIdType key_id,
           generated_time_(generated_time) {
 }
 
+Key::Key(KeyIdType key_id,
+         KeyValueEncType key_value_enc,
+         std::time_t generated_time)
+        : key_id_(std::move(key_id)),
+          key_value_enc_(std::move(key_value_enc)),
+          generated_time_(generated_time) {
+}
+
 Key::Key(unsigned char *key_value)
         : generated_time_(time(nullptr)) {
     key_value_to_array(key_value, key_value_);

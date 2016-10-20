@@ -46,6 +46,22 @@ namespace tcp {
                                         self->Reset();
                                         std::tie(result, std::ignore) = request_parser_.Parse(
                                                 request_, buffer_.data(), buffer_.data() + bytes_transferred);
+                                        if (request_handler_.status_ == RequestHandler::authentication_1) {
+                                            if (request_.method != "Authentication1") {
+                                                result = RequestParser::bad;
+                                            }
+                                        }
+                                        else if (request_handler_.status_ == RequestHandler::authentication_2) {
+                                            if (request_.method != "Authentication2") {
+                                                result = RequestParser::bad;
+                                            }
+                                        }
+                                        else if (request_handler_.status_ == RequestHandler::key_handle) {
+                                            if (request_.method != "CreateKey" &&
+                                                request_.method != "FindKeyByID") {
+                                                result = RequestParser::bad;
+                                            }
+                                        }
                                         if (result == RequestParser::good) {
                                             request_handler_.HandleRequest(request_, reply_);
                                         } else {
@@ -63,12 +79,20 @@ namespace tcp {
         boost::asio::async_write(socket_, reply_.ToBuffers(),
                                  [this, self](boost::system::error_code ec, std::size_t len) {
                                      if (!ec) {
-                                         if (request_handler_.status_ == RequestHandler::error) {
+                                         if (request_handler_.status_ == RequestHandler::error
+                                             //|| request_handler_.status_ == RequestHandler::key_handle) {
+                                                 ) {
                                              boost::system::error_code ignored_ec;
                                              socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both,
                                                               ignored_ec);
                                              connection_manager_.Stop(shared_from_this());
                                          } else {
+                                             if (request_handler_.status_ == RequestHandler::authentication_1) {
+                                                 request_handler_.status_ = RequestHandler::authentication_2;
+                                             }
+                                             else if (request_handler_.status_ == RequestHandler::authentication_2) {
+                                                 request_handler_.status_ = RequestHandler::key_handle;
+                                             }
                                              DoRead();
                                          }
                                      }

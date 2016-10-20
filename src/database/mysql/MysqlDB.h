@@ -74,10 +74,6 @@ namespace database {
         //如果删除成功，返回true
         void DeleteKey(unsigned char *key_id);
 
-        MasterKey GetMasterKey();
-
-        void InsertMasterKey(MasterKey master_key);
-
     private:
         //将time_t格式的时间戳转换为Mysql的DateTime类型的时间格式
         //返回格式为 %Y/%m/%d %H:%M:%S
@@ -100,9 +96,6 @@ namespace database {
 
         //key所在的数据表名称
         std::string key_table_name_ = "tb_key";
-
-        //master key所在的数据表名称
-        std::string master_key_table_name_ = "tb_master_key";
 
     };
 

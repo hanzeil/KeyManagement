@@ -57,7 +57,7 @@ namespace encryption_device {
         //加密结果为unsigned char *,大小与加密前的长度相同，
         //加密后的密钥的空间由该函数产生，需要调用者管理
         //如果加密失败，返回NULL
-        KeyValueType KeyEncryption(
+        KeyValueEncType KeyEncryption(
                 KeyValueType &);
 
         //给定一个密钥key和密钥长度length, 用主密钥将密钥解密并返回
@@ -65,11 +65,7 @@ namespace encryption_device {
         //解密后的密钥的空间由该函数产生，需要调用者管理
         //如果解密失败，返回NULL
         KeyValueType KeyDecryption(
-                KeyValueType &);
-
-        MasterKey GenerateMasterKeyWithKEK();
-
-        void ImportMasterKey(MasterKey master_key_encrypted);
+                KeyValueEncType &);
 
     private:
 
@@ -81,8 +77,10 @@ namespace encryption_device {
         //定义加密算法，可以选择SM1或者SM4两种对称算法
         unsigned int ui_alg_id_ = SGD_SMS4_CBC; //加密算法
 
-        void *master_key_handle_ = nullptr;
+        // RSA密钥长度
+        const unsigned int rsa_len_ = Key::kKeyValueEncLen;
 
+        ECCCipher key_encrypted_ecc;
     };
 }
 

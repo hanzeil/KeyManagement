@@ -28,8 +28,11 @@ namespace tcp {
         /// Convert the reply into buffer.
         boost::asio::const_buffers_1 ToBuffers();
 
-        /// Conver the reply into string
+        /// Conver the Key reply into string
         void ToContent(Key &);
+
+        /// Conver the string reply into string
+        void ToContent(std::string &);
 
         /// Conver the error reply into string
         void ErrorContent();

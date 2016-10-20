@@ -49,7 +49,7 @@ namespace tcp {
                     }
                     else if (input == '2') {
                         state_ = data;
-                        req.length = 16;
+                        req.length = handler::AuthenticationHandler::kRandLen;
                         req.method = "Authentication2";
                         return indeterminate;
                     }
@@ -60,7 +60,7 @@ namespace tcp {
                 return indeterminate;
             case data_alternate:
                 req.data_alternate.push_back(input);
-                if (req.data_alternate.size() == 16) {
+                if (req.data_alternate.size() == handler::AuthenticationHandler::kRandLen) {
                     state_ = length_1;
                 }
                 return indeterminate;

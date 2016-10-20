@@ -86,26 +86,33 @@ namespace encryption_device {
 
 // SJK1238 API
 // SDF_Encrypt()
-    KeyValueType SJK1238::KeyEncryption(
+    KeyValueEncType SJK1238::KeyEncryption(
             KeyValueType &key) {
         unsigned int length = Key::kKeyValueLen;
+        unsigned int length_out;
         unsigned char puc_iv[16] = {0};
         //密钥的unsigned char* 形式
-        unsigned char *key_unc = new unsigned char[length];
+        unsigned char *key_unc = new unsigned char[rsa_len_];
+        unsigned char *key_unc_encrypted = new unsigned char[rsa_len_];
+        std::fill_n(key_unc, rsa_len_, 1);
+        std::fill_n(key_unc_encrypted, rsa_len_, 0);
+        // copy && 取模变换
         for (std::size_t i = 0; i < length; i++) {
             key_unc[i] = key[i];
+            key_unc[i + length] = (unsigned char) (key_unc[i] / 128);
+            key_unc[i] = (unsigned char) (key_unc[i] % 128);
         }
-        unsigned char *key_unc_encrypted = new unsigned char[length];
-        std::fill_n(key_unc_encrypted, length, 0);
-        auto status = SDF_Encrypt(
+
+        auto status = SDF_InternalPrivateKeyOperation_RSA(
                 p_ses_handle_,
-                master_key_handle_,
-                ui_alg_id_,
-                puc_iv,
+                1,
+                SGD_RSA_ENC,
                 key_unc,
-                length,
+                rsa_len_,
                 key_unc_encrypted,
-                &length);  //调用对称加密接口进行加密运算
+                &length_out
+        );
+
         if (status) {
             std::stringstream ss;
             ss << "Hardware: Can't encrypt the key. ";
@@ -113,37 +120,41 @@ namespace encryption_device {
             throw std::runtime_error(ss.str());
         }
         BOOST_LOG_TRIVIAL(info) << "Hardware: Encrypt the key using the master key";
-        KeyValueType key_encrypted;
-        for (std::size_t i = 0; i < length; i++) {
+        KeyValueEncType key_encrypted;
+        for (std::size_t i = 0; i < rsa_len_; i++) {
             key_encrypted[i] = key_unc_encrypted[i];
+            std::cout << (int) key_unc[i] << " ";
         }
-        delete key_unc_encrypted;
+        std::cout << std::endl;
         delete key_unc;
+        delete key_unc_encrypted;
         return key_encrypted;
     }
 
     KeyValueType SJK1238::KeyDecryption(
-            KeyValueType &key_encrypted) {
+            KeyValueEncType &key_encrypted) {
         unsigned int length = Key::kKeyValueLen;
-        unsigned char puc_iv[16] = {0};
+        unsigned int length_out;
         //密钥的unsigned char* 形式
-        unsigned char *key_unc_encrypted = new unsigned char[length];
-        for (std::size_t i = 0; i < length; i++) {
+        unsigned char *key_unc_encrypted = new unsigned char[rsa_len_];
+        unsigned char *key_unc = new unsigned char[rsa_len_];
+        std::fill_n(key_unc, rsa_len_, 0);
+        std::fill_n(key_unc_encrypted, rsa_len_, 0);
+        for (std::size_t i = 0; i < rsa_len_; i++) {
             key_unc_encrypted[i] = key_encrypted[i];
         }
-        unsigned char *key_unc = new unsigned char[length];
-        std::fill_n(key_unc, length, 0);
         BOOST_LOG_TRIVIAL(debug) << "Hardware: Open a session";
-        auto status = SDF_Decrypt(
+
+        auto status = SDF_InternalPublicKeyOperation_RSA(
                 p_ses_handle_,
-                master_key_handle_,
-                ui_alg_id_,
-                puc_iv,
+                1,
+                SGD_RSA_ENC,
                 key_unc_encrypted,
-                length,
+                rsa_len_,
                 key_unc,
-                &length
-        );  //调用对称加密接口进行解密运算
+                &length_out
+        );
+
         if (status) {
             std::stringstream ss;
             ss << "Hardware: Can't decrypt the key. ";
@@ -152,68 +163,14 @@ namespace encryption_device {
         }
         BOOST_LOG_TRIVIAL(info) << "Hardware: Decrypt the key using the master key";
         KeyValueType key;
+        // copy && 取模变换
         for (std::size_t i = 0; i < length; i++) {
             key[i] = key_unc[i];
+            key[i] = (unsigned char) (key_unc[i + length] * 128 + key[i]);
         }
         delete key_unc;
         delete key_unc_encrypted;
         return key;
-    }
-
-    MasterKey SJK1238::GenerateMasterKeyWithKEK() {
-        unsigned int length = Key::kKeyValueLen;
-        unsigned char *master_key_unc = new unsigned char[length];
-        std::fill_n(master_key_unc, length, 0);
-        void *p_key_handle = nullptr;
-        auto status = SDF_GenerateKeyWithKEK
-                (
-                        p_ses_handle_,
-                        length,
-                        SGD_SMS4_ECB,
-                        1,
-                        master_key_unc,
-                        &length,
-                        &p_key_handle
-                );
-        if (status) {
-            std::stringstream ss;
-            ss << "Hardware: Can't generate the master key. ";
-            ss << "Error code: 0x" << std::hex << status;
-            throw std::runtime_error(ss.str());
-        }
-        MasterKey master_key;
-        for (std::size_t i = 0; i < length; i++) {
-            master_key[i] = master_key_unc[i];
-        }
-        delete master_key_unc;
-        return master_key;
-    }
-
-    void SJK1238::ImportMasterKey(MasterKey master_key_encrypted) {
-        unsigned int length = Key::kKeyValueLen;
-        unsigned char *master_key_encrypted_unc = new unsigned char[length];
-        for (std::size_t i = 0; i < length; i++) {
-            master_key_encrypted_unc[i] = master_key_encrypted[i];
-        }
-        auto status = SDF_ImportKeyWithKEK(
-                p_ses_handle_,
-                SGD_SMS4_ECB,
-                1,
-                master_key_encrypted_unc,
-                length,
-                &master_key_handle_
-        );
-        master_key_handle_ = (void *) (
-                (char *) master_key_handle_ + 1
-        );
-        if (status) {
-            std::stringstream ss;
-            ss << "Hardware: Can't import the master key. ";
-            ss << "Error code: 0x" << std::hex << status;
-            throw std::runtime_error(ss.str());
-        }
-        BOOST_LOG_TRIVIAL(info) << "Hardware: Import the master key";
-        delete master_key_encrypted_unc;
     }
 }
 

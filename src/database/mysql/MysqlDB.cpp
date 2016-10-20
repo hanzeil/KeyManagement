@@ -39,7 +39,7 @@ namespace database {
                           + key_table_name_);
             std::string sql = std::string()
                               + "(key_id BINARY(16) PRIMARY KEY,"
-                              + "key_value BINARY(16),"
+                              + "key_value BINARY(128),"
                               + "generated_time INT)";
             stmt->execute("CREATE TABLE "
                           + key_table_name_
@@ -47,12 +47,6 @@ namespace database {
             BOOST_LOG_TRIVIAL(info) << "Database: Create a table named "
                                     << key_table_name_;
 
-            stmt->execute("DROP TABLE IF EXISTS "
-                          + master_key_table_name_);
-            sql = "(key_value BINARY(16) PRIMARY KEY)";
-            stmt->execute("CREATE TABLE "
-                          + master_key_table_name_
-                          + sql);
             delete stmt;
         }
         catch (std::runtime_error e) {
@@ -70,10 +64,10 @@ namespace database {
                                                  + " VALUES (?,?,?)");
             std::string key_id(key.key_id_.cbegin(),
                                key.key_id_.cend());
-            std::string key_value(key.key_value_.cbegin(),
-                                  key.key_value_.cend());
+            std::string key_value_enc(key.key_value_enc_.cbegin(),
+                                  key.key_value_enc_.cend());
             p_stmt->setString(1, key_id);
-            p_stmt->setString(2, key_value);
+            p_stmt->setString(2, key_value_enc);
             // 为了减少计算，暂定直接保存time_t格式的时间戳
             p_stmt->setInt(3, (int) key.generated_time_);
             //p_stmt->setString(3, unixTime2MysqlTime(k.generated_time_));
@@ -98,16 +92,16 @@ namespace database {
             delete p_stmt;
             // 如果有查询结果
             if (res->previous()) {
-                auto key_value_str = res->getString("key_value");
+                auto key_value_enc_str = res->getString("key_value");
                 std::time_t generated_time = res->getInt("generated_time");
                 // 将std::string类型的key_value转为std::array
-                KeyValueType key_value_arr;
-                for (std::size_t i = 0; i < Key::kKeyValueLen; i++) {
-                    key_value_arr[i] = (unsigned char) key_value_str[i];
+                KeyValueEncType key_value_enc_arr;
+                for (std::size_t i = 0; i < Key::kKeyValueEncLen; i++) {
+                    key_value_enc_arr[i] = (unsigned char) key_value_enc_str[i];
                 }
 
                 // new Key
-                Key key(std::move(key_id), std::move(key_value_arr),
+                Key key(std::move(key_id), std::move(key_value_enc_arr),
                         generated_time);
                 BOOST_LOG_TRIVIAL(info) << "Database: Get key from database by key id";
                 delete res;
@@ -138,48 +132,6 @@ namespace database {
                                      + e.what());
         }
         BOOST_LOG_TRIVIAL(info) << "Database: Delete a line from database by key id";
-    }
-
-    MasterKey MysqlDB::GetMasterKey() {
-        try {
-            auto stmt = con_->createStatement();
-            auto res = stmt->executeQuery("SELECT * FROM "
-                                          + this->master_key_table_name_);
-            res->afterLast();
-            if (res->previous()) {
-                auto master_key_str = res->getString("key_value");
-
-                MasterKey master_key_arr;
-                for (std::size_t i = 0; i < Key::kMasterKeyValueLen; i++) {
-                    master_key_arr[i] = (unsigned char) master_key_str[i];
-                }
-                delete res;
-                return master_key_arr;
-            } else {
-                throw std::runtime_error("Database: No Master Key");
-            }
-        }
-        catch (std::runtime_error e) {
-            throw std::runtime_error(std::string("Database: ")
-                                     + e.what());
-        }
-    }
-
-    void MysqlDB::InsertMasterKey(MasterKey master_key) {
-        try {
-            auto p_stmt = con_->prepareStatement("INSERT INTO "
-                                                 + this->master_key_table_name_
-                                                 + " VALUES (?)");
-            std::string master_key_str(master_key.cbegin(),
-                                       master_key.cend());
-            p_stmt->setString(1, master_key_str);
-            p_stmt->execute();
-            delete p_stmt;
-        }
-        catch (std::runtime_error e) {
-            throw std::runtime_error(std::string("Database: ")
-                                     + e.what());
-        }
     }
 
 // 将time_t转换为tm格式，然后用strftime打印在字符串中

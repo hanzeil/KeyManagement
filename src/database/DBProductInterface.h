@@ -48,9 +48,6 @@ namespace database {
         //如果删除成功，返回true
         virtual void DeleteKey(unsigned char *key_id)=0;
 
-        virtual MasterKey GetMasterKey()=0;
-
-        virtual void InsertMasterKey(MasterKey master_key)=0;
     };
 
 }

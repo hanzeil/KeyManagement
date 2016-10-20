@@ -52,17 +52,7 @@ void init() {
 
     db->Connect("keymanagement", "keymanagement");
     db->InitTable();
-#ifdef SJK_1238
-    auto hFactory = std::make_shared<encryption_device::SJK1238Factory>();
-#endif
 
-#ifdef SIMULATION
-    auto hFactory = std::make_shared<encryption_device::SimulationFactory>();
-#endif
-    auto hardware = hFactory->CreateProduct();
-    hardware->OpenDevice();
-    auto master_key_encrypted = hardware->GenerateMasterKeyWithKEK();
-    db->InsertMasterKey(master_key_encrypted);
 }
 
 int main(int argc, char *argv[]) {

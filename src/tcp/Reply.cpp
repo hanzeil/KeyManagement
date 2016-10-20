@@ -24,6 +24,10 @@ namespace tcp {
 
     }
 
+    void Reply::ToContent(std::string &str) {
+        content += str;
+    }
+
     boost::asio::const_buffers_1 Reply::ToBuffers() {
         return boost::asio::buffer(content);
     }

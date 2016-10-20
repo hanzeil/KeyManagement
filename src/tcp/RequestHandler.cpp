@@ -47,19 +47,39 @@ namespace tcp {
                 status_ = error;
             }
         } else if (req.method == "Authentication1") {
-
+            auto status = auth_handler->
+                    HandleAuthentication1(req.data_alternate,
+                                          req.data);
+            if (!status) {
+                BOOST_LOG_TRIVIAL(error) << "TCP:: Bad Certificate";
+                rep.ErrorContent();
+                status_ = error;
+                return;
+            }
+            auto data_pack = auth_handler->GetAuthentication1();
+            rep.ToContent(data_pack);
         } else if (req.method == "Authentication2") {
-
+            auto status = auth_handler->
+                    HandleAuthentication2(req.data);
+            if (!status) {
+                BOOST_LOG_TRIVIAL(error) << "TCP:: Bad Authentication";
+                rep.ErrorContent();
+                status_ = error;
+                return;
+            }
+            auto data_pack = auth_handler->GetAuthentication2();
+            rep.ToContent(data_pack);
         }
     }
 
     void RequestHandler::ReplyError(Reply &rep) {
-        BOOST_LOG_TRIVIAL(error) << "TCP:: Request Error";
+        BOOST_LOG_TRIVIAL(error) << "TCP:: Bad Request";
         rep.ErrorContent();
         status_ = error;
     }
 
     void RequestHandler::BindThreadTask(std::shared_ptr<ThreadTask> task) {
+        auth_handler = std::make_shared<handler::AuthenticationHandler>();
         key_handler_ = std::make_shared<handler::KeyHandler>(task->db_, task->hardware_);
     }
 

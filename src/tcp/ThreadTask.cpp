@@ -41,8 +41,6 @@ namespace tcp {
 
         try {
             hardware_->OpenDevice();
-            auto master_key_encrypted = db_->GetMasterKey();
-            hardware_->ImportMasterKey(master_key_encrypted);
         }
         catch (std::runtime_error e) {
             BOOST_LOG_TRIVIAL(fatal) << e.what();
