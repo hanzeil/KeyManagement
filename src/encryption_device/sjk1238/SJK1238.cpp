@@ -103,7 +103,7 @@ namespace encryption_device {
             key_unc[i] = (unsigned char) (key_unc[i] % 128);
         }
 
-        auto status = SDF_InternalPrivateKeyOperation_RSA(
+        auto status = SDF_InternalPublicKeyOperation_RSA(
                 p_ses_handle_,
                 1,
                 SGD_RSA_ENC,
@@ -145,7 +145,7 @@ namespace encryption_device {
         }
         BOOST_LOG_TRIVIAL(debug) << "Hardware: Open a session";
 
-        auto status = SDF_InternalPublicKeyOperation_RSA(
+        auto status = SDF_InternalPrivateKeyOperation_RSA(
                 p_ses_handle_,
                 1,
                 SGD_RSA_ENC,

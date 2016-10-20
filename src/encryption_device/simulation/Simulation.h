@@ -16,6 +16,8 @@
 #include <boost/log/trivial.hpp>
 #include <random>
 #include <openssl/aes.h>
+#include <openssl/rsa.h>
+#include <openssl/pem.h>
 #include <openssl/err.h>
 
 
@@ -56,28 +58,28 @@ namespace encryption_device {
         //加密结果为unsigned char *,大小与加密前的长度相同，
         //加密后的密钥的空间由该函数产生，需要调用者管理
         //如果加密失败，返回NULL
-        KeyValueType KeyEncryption(KeyValueType &key);
+        KeyValueEncType KeyEncryption(KeyValueType &key);
 
         //给定一个密钥key和密钥长度length, 用主密钥将密钥解密
         //解密结果为unsigned char *,大小与解密前的长度相同，
         //解密后的密钥的空间由该函数产生，需要调用者管理
         //如果解密失败，返回NULL
-        KeyValueType KeyDecryption(KeyValueType &key);
-
-        MasterKey GenerateMasterKeyWithKEK();
-
-        void ImportMasterKey(MasterKey master_key_encrypted);
+        KeyValueType KeyDecryption(KeyValueEncType &key);
 
     private:
-        //调试时暂时用来获取主密钥的函数
-        //主密钥的空间由该函数产生，需要调用者管理
-        unsigned char *GetMasterKey();
+
+        RSA *master_key_pub_ = nullptr;
+
+        RSA *master_key_pri_ = nullptr;
 
         //处理openssl出现的错误
         void HandleErrors();
 
         //模拟设备是否打开
         bool device_status = false;
+
+        // RSA密钥长度
+        const unsigned int rsa_len_ = Key::kKeyValueEncLen;
     };
 
 }
