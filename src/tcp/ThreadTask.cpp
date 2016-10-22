@@ -24,6 +24,7 @@ namespace tcp {
         db_ = dbfactory_->CreateProduct();
         try {
             db_->Connect("keymanagement", "keymanagement");
+            db_->OpenDatabase();
         }
         catch (std::runtime_error e) {
             BOOST_LOG_TRIVIAL(fatal) << e.what();

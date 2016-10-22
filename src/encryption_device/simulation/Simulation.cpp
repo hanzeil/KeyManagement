@@ -20,8 +20,12 @@ namespace encryption_device {
     }
 
     void Simulation::OpenDevice() {
-        auto pub_file = fopen("/home/hanzeil/coding/ClionProjects/KeyManagement/MasterKey.pub", "r");
-        auto pri_file = fopen("/home/hanzeil/coding/ClionProjects/KeyManagement/MasterKey", "r");
+        char master_key_pub_path[256] = PROJECT_DIR;
+        char master_key_pri_path[256] = PROJECT_DIR;
+        strcat(master_key_pub_path, "/src/encryption_device/simulation/MasterKey.pub");
+        strcat(master_key_pri_path, "/src/encryption_device/simulation/MasterKey");
+        auto pub_file = fopen(master_key_pub_path, "r");
+        auto pri_file = fopen(master_key_pri_path, "r");
         master_key_pub_ = PEM_read_RSA_PUBKEY(pub_file, nullptr, nullptr, nullptr);
         master_key_pri_ = PEM_read_RSAPrivateKey(pri_file, nullptr, nullptr, nullptr);
         BOOST_LOG_TRIVIAL(info) << "Hardware: Read the master key";
@@ -96,7 +100,6 @@ namespace encryption_device {
 // AES_cbc_encrypt
     KeyValueType Simulation::KeyDecryption(KeyValueEncType &key_encrypted) {
         std::size_t length = Key::kKeyValueLen;
-        unsigned char puc_iv[AES_BLOCK_SIZE] = {0};
         unsigned char *key_unc = new unsigned char[rsa_len_];
         unsigned char *key_unc_encrypted = new unsigned char[rsa_len_];
         for (std::size_t i = 0; i < rsa_len_; i++) {
@@ -108,8 +111,8 @@ namespace encryption_device {
             throw std::runtime_error(ss.str());
         }
 
-        auto len = RSA_size(master_key_pri_);
         auto status = RSA_private_decrypt(rsa_len_, key_unc_encrypted, key_unc, master_key_pri_, RSA_NO_PADDING);
+
         BOOST_LOG_TRIVIAL(info) << "Hardware: Decrypt the key using the master key";
         KeyValueType key;
         // copy && 取模变换
@@ -120,15 +123,5 @@ namespace encryption_device {
         delete key_unc_encrypted;
         delete key_unc;
         return key;
-    }
-
-    void Simulation::HandleErrors() {
-        unsigned long errCode = ERR_get_error();
-        if (errCode) {
-            std::stringstream ss;
-            char *err = ERR_error_string(errCode, NULL);
-            ss << "Hardware: " << err;
-            throw std::runtime_error(ss.str());
-        }
     }
 }

@@ -29,9 +29,11 @@ namespace database {
         // 连接成功则返回true
         virtual void Connect(std::string username, std::string password)=0;
 
+        virtual void OpenDatabase()=0;
+
         // 新建Key表
         // 如果新建成功则返回true
-        virtual void InitTable()=0;
+        virtual void Init()=0;
 
         //插入一个Key到数据库
         //插入成功则返回true

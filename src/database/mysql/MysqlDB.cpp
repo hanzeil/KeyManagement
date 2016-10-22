@@ -23,8 +23,6 @@ namespace database {
         try {
             con_ = driver_->connect("tcp://127.0.0.1:3306", username, password);
             BOOST_LOG_TRIVIAL(info) << "Database: Connect Mysql";
-            con_->setSchema(db_name_);
-            BOOST_LOG_TRIVIAL(info) << "Database: database selected";
         }
         catch (std::runtime_error e) {
             throw std::runtime_error(std::string("Database: ")
@@ -32,9 +30,24 @@ namespace database {
         }
     }
 
-    void MysqlDB::InitTable() {
+    void MysqlDB::OpenDatabase() {
+        try {
+            con_->setSchema(db_name_);
+            BOOST_LOG_TRIVIAL(info) << "Database: open database " << db_name_;
+        }
+        catch (std::runtime_error e) {
+            throw std::runtime_error(std::string("Database: ")
+                                     + e.what());
+        }
+    }
+
+    void MysqlDB::Init() {
         try {
             auto stmt = con_->createStatement();
+            stmt->execute("DROP DATABASE IF EXISTS "
+                          + db_name_);
+            stmt->execute("CREATE DATABASE " + db_name_);
+            con_->setSchema(db_name_);
             stmt->execute("DROP TABLE IF EXISTS "
                           + key_table_name_);
             std::string sql = std::string()
@@ -65,7 +78,7 @@ namespace database {
             std::string key_id(key.key_id_.cbegin(),
                                key.key_id_.cend());
             std::string key_value_enc(key.key_value_enc_.cbegin(),
-                                  key.key_value_enc_.cend());
+                                      key.key_value_enc_.cend());
             p_stmt->setString(1, key_id);
             p_stmt->setString(2, key_value_enc);
             // 为了减少计算，暂定直接保存time_t格式的时间戳
@@ -106,8 +119,7 @@ namespace database {
                 BOOST_LOG_TRIVIAL(info) << "Database: Get key from database by key id";
                 delete res;
                 return key;
-            }
-            else {
+            } else {
                 throw std::runtime_error("Database: Empty Set");
             }
         } catch (std::runtime_error e) {

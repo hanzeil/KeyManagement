@@ -55,9 +55,11 @@ namespace database {
         // 连接成功则返回true
         void Connect(std::string username, std::string password);
 
+        void OpenDatabase();
+
         // 新建Key表
         // 如果新建成功则返回true
-        void InitTable();
+        void Init();
 
         //插入一个Key到Mysql
         //插入成功则返回true

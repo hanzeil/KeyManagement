@@ -9,6 +9,7 @@
 #ifndef KEYMANAGEMENT_SIMULATION_H
 #define KEYMANAGEMENT_SIMULATION_H
 
+#include "config.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>

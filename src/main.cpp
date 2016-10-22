@@ -51,7 +51,7 @@ void init() {
     auto db = dbfactory->CreateProduct();
 
     db->Connect("keymanagement", "keymanagement");
-    db->InitTable();
+    db->Init();
 
 }
 
@@ -60,7 +60,6 @@ int main(int argc, char *argv[]) {
     logging::core::get()->set_filter(
             logging::trivial::severity >= logging::trivial::info);
     try {
-        init();
         // Check command line arguments.
         if (argc != 4) {
             std::cerr << "Usage: Server <address> <port>\n";
