@@ -68,6 +68,35 @@ namespace database {
         }
     }
 
+    void MysqlDB::CreateUser(std::string user, std::string password) {
+        try {
+            auto stmt = con_->createStatement();
+            std::string sql = std::string()
+                              + "create user '"
+                              + user
+                              + "'@localhost identified by '"
+                              + password
+                              + "'";
+            stmt->execute(sql);
+            stmt->execute("flush privileges");
+            // 赋予权限
+            sql = std::string()
+                  + "grant all privileges on "
+                  + db_name_
+                  + ".* to "
+                  + user
+                  + "@localhost identified by '"
+                  + password
+                  + "'";
+            stmt->execute(sql);
+            delete stmt;
+        }
+        catch (std::runtime_error e) {
+            throw std::runtime_error(std::string("Database: ")
+                                     + e.what());
+        }
+    }
+
 // 将Key中的key_id和key_value转换为std::string
 // 方便执行SQL语句
     void MysqlDB::InsertKey(Key &key) {

@@ -35,6 +35,8 @@ namespace database {
         // 如果新建成功则返回true
         virtual void Init()=0;
 
+        virtual void CreateUser(std::string user, std::string password)=0;
+
         //插入一个Key到数据库
         //插入成功则返回true
         virtual void InsertKey(Key &key)=0;

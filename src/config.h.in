@@ -8,5 +8,5 @@
 #cmakedefine SJK_1238
 #cmakedefine SIMULATION
 
-#define PROJECT_DIR "@CMAKE_CURRENT_SOURCE_DIR@"
+#define PROJECT_DIR "@CMAKE_SOURCE_DIR@"
 #endif //CONFIG_H

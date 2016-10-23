@@ -1,6 +1,8 @@
 
 set(SOURCE_FILES main.cpp)
-add_executable(keymanagement ${SOURCE_FILES})
+add_executable(keymanagement
+        ${SOURCE_FILES}
+        ${CMAKE_SOURCE_DIR}/config/keymanagement.conf)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 #For Boost
@@ -26,3 +28,6 @@ target_link_libraries(keymanagement
 
 install(TARGETS keymanagement
         RUNTIME DESTINATION bin)
+install(FILES ${CMAKE_SOURCE_DIR}/config/keymanagement.conf
+        DESTINATION /etc/
+        COMPONENT config)

@@ -1,5 +1,7 @@
 #include <iostream>
 #include "config.h"
+#include <unistd.h>
+#include <termios.h>
 #include "../database/DBFactoryInterface.h"
 
 #ifdef MYSQL
@@ -8,28 +10,110 @@
 
 #endif
 
+char getch() {
+    /*#include <unistd.h>   //_getch*/
+    /*#include <termios.h>  //_getch*/
+    char buf = 0;
+    struct termios old = {0};
+    fflush(stdout);
+    if (tcgetattr(0, &old) < 0)
+        perror("tcsetattr()");
+    old.c_lflag &= ~ICANON;
+    old.c_lflag &= ~ECHO;
+    old.c_cc[VMIN] = 1;
+    old.c_cc[VTIME] = 0;
+    if (tcsetattr(0, TCSANOW, &old) < 0)
+        perror("tcsetattr ICANON");
+    if (read(0, &buf, 1) < 0)
+        perror("read()");
+    old.c_lflag |= ICANON;
+    old.c_lflag |= ECHO;
+    if (tcsetattr(0, TCSADRAIN, &old) < 0)
+        perror("tcsetattr ~ICANON");
+    printf("*");
+    return buf;
+}
+
 int main() {
 
 #ifdef MYSQL
     auto dbfactory = std::make_shared<database::MysqlFactory>();
 #endif
     auto db = dbfactory->CreateProduct();
-    std::string user = "root";
+    std::string user;
     std::string password;
-    std::cout << "警告：初始化操作将会丢失所有数据" << std::endl;
-    std::cout << "请输入数据库超级用户名：";
-    std::cin >> user;
-    std::cout << "请输入密码：";
-    std::cin >> password;
+    std::cout << "Warning: Initialization will lose all data" << std::endl;
+    char c;
+    std::cout << "Please enter the database superuser name(default root):";
+    while ((c = (char) getchar()) && c != '\n') {
+        user.push_back(c);
+    }
+    if (user.size() == 0) {
+        user = "root";
+    }
+
+    std::cout << "Please enter the password (default empty):";
+    while ((c = getch()) && c != '\n') {
+        password.push_back(c);
+    }
+    std::cout << std::endl;
     try {
         db->Connect(user, password);
     }
     catch (std::runtime_error e) {
-        std::cout << std::endl;
         std::cout << e.what() << std::endl;
         _exit(111);
     }
-    std::cout << "正在创建数据库和数据表：" << std::endl;
-    db->Init();
+    try {
+        std::cout << "Creating database and data tables" << std::endl;
+        db->Init();
+    }
+    catch (std::runtime_error e) {
+        std::cout << e.what() << std::endl;
+        _exit(112);
+    }
+
+    std::cout << "Whether to create a user for this database and data tables?(Y/N):";
+    c = (char) getchar();
+    if (c == 'y' || c == 'Y' || c == '\n') {
+        while (1) {
+            std::string user_new;
+            std::string password_new;
+            std::string password_repeat;
+
+            std::cout << "Please enter a new database user name:";
+            std::cin >> user_new;
+
+            std::cout << "Please enter the password:";
+            while ((c = getch()) && c != '\n') {
+                password_new.push_back(c);
+            }
+            std::cout << std::endl;
+
+            std::cout << "Please confirm the password:";
+            while ((c = getch()) && c != '\n') {
+                password_repeat.push_back(c);
+            }
+            std::cout << std::endl;
+
+            if (password_new != password_repeat) {
+                std::cout << "The new password and confirming password do not match, please re-enter" << std::endl;
+                continue;
+            }
+
+            try {
+                db->CreateUser(user_new, password_new);
+            }
+            catch (std::runtime_error e) {
+                std::cout << e.what() << std::endl;
+                _exit(113);
+            }
+            break;
+        }
+    } else {
+        std::cout << "Initialization is complete" << std::endl;
+        return 0;
+    }
+    std::cout << "Initialization is complete" << std::endl;
     return 0;
 }

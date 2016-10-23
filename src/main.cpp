@@ -7,6 +7,7 @@
 //
 // 本文件是KeyManagement可执行程序的入口函数
 
+#include <cstdlib>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
@@ -57,8 +58,11 @@ void init() {
 
 int main(int argc, char *argv[]) {
     namespace logging = boost::log;
+    std::string user_home(getenv("HOME"));
+    logging::add_file_log(user_home + "/.keymanagement/sample.log");
     logging::core::get()->set_filter(
             logging::trivial::severity >= logging::trivial::info);
+    BOOST_LOG_TRIVIAL(info) << "heheda";
     try {
         // Check command line arguments.
         if (argc != 4) {

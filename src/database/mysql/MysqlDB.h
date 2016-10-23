@@ -61,6 +61,8 @@ namespace database {
         // 如果新建成功则返回true
         void Init();
 
+        void CreateUser(std::string user, std::string password);
+
         //插入一个Key到Mysql
         //插入成功则返回true
         void InsertKey(Key &key);
