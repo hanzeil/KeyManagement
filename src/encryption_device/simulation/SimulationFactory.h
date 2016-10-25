@@ -13,7 +13,7 @@
 
 #include "../EncryptionDeviceFactoryInterface.h"
 #include "Simulation.h"
-#include <boost/log/trivial.hpp>
+#include <glog/logging.h>
 
 namespace encryption_device {
 

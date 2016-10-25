@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.2)
-project(KeyManagement)
+project(keymanagement)
 
 set(CMAKE_CXX_STANDARD 11)
 
 set(PROJECT_SOURCE_DIR src/)
 set(PROJECT_BINARY_DIR bin/)
 
+# 宏参数设置
 # 默认编译选项
 set(SIMULATION ON)
 set(SJK_1238 OFF)
@@ -32,10 +33,9 @@ if (DATABASE MATCHES MYSQL)
             "DATABASE: MYSQL SELECTED" ON)
 endif (DATABASE MATCHES MYSQL)
 
-
 configure_file(
-        "${PROJECT_SOURCE_DIR}/config.h.in"
-        "${PROJECT_BINARY_DIR}/config.h"
+        "${PROJECT_SOURCE_DIR}/global_define.h.in"
+        "${PROJECT_BINARY_DIR}/global_define.h"
 )
 
 add_subdirectory(src bin)

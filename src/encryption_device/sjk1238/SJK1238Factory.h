@@ -14,7 +14,7 @@
 #include "../EncryptionDeviceFactoryInterface.h"
 #include "../EncryptionDeviceProductInterface.h"
 #include "SJK1238.h"
-#include <boost/log/trivial.hpp>
+#include <glog/logging.h>
 
 namespace encryption_device {
 

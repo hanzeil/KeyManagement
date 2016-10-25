@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 #include <boost/asio.hpp>
-#include "../Key.h"
+#include "../global/Key.h"
 
 namespace tcp {
 

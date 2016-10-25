@@ -11,10 +11,10 @@
 #define KEYMANAGEMENT_KEYHANDLER_H
 
 #include <memory>
-#include "../Key.h"
+#include "../global/Key.h"
 #include "../database/DBProductInterface.h"
 #include "../encryption_device/EncryptionDeviceProductInterface.h"
-#include <boost/log/trivial.hpp>
+#include <glog/logging.h>
 
 namespace handler {
 

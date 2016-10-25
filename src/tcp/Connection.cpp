@@ -41,7 +41,6 @@ namespace tcp {
         socket_.async_read_some(boost::asio::buffer(buffer_),
                                 [this, self](boost::system::error_code ec, std::size_t bytes_transferred) {
                                     if (!ec) {
-                                        std::cout << "bytes_transferred: " << bytes_transferred << std::endl;
                                         RequestParser::ResultType result;
                                         self->Reset();
                                         std::tie(result, std::ignore) = request_parser_.Parse(
@@ -50,13 +49,11 @@ namespace tcp {
                                             if (request_.method != "Authentication1") {
                                                 result = RequestParser::bad;
                                             }
-                                        }
-                                        else if (request_handler_.status_ == RequestHandler::authentication_2) {
+                                        } else if (request_handler_.status_ == RequestHandler::authentication_2) {
                                             if (request_.method != "Authentication2") {
                                                 result = RequestParser::bad;
                                             }
-                                        }
-                                        else if (request_handler_.status_ == RequestHandler::key_handle) {
+                                        } else if (request_handler_.status_ == RequestHandler::key_handle) {
                                             if (request_.method != "CreateKey" &&
                                                 request_.method != "FindKeyByID") {
                                                 result = RequestParser::bad;
@@ -89,8 +86,7 @@ namespace tcp {
                                          } else {
                                              if (request_handler_.status_ == RequestHandler::authentication_1) {
                                                  request_handler_.status_ = RequestHandler::authentication_2;
-                                             }
-                                             else if (request_handler_.status_ == RequestHandler::authentication_2) {
+                                             } else if (request_handler_.status_ == RequestHandler::authentication_2) {
                                                  request_handler_.status_ = RequestHandler::key_handle;
                                              }
                                              DoRead();

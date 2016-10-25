@@ -13,7 +13,7 @@
 
 #include <iostream>
 #include <array>
-#include "../Key.h"
+#include "../global/Key.h"
 
 namespace encryption_device {
 

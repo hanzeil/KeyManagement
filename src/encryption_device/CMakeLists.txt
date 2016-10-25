@@ -41,3 +41,6 @@ if (SIMULATION)
             ${CRYPTO})
 endif (SIMULATION)
 
+target_link_libraries(encryption_device
+        global
+        )

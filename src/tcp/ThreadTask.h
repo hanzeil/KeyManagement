@@ -10,8 +10,10 @@
 #ifndef KEYMANAGEMENT_MYIOSERVICE_H
 #define KEYMANAGEMENT_MYIOSERVICE_H
 
-#include "config.h"
+#include "global_define.h"
+#include <glog/logging.h>
 #include <boost/asio.hpp>
+#include <boost/thread.hpp>
 #include <cstdlib>
 #include "../database/DBFactoryInterface.h"
 #include "../encryption_device/EncryptionDeviceFactoryInterface.h"

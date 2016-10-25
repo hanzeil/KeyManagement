@@ -16,7 +16,7 @@ namespace encryption_device {
         device_status = false;
         delete master_key_pri_;
         delete master_key_pub_;
-        BOOST_LOG_TRIVIAL(info) << "Hardware: Close the device";
+        LOG(INFO) << "Hardware:: Close the device";
     }
 
     void Simulation::OpenDevice() {
@@ -28,13 +28,15 @@ namespace encryption_device {
         auto pri_file = fopen(master_key_pri_path, "r");
         master_key_pub_ = PEM_read_RSA_PUBKEY(pub_file, nullptr, nullptr, nullptr);
         master_key_pri_ = PEM_read_RSAPrivateKey(pri_file, nullptr, nullptr, nullptr);
-        BOOST_LOG_TRIVIAL(info) << "Hardware: Read the master key";
+        LOG(INFO) << "Hardware:: Read the master key";
         if (master_key_pub_ != nullptr && master_key_pri_ != nullptr) {
             device_status = true;
-            BOOST_LOG_TRIVIAL(info) << "Hardware: Open device";
+            LOG(INFO) << "Hardware:: Open device";
         } else {
             device_status = false;
-            BOOST_LOG_TRIVIAL(error) << "Hardware: Open device failed";
+            std::stringstream ss;
+            ss << "Hardware:: Can't open the device. ";
+            throw std::runtime_error(ss.str());
         }
         delete pub_file;
         delete pri_file;
@@ -47,7 +49,7 @@ namespace encryption_device {
         std::size_t length = Key::kKeyValueLen;
         if (!device_status) {
             std::stringstream ss;
-            ss << "Hardware: Device is not opened yet";
+            ss << "Hardware:: Device is not opened yet";
             throw std::runtime_error(ss.str());
         }
         unsigned char *key_unc = new unsigned char[length];
@@ -55,7 +57,7 @@ namespace encryption_device {
         for (auto i = 0; i < length; i++) {
             key_unc[i] = (unsigned char) rd();
         }
-        BOOST_LOG_TRIVIAL(info) << "Hardware: Generate a random key";
+        LOG(INFO) << "Hardware:: Generate a random key";
         KeyValueType key;
         for (std::size_t i = 0; i < Key::kKeyValueLen; i++) {
             key[i] = key_unc[i];
@@ -79,13 +81,13 @@ namespace encryption_device {
         }
         if (!device_status) {
             std::stringstream ss;
-            ss << "Hardware: Device is not opened yet";
+            ss << "Hardware:: Device is not opened yet";
             throw std::runtime_error(ss.str());
         }
 
         auto status = RSA_public_encrypt(rsa_len_, key_unc, key_unc_encrypted, master_key_pub_, RSA_NO_PADDING);
 
-        BOOST_LOG_TRIVIAL(info) << "Hardware: Encrypt the key using the master key";
+        LOG(INFO) << "Hardware:: Encrypt the key using the master key";
         KeyValueEncType key_encrypted;
         for (std::size_t i = 0; i < rsa_len_; i++) {
             key_encrypted[i] = key_unc_encrypted[i];
@@ -107,13 +109,13 @@ namespace encryption_device {
         }
         if (!device_status) {
             std::stringstream ss;
-            ss << "Hardware: Device is not opened yet.";
+            ss << "Hardware:: Device is not opened yet.";
             throw std::runtime_error(ss.str());
         }
 
         auto status = RSA_private_decrypt(rsa_len_, key_unc_encrypted, key_unc, master_key_pri_, RSA_NO_PADDING);
 
-        BOOST_LOG_TRIVIAL(info) << "Hardware: Decrypt the key using the master key";
+        LOG(INFO) << "Hardware:: Decrypt the key using the master key";
         KeyValueType key;
         // copy && 取模变换
         for (std::size_t i = 0; i < length; i++) {

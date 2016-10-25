@@ -24,5 +24,8 @@ find_library(BOOST_THREAD boost_thread)
 add_library(tcp STATIC ${TCP_SOURCE_FILES})
 
 target_link_libraries(tcp
+        global
+        handler
         ${BOOST_SYSTEM}
-        ${BOOST_THREAD})
+        ${BOOST_THREAD}
+        )

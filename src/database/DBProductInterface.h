@@ -12,7 +12,7 @@
 #define KEYMANAGEMENT_DB_PRODUCT_INTERFACE_H
 
 #include <string>
-#include "../Key.h"
+#include "../global/Key.h"
 
 namespace database {
 

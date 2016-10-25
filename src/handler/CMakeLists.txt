@@ -6,3 +6,9 @@ set(HANDLER_SOURCE_FILES
         )
 
 add_library(handler STATIC ${HANDLER_SOURCE_FILES})
+
+target_link_libraries(handler
+        database
+        encryption_device
+        global
+        )

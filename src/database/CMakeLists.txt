@@ -3,8 +3,7 @@ set(DATABASE_SOURCE_FILES
         DBFactoryInterface.cpp
         DBProductInterface.h
         DBProductInterface.cpp
-        ../Key.h
-        ../Key.cpp)
+        )
 if (MYSQL)
     add_subdirectory(mysql)
     set(DATABASE_SOURCE_FILES ${DATABASE_SOURCE_FILES}
@@ -32,6 +31,9 @@ find_library(UUID uuid)
 # Pthread
 find_library(PTHREAD pthread)
 
+
 target_link_libraries(database
         ${UUID}
-        ${PTHREAD})
+        ${PTHREAD}
+        global
+        )

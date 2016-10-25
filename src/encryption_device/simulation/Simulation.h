@@ -9,12 +9,12 @@
 #ifndef KEYMANAGEMENT_SIMULATION_H
 #define KEYMANAGEMENT_SIMULATION_H
 
-#include "config.h"
+#include "global_define.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>
 #include "../EncryptionDeviceProductInterface.h"
-#include <boost/log/trivial.hpp>
+#include <glog/logging.h>
 #include <random>
 #include <openssl/aes.h>
 #include <openssl/rsa.h>

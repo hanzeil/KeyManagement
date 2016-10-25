@@ -18,17 +18,17 @@ namespace tcp {
 
     void ThreadTask::Run() {
 
-#ifdef MYSQL
-        dbfactory_ = std::make_shared<database::MysqlFactory>();
-#endif
-        db_ = dbfactory_->CreateProduct();
         try {
+#ifdef MYSQL
+            dbfactory_ = std::make_shared<database::MysqlFactory>();
+#endif
+            db_ = dbfactory_->CreateProduct();
             db_->Connect("keymanagement", "keymanagement");
+            LOG(INFO) << "Database:: Connect Mysql";
             db_->OpenDatabase();
         }
         catch (std::runtime_error e) {
-            BOOST_LOG_TRIVIAL(fatal) << e.what();
-            _exit(111);
+            LOG(FATAL) << e.what();
         }
 
 #ifdef SJK_1238
@@ -44,8 +44,7 @@ namespace tcp {
             hardware_->OpenDevice();
         }
         catch (std::runtime_error e) {
-            BOOST_LOG_TRIVIAL(fatal) << e.what();
-            _exit(5);
+            LOG(FATAL) << e.what();
         }
 
 

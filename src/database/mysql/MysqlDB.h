@@ -11,6 +11,7 @@
 #ifndef KEYMANAGEMENT_MYSQL_DB_H
 #define KEYMANAGEMENT_MYSQL_DB_H
 
+#include "../../global/Key.h"
 #include "../DBProductInterface.h"
 #include <mysql_connection.h>
 #include <mysql_driver.h>
@@ -20,7 +21,7 @@
 #include <cppconn/exception.h>
 #include <cppconn/driver.h>
 #include <stdexcept>
-#include <boost/log/trivial.hpp>
+#include <glog/logging.h>
 #include <string>
 #include <array>
 #include <cstring>

@@ -13,7 +13,7 @@
 
 #include "../EncryptionDeviceFactoryInterface.h"
 #include <swsds.h>
-#include <boost/log/trivial.hpp>
+#include <glog/logging.h>
 #include <algorithm>
 #include <fstream>
 #include <sstream>

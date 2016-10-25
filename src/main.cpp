@@ -11,69 +11,49 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/log/core.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/exceptions.hpp>
-#include <boost/log/utility/setup/file.hpp>
 #include <iostream>
+#include <experimental/filesystem>
+#include "global/Logger.h"
+#include "Config.h"
 #include "tcp/Server.h"
-#include <boost/asio.hpp>
-
-#include "database/DBFactoryInterface.h"
-#include "encryption_device/EncryptionDeviceFactoryInterface.h"
-
-#ifdef MYSQL
-
-#include "database/mysql/MysqlFactory.h"
-
-#endif
-
-#ifdef SJK_1238
-
-#include "encryption_device/sjk1238/SJK1238Factory.h"
-
-#endif
-
-#ifdef SIMULATION
-
-#include "encryption_device/simulation/SimulationFactory.h"
-
-#endif
 
 using namespace std;
 
+namespace fs = std::experimental::filesystem;
+
 #define MAX_BLOCK_LEN 100
 
-void init() {
+int main() {
 
-#ifdef MYSQL
-    auto dbfactory = std::make_shared<database::MysqlFactory>();
-#endif
-    auto db = dbfactory->CreateProduct();
+    std::string user_config_path = std::string(getenv("HOME")) + "/." + PROJECT_NAME + "/";
+    std::string global_config_path = std::string("/etc/") + PROJECT_NAME + "/";
+    logger::Logger::GetInstance(user_config_path).Init();
 
-    db->Connect("keymanagement", "keymanagement");
-    db->Init();
+    std::string config_path;
+    fs::path fs_user_config_path, fs_global_config_path;
+    fs_user_config_path.append(user_config_path + "keymanagement.conf");
+    fs_global_config_path.append(global_config_path + "keymanagement.conf");
+    if (fs::exists(fs_user_config_path)) {
+        config_path = user_config_path + "keymanagement.conf";
+    } else if (fs::exists(fs_global_config_path)) {
+        config_path = global_config_path + "keymanagement.conf";
+    } else {
+        LOG(FATAL) << "NO CONFIG FILE";
+    }
 
-}
+    Config config_settings(config_path);
 
-int main(int argc, char *argv[]) {
-    namespace logging = boost::log;
-    std::string user_home(getenv("HOME"));
-    logging::add_file_log(user_home + "/.keymanagement/sample.log");
-    logging::core::get()->set_filter(
-            logging::trivial::severity >= logging::trivial::info);
-    BOOST_LOG_TRIVIAL(info) << "heheda";
+    std::string port = config_settings.Read<std::string>("PORT");
+    std::string address = config_settings.Read<std::string>("ADDRESS");
+    std::string threads = config_settings.Read<std::string>("THREADS");
+    std::size_t log_rotation_size = config_settings.Read<std::size_t>("LOG_ROTATION_SIZE");
+    std::size_t log_max_files = config_settings.Read<std::size_t>("LOG_MAX_FILES");
+    logger::Logger::GetInstance(user_config_path).SetLogRotationSize(log_rotation_size);
+    logger::Logger::GetInstance(user_config_path).SetLogMaxFiles(log_max_files);
     try {
-        // Check command line arguments.
-        if (argc != 4) {
-            std::cerr << "Usage: Server <address> <port>\n";
-            std::cerr << "    receiver 0.0.0.0 80 1\n";
-            return 1;
-        }
-
         // Initialise the server.
-        size_t num_threads = boost::lexical_cast<std::size_t>(argv[3]);
-        tcp::Server s(argv[1], argv[2], num_threads);
+        size_t num_threads = boost::lexical_cast<std::size_t>(threads);
+        tcp::Server s(address, port, num_threads);
 
         // Run the server until stopped.
         s.Run();

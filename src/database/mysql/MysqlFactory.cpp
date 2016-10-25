@@ -16,7 +16,7 @@ namespace database {
     }
 
     std::shared_ptr<DBProductInterface> MysqlFactory::CreateProduct() {
-        BOOST_LOG_TRIVIAL(info) << "Database: Mysql selected";
+        LOG(INFO) << "Database:: sjk1238 card selected";
         return std::make_shared<MysqlDB>();
     }
 }

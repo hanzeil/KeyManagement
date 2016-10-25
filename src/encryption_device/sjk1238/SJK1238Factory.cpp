@@ -18,7 +18,7 @@ namespace encryption_device {
     }
 
     std::shared_ptr<EncryptionDeviceProductInterface> SJK1238Factory::CreateProduct() {
-        BOOST_LOG_TRIVIAL(info) << "Hardware: sjk1238 card selected";
+        LOG(INFO) << "Hardware:: sjk1238 card selected";
         return std::make_shared<SJK1238>();
     }
 }

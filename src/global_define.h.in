@@ -9,4 +9,7 @@
 #cmakedefine SIMULATION
 
 #define PROJECT_DIR "@CMAKE_SOURCE_DIR@"
+
+#define PROJECT_NAME "@PROJECT_NAME@"
+
 #endif //CONFIG_H

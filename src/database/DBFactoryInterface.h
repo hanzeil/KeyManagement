@@ -14,7 +14,6 @@
 #include <string>
 #include "DBProductInterface.h"
 #include "mysql/MysqlDB.h"
-#include <boost/log/trivial.hpp>
 
 namespace database {
 

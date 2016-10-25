@@ -11,6 +11,7 @@
 #define KEYMANAGEMENT_REQUESTHANDLER_H
 
 #include <string>
+#include <glog/logging.h>
 #include "ThreadTask.h"
 #include "../handler/KeyHandler.h"
 #include "../handler/AuthenticationHandler.h"

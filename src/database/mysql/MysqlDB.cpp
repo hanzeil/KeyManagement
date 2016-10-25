@@ -14,7 +14,7 @@ namespace database {
 
     MysqlDB::~MysqlDB() {
         delete con_;
-        BOOST_LOG_TRIVIAL(info) << "Database: Mysql closed";
+        LOG(INFO) << "Database:: Close mysql";
     }
 
 // 连接到Mysql后，使用数据库_db_name_
@@ -22,10 +22,10 @@ namespace database {
         driver_ = sql::mysql::get_mysql_driver_instance();
         try {
             con_ = driver_->connect("tcp://127.0.0.1:3306", username, password);
-            BOOST_LOG_TRIVIAL(info) << "Database: Connect Mysql";
+            LOG(INFO) << "Database:: Connect Mysql";
         }
         catch (std::runtime_error e) {
-            throw std::runtime_error(std::string("Database: ")
+            throw std::runtime_error(std::string("Database:: ")
                                      + e.what());
         }
     }
@@ -33,10 +33,10 @@ namespace database {
     void MysqlDB::OpenDatabase() {
         try {
             con_->setSchema(db_name_);
-            BOOST_LOG_TRIVIAL(info) << "Database: open database " << db_name_;
+            LOG(INFO) << "Database:: Open database " << db_name_;
         }
         catch (std::runtime_error e) {
-            throw std::runtime_error(std::string("Database: ")
+            throw std::runtime_error(std::string("Database:: ")
                                      + e.what());
         }
     }
@@ -57,13 +57,13 @@ namespace database {
             stmt->execute("CREATE TABLE "
                           + key_table_name_
                           + sql);
-            BOOST_LOG_TRIVIAL(info) << "Database: Create a table named "
+            LOG(INFO) << "Database:: Create a table named "
                                     << key_table_name_;
 
             delete stmt;
         }
         catch (std::runtime_error e) {
-            throw std::runtime_error(std::string("Database: ")
+            throw std::runtime_error(std::string("Database:: ")
                                      + e.what());
         }
     }
@@ -92,7 +92,7 @@ namespace database {
             delete stmt;
         }
         catch (std::runtime_error e) {
-            throw std::runtime_error(std::string("Database: ")
+            throw std::runtime_error(std::string("Database:: ")
                                      + e.what());
         }
     }
@@ -117,10 +117,10 @@ namespace database {
             delete p_stmt;
         }
         catch (std::runtime_error e) {
-            throw std::runtime_error(std::string("Database: ")
+            throw std::runtime_error(std::string("Database:: ")
                                      + e.what());
         }
-        BOOST_LOG_TRIVIAL(info) << "Database: Insert key";
+        LOG(INFO) << "Database:: Insert key";
     }
 
     Key MysqlDB::GetKey(KeyIdType key_id) {
@@ -145,14 +145,14 @@ namespace database {
                 // new Key
                 Key key(std::move(key_id), std::move(key_value_enc_arr),
                         generated_time);
-                BOOST_LOG_TRIVIAL(info) << "Database: Get key from database by key id";
+                LOG(INFO) << "Database:: Get key from database by key id";
                 delete res;
                 return key;
             } else {
                 throw std::runtime_error("Database: Empty Set");
             }
         } catch (std::runtime_error e) {
-            throw std::runtime_error(std::string("Database: ")
+            throw std::runtime_error(std::string("Database:: ")
                                      + e.what());
         }
 
@@ -169,10 +169,10 @@ namespace database {
             delete p_stmt;
         }
         catch (std::runtime_error e) {
-            throw std::runtime_error(std::string("Database: ")
+            throw std::runtime_error(std::string("Database:: ")
                                      + e.what());
         }
-        BOOST_LOG_TRIVIAL(info) << "Database: Delete a line from database by key id";
+        LOG(INFO) << "Database:: Delete a line from database by key id";
     }
 
 // 将time_t转换为tm格式，然后用strftime打印在字符串中

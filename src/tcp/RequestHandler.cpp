@@ -10,9 +10,6 @@
 
 
 #include "RequestHandler.h"
-#include <fstream>
-#include <sstream>
-#include <string>
 #include "Reply.h"
 #include "Request.h"
 
@@ -26,9 +23,10 @@ namespace tcp {
             try {
                 auto key = key_handler_->CreateKey();
                 rep.ToContent(key);
+                LOG(INFO) << "TCP:: A client requests to create a key";
             }
             catch (std::runtime_error e) {
-                BOOST_LOG_TRIVIAL(error) << e.what();
+                LOG(ERROR) << e.what();
                 rep.ErrorContent();
                 status_ = error;
             }
@@ -40,9 +38,10 @@ namespace tcp {
             try {
                 auto key = key_handler_->FindKeyByID(key_id);
                 rep.ToContent(key);
+                LOG(INFO) << "TCP:: A client requests to find a key by key id";
             }
             catch (std::runtime_error e) {
-                BOOST_LOG_TRIVIAL(error) << e.what();
+                LOG(ERROR) << e.what();
                 rep.ErrorContent();
                 status_ = error;
             }
@@ -51,29 +50,31 @@ namespace tcp {
                     HandleAuthentication1(req.data_alternate,
                                           req.data);
             if (!status) {
-                BOOST_LOG_TRIVIAL(error) << "TCP:: Bad Certificate";
+                LOG(ERROR) << "TCP:: Bad authentication step 1";
                 rep.ErrorContent();
                 status_ = error;
                 return;
             }
             auto data_pack = auth_handler->GetAuthentication1();
             rep.ToContent(data_pack);
+            LOG(INFO) << "TCP:: A client requests to authenticate for 1st step";
         } else if (req.method == "Authentication2") {
             auto status = auth_handler->
                     HandleAuthentication2(req.data);
             if (!status) {
-                BOOST_LOG_TRIVIAL(error) << "TCP:: Bad Authentication";
+                LOG(ERROR) << "TCP:: Bad authentication step 2";
                 rep.ErrorContent();
                 status_ = error;
                 return;
             }
             auto data_pack = auth_handler->GetAuthentication2();
             rep.ToContent(data_pack);
+            LOG(INFO) << "TCP:: A client requests to authenticate for 2nd step";
         }
     }
 
     void RequestHandler::ReplyError(Reply &rep) {
-        BOOST_LOG_TRIVIAL(error) << "TCP:: Bad Request";
+        LOG(ERROR) << "TCP:: Bad Request";
         rep.ErrorContent();
         status_ = error;
     }

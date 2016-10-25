@@ -1,5 +1,5 @@
 #include <iostream>
-#include "config.h"
+#include "global_define.h"
 #include <unistd.h>
 #include <termios.h>
 #include "../database/DBFactoryInterface.h"

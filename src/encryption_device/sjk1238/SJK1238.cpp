@@ -17,7 +17,7 @@ namespace encryption_device {
             auto status = SDF_CloseSession(p_ses_handle_);  //关闭会话句柄
             if (status) {
                 std::stringstream ss;
-                ss << "Hardware: Can't close the session. ";
+                ss << "Hardware:: Can't close the session. ";
                 ss << "Error code: 0x" << std::hex << status;
                 _exit(status);
             }
@@ -27,11 +27,11 @@ namespace encryption_device {
             auto status = SDF_CloseDevice(p_dev_handle_);  //关闭设备句柄
             if (status) {
                 std::stringstream ss;
-                ss << "Hardware: Can't close the device. ";
+                ss << "Hardware:: Can't close the device. ";
                 ss << "Error code 0x" << std::hex << status;
                 _exit(status);
             }
-            BOOST_LOG_TRIVIAL(info) << "Hardware: Close the device";
+            LOG(INFO) << "Hardware:: Close the device";
         }
     }
 
@@ -39,21 +39,21 @@ namespace encryption_device {
         auto status = SDF_OpenDevice(&p_dev_handle_);  //打开设备句柄
         if (status) {
             std::stringstream ss;
-            ss << "Hardware: Can't open the device. ";
+            ss << "Hardware:: Can't open the device. ";
             ss << "Error code: 0x" << std::hex << status;
             throw std::runtime_error(ss.str());
         }
-        BOOST_LOG_TRIVIAL(info) << "Hardware: Open device";
+        LOG(INFO) << "Hardware:: Open device";
 
         status = SDF_OpenSession(p_dev_handle_,
                                  &p_ses_handle_);  //打开会话句柄
         if (status) {
             std::stringstream ss;
-            ss << "Hardware: Can't open a session. ";
+            ss << "Hardware:: Can't open a session. ";
             ss << "Error code: 0x" << std::hex << status;
             throw std::runtime_error(ss.str());
         }
-        BOOST_LOG_TRIVIAL(info) << "Hardware: Open a session";
+        LOG(INFO) << "Hardware:: Open a session";
     }
 
 // SJK1238 API
@@ -71,11 +71,11 @@ namespace encryption_device {
         );
         if (status) {
             std::stringstream ss;
-            ss << "Hardware: Can't generate a random key. ";
+            ss << "Hardware:: Can't generate a random key. ";
             ss << "Error code: 0x" << std::hex << status;
             throw std::runtime_error(ss.str());
         }
-        BOOST_LOG_TRIVIAL(info) << "Hardware: Generate a random key";
+        LOG(INFO) << "Hardware:: Generate a random key";
         KeyValueType key;
         for (std::size_t i = 0; i < length; i++) {
             key[i] = key_unc[i];
@@ -115,11 +115,11 @@ namespace encryption_device {
 
         if (status) {
             std::stringstream ss;
-            ss << "Hardware: Can't encrypt the key. ";
+            ss << "Hardware:: Can't encrypt the key. ";
             ss << "Error code: 0x" << std::hex << status;
             throw std::runtime_error(ss.str());
         }
-        BOOST_LOG_TRIVIAL(info) << "Hardware: Encrypt the key using the master key";
+        LOG(INFO) << "Hardware:: Encrypt the key using the master key";
         KeyValueEncType key_encrypted;
         for (std::size_t i = 0; i < rsa_len_; i++) {
             key_encrypted[i] = key_unc_encrypted[i];
@@ -157,11 +157,11 @@ namespace encryption_device {
 
         if (status) {
             std::stringstream ss;
-            ss << "Hardware: Can't decrypt the key. ";
+            ss << "Hardware:: Can't decrypt the key. ";
             ss << "Error code: 0x" << std::hex << status;
             throw std::runtime_error(ss.str());
         }
-        BOOST_LOG_TRIVIAL(info) << "Hardware: Decrypt the key using the master key";
+        LOG(INFO) << "Hardware:: Decrypt the key using the master key";
         KeyValueType key;
         // copy && 取模变换
         for (std::size_t i = 0; i < length; i++) {
