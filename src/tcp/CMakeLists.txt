@@ -21,6 +21,8 @@ find_library(BOOST_SYSTEM boost_system)
 
 find_library(BOOST_THREAD boost_thread)
 
+find_library(PTHREAD pthread)
+
 add_library(tcp STATIC ${TCP_SOURCE_FILES})
 
 target_link_libraries(tcp
@@ -28,4 +30,5 @@ target_link_libraries(tcp
         handler
         ${BOOST_SYSTEM}
         ${BOOST_THREAD}
+        ${PTHREAD}
         )

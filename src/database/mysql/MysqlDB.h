@@ -87,11 +87,6 @@ namespace database {
         //将Mysql的DateTime类型的时间格式转换为time_t格式的时间戳
         static std::time_t MysqlTime2UnixTime(std::string mysql_time);
 
-        //mysql_driver
-        //指针不需要释放
-        //默认为NULL
-        sql::mysql::MySQL_Driver *driver_ = nullptr;
-
         //driver_->connector()返回的连接对象
         //默认为NULL
         sql::Connection *con_ = nullptr;

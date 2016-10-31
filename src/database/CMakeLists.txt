@@ -28,12 +28,9 @@ endif (MYSQL)
 
 # UUID
 find_library(UUID uuid)
-# Pthread
-find_library(PTHREAD pthread)
 
 
 target_link_libraries(database
         ${UUID}
-        ${PTHREAD}
         global
         )

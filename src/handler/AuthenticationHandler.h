@@ -22,6 +22,8 @@ namespace handler {
 
         static const size_t kRandLen = 16;
 
+        static const size_t kRandEncLen = 128;
+
         AuthenticationHandler(const AuthenticationHandler &) = delete;
 
         AuthenticationHandler &operator=(const AuthenticationHandler &)= delete;
@@ -53,7 +55,8 @@ namespace handler {
 
         struct DataPack2 {
             unsigned char method[2] = {'a', '2'};
-            std::array<unsigned char, kRandLen> rand_en;
+            uint16_t length = kRandEncLen;
+            std::array<unsigned char, kRandEncLen> rand_en;
         } data_pack2_;
     };
 

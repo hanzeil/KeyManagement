@@ -27,13 +27,11 @@ namespace tcp {
                 if (input == 'c') {
                     req.method = "CreateKey";
                     return good;
-                }
-                else if (input == 'f') {
+                } else if (input == 'f') {
                     state_ = method_2;
                     req.method = "FindKeyByID";
                     return indeterminate;
-                }
-                else if (input == 'a') {
+                } else if (input == 'a') {
                     state_ = method_2;
                     req.method = "Authentication";
                     return indeterminate;
@@ -46,14 +44,11 @@ namespace tcp {
                         req.method = "Authentication1";
                         state_ = data_alternate;
                         return indeterminate;
-                    }
-                    else if (input == '2') {
-                        state_ = data;
-                        req.length = handler::AuthenticationHandler::kRandLen;
+                    } else if (input == '2') {
+                        state_ = length_1;
                         req.method = "Authentication2";
                         return indeterminate;
-                    }
-                    else {
+                    } else {
                         return bad;
                     }
                 }

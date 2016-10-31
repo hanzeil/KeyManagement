@@ -30,7 +30,8 @@ struct DataPack1 {
 
 struct DataPack2 {
     char method[2] = {'a', '2'};
-    char rand[16] = "123456789abcdef";
+    uint16_t length = 128;
+    char rand[128] = "123456789abcdef";
 };
 
 struct Request1 {
@@ -52,7 +53,7 @@ int main(int argc, char *argv[]) {
     struct sockaddr_in serv_addr;
     struct hostent *server;
 
-    if (argc < 3) {
+    if (argc != 3) {
         fprintf(stderr, "Usage: %s <address> <port>\n", argv[0]);
         fprintf(stderr, "Example: keymanagement-test-client 127.0.0.1 6090\n", argv[0]);
         return 1;

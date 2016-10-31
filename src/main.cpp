@@ -14,6 +14,7 @@
 #include <iostream>
 #include <experimental/filesystem>
 #include "global/Logger.h"
+#include "global/LoggerServer.h"
 #include "Config.h"
 #include "tcp/Server.h"
 
@@ -24,10 +25,13 @@ namespace fs = std::experimental::filesystem;
 #define MAX_BLOCK_LEN 100
 
 int main() {
+    // need to do
+    // add config parameter, such as log-scan time, log-server port
+    // config as a module, for others executable program
+    // forbid remote connect for log-server port
 
     std::string user_config_path = std::string(getenv("HOME")) + "/." + PROJECT_NAME + "/";
     std::string global_config_path = std::string("/etc/") + PROJECT_NAME + "/";
-    logger::Logger::GetInstance(user_config_path).Init();
 
     std::string config_path;
     fs::path fs_user_config_path, fs_global_config_path;
@@ -48,10 +52,15 @@ int main() {
     std::string threads = config_settings.Read<std::string>("THREADS");
     std::size_t log_rotation_size = config_settings.Read<std::size_t>("LOG_ROTATION_SIZE");
     std::size_t log_max_files = config_settings.Read<std::size_t>("LOG_MAX_FILES");
-    logger::Logger::GetInstance(user_config_path).SetLogRotationSize(log_rotation_size);
-    logger::Logger::GetInstance(user_config_path).SetLogMaxFiles(log_max_files);
+
     try {
-        // Initialise the server.
+        // Initialise the log server
+        LoggerServer ls(address, "6091", user_config_path);
+        Logger::GetInstance().SetLogRotationSize(log_rotation_size);
+        Logger::GetInstance().SetLogMaxFiles(log_max_files);
+        ls.Run();
+
+        // Initialise the tcp server.
         size_t num_threads = boost::lexical_cast<std::size_t>(threads);
         tcp::Server s(address, port, num_threads);
 

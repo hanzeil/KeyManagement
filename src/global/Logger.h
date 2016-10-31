@@ -16,41 +16,41 @@
 #include <string>
 #include <glog/logging.h>
 #include <experimental/filesystem>
+#include <algorithm>
+#include <vector>
 
 
-namespace logger {
+namespace fs = std::experimental::filesystem;
 
-    namespace fs = std::experimental::filesystem;
+class Logger {
 
-    class Logger {
+public:
 
-    public:
+    static Logger& GetInstance();
 
-        static Logger GetInstance(std::string user_config_path);
+    void SetLogRotationSize(std::size_t log_rotation_size);
 
-        void SetLogRotationSize(std::size_t log_rotation_size);
+    void SetLogMaxFiles(std::size_t log_max_files);
 
-        void SetLogMaxFiles(std::size_t log_max_files);
+    void SetFilter(int level);
 
-        void SetFilter(int level);
+    void Init(std::string user_config_path);
 
-        void Init();
+    void ScanRotation();
 
+private:
 
-    private:
+    Logger() = default;
 
-        Logger(const std::string &user_config_path);
+    Logger(Logger &) = default;
 
-        Logger(Logger &) = default;
+    Logger &operator=(Logger &)= default;
 
-        Logger &operator=(Logger &)= default;
+    std::size_t log_rotation_size_ = 1;
 
-        std::size_t log_rotation_size_ = 1;
+    std::size_t log_max_files_ = 10;
 
-        std::size_t log_max_files_ = 10;
-
-        fs::path log_path_;
-    };
-}
+    fs::path log_path_;
+};
 
 #endif //KEYMANAGEMENT_LOG_H

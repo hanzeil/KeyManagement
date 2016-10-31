@@ -21,7 +21,7 @@ namespace encryption_device {
                 ss << "Error code: 0x" << std::hex << status;
                 _exit(status);
             }
-            BOOST_LOG_TRIVIAL(debug) << "Hardware: Close the session";
+            DLOG(INFO) << "Hardware: Close the session";
         }
         if (p_dev_handle_) {
             auto status = SDF_CloseDevice(p_dev_handle_);  //关闭设备句柄
@@ -62,7 +62,7 @@ namespace encryption_device {
         std::size_t length = Key::kKeyValueLen;
         unsigned char *key_unc = new unsigned char[length];
         std::fill_n(key_unc, length, 0);
-        BOOST_LOG_TRIVIAL(debug) << "Hardware: Open a session";
+        DLOG(INFO) << "Hardware: Open a session";
         // 随机产生指定长度的随机数, 置给key
         auto status = SDF_GenerateRandom(
                 p_ses_handle_,
@@ -123,9 +123,7 @@ namespace encryption_device {
         KeyValueEncType key_encrypted;
         for (std::size_t i = 0; i < rsa_len_; i++) {
             key_encrypted[i] = key_unc_encrypted[i];
-            std::cout << (int) key_unc[i] << " ";
         }
-        std::cout << std::endl;
         delete key_unc;
         delete key_unc_encrypted;
         return key_encrypted;
@@ -143,7 +141,7 @@ namespace encryption_device {
         for (std::size_t i = 0; i < rsa_len_; i++) {
             key_unc_encrypted[i] = key_encrypted[i];
         }
-        BOOST_LOG_TRIVIAL(debug) << "Hardware: Open a session";
+        DLOG(INFO) << "Hardware: Open a session";
 
         auto status = SDF_InternalPrivateKeyOperation_RSA(
                 p_ses_handle_,

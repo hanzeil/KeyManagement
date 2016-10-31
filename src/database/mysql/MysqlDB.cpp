@@ -19,7 +19,7 @@ namespace database {
 
 // 连接到Mysql后，使用数据库_db_name_
     void MysqlDB::Connect(std::string username, std::string password) {
-        driver_ = sql::mysql::get_mysql_driver_instance();
+        static auto driver_ = sql::mysql::get_mysql_driver_instance();
         try {
             con_ = driver_->connect("tcp://127.0.0.1:3306", username, password);
             LOG(INFO) << "Database:: Connect Mysql";
@@ -58,7 +58,7 @@ namespace database {
                           + key_table_name_
                           + sql);
             LOG(INFO) << "Database:: Create a table named "
-                                    << key_table_name_;
+                      << key_table_name_;
 
             delete stmt;
         }

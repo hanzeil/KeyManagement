@@ -1,11 +1,10 @@
 
 set(SOURCE_FILES
         main.cpp
-        global/Key.cpp
-        global/Key.h
         Config.cpp
         Config.h
         )
+
 add_executable(keymanagement
         ${SOURCE_FILES}
         ${CMAKE_SOURCE_DIR}/config/keymanagement.conf)
@@ -23,6 +22,7 @@ add_subdirectory(handler)
 add_subdirectory(database)
 add_subdirectory(keymanagement-test-client)
 add_subdirectory(keymanagement-init)
+add_subdirectory(keymanagement-loglevel)
 
 #For linking libraries.
 target_link_libraries(keymanagement

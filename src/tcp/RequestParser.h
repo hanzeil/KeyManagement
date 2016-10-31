@@ -64,7 +64,7 @@ namespace tcp {
         } state_;
 
         /// 暂存解析的字符结果
-        char tmp_c_;
+        uint8_t tmp_c_;
     };
 }
 #endif //KEYMANAGEMENT_REQUESTPARSER_H
