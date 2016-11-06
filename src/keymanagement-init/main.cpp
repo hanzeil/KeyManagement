@@ -40,10 +40,26 @@ int main() {
     auto dbfactory = std::make_shared<database::MysqlFactory>();
 #endif
     auto db = dbfactory->CreateProduct();
+    std::string url;
+    std::string port;
     std::string user;
     std::string password;
     std::cout << "Warning: Initialization will lose all data" << std::endl;
     char c;
+    std::cout << "Please enter the database url(default 127.0.0.1):";
+    while ((c = (char) getchar()) && c != '\n') {
+        url.push_back(c);
+    }
+    if (url.size() == 0) {
+        url = "127.0.0.1";
+    }
+    std::cout << "Please enter the database port(default 3306):";
+    while ((c = (char) getchar()) && c != '\n') {
+        port.push_back(c);
+    }
+    if (port.size() == 0) {
+        port = "3306";
+    }
     std::cout << "Please enter the database superuser name(default root):";
     while ((c = (char) getchar()) && c != '\n') {
         user.push_back(c);
@@ -58,7 +74,7 @@ int main() {
     }
     std::cout << std::endl;
     try {
-        db->Connect(user, password);
+        db->Connect(url, port, user, password);
     }
     catch (std::runtime_error e) {
         std::cout << e.what() << std::endl;

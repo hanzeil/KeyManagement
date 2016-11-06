@@ -16,7 +16,10 @@ Config::Config(std::string filename, std::string delimiter,
 
     std::ifstream in(filename.c_str());
 
-    if (!in) throw File_not_found(filename);
+    if (!in) {
+        throw std::runtime_error("Config file: " + filename + " is not found");
+    }
+
 
     in >> (*this);
 }
@@ -27,6 +30,29 @@ Config::Config()
     // Construct a Config without a file; empty
 }
 
+
+std::string Config::GetConifgPath(const std::string &config_file_name) {
+    std::string user_config_path;
+    std::string global_config_path;
+
+#ifdef NDEBUG
+    user_config_path = USER_CONFIG_PATH;
+    global_config_path = GLOBAL_CONFIG_PATH;
+#else
+    user_config_path = std::string(PROJECT_DIR) + "/config/";
+    global_config_path = user_config_path;
+#endif
+    std::string user_config_file_path = user_config_path + config_file_name;
+    std::string global_config_file_path = global_config_path + config_file_name;
+
+    if (FileExist(user_config_file_path)) {
+        return user_config_file_path;
+    } else if (FileExist(global_config_file_path)) {
+        return global_config_file_path;
+    } else {
+        throw std::runtime_error("Config: file " + config_file_name + " is not found");
+    }
+}
 
 bool Config::KeyExists(const std::string &key) const {
     // Indicate whether key is found
@@ -138,7 +164,9 @@ void Config::ReadFile(std::string filename, std::string delimiter,
     m_Comment = comment;
     std::ifstream in(filename.c_str());
 
-    if (!in) throw File_not_found(filename);
+    if (!in) {
+        throw std::runtime_error("Config: file " + filename + " is not found");
+    }
 
     in >> (*this);
 }

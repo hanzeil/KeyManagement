@@ -9,12 +9,25 @@
 
 #include "LoggerServer.h"
 
-LoggerServer::LoggerServer(const std::string &address, const std::string &port, std::string user_config_path)
+LoggerServer::LoggerServer(const std::string &address, const std::string &port)
         : io_service_(),
           signals_(io_service_),
           acceptor_(io_service_),
-          deadline_timer_(io_service_),
-          user_config_path_(user_config_path) {
+          deadline_timer_(io_service_) {
+
+    try {
+        Config config_settings;
+
+        config_settings.ReadFile(config_settings.GetConifgPath(CONFIG_FILE_NAME));
+
+        log_rotation_size_ = config_settings.Read<std::size_t>("LOG_ROTATION_SIZE");
+        log_max_files_ = config_settings.Read<std::size_t>("LOG_MAX_FILES");
+        log_scan_duration_ = config_settings.Read<std::size_t>("LOG_SCAN_DURATION");
+    }
+    catch (std::exception &e) {
+        LOG(FATAL) << e.what() << "\n";
+    }
+
     // Register to handle the signals that indicate when the server should exit.
     // It is safe to register for the same signal multiple times in a program,
     // provided all registration for the specified signal is made through Asio.
@@ -40,7 +53,10 @@ LoggerServer::LoggerServer(const std::string &address, const std::string &port, 
 }
 
 void LoggerServer::Run() {
-    Logger::GetInstance().Init(user_config_path_);
+
+    Logger::GetInstance().Init(USER_CONFIG_PATH);
+    Logger::GetInstance().SetLogRotationSize(log_rotation_size_);
+    Logger::GetInstance().SetLogMaxFiles(log_max_files_);
 
     std::shared_ptr<boost::thread> thread(new boost::thread(
             boost::bind(&boost::asio::io_service::run,
@@ -49,7 +65,7 @@ void LoggerServer::Run() {
 }
 
 void LoggerServer::DoDeadlineTimer() {
-    deadline_timer_.expires_from_now(boost::posix_time::hours(24));
+    deadline_timer_.expires_from_now(boost::posix_time::hours(log_scan_duration_));
     deadline_timer_.async_wait(
             [this](boost::system::error_code ec) {
                 Logger::GetInstance().ScanRotation();

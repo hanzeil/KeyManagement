@@ -17,6 +17,7 @@
 #include <cstdlib>
 #include "../database/DBFactoryInterface.h"
 #include "../encryption_device/EncryptionDeviceFactoryInterface.h"
+#include "../config/Config.h"
 
 #ifdef MYSQL
 
@@ -56,6 +57,7 @@ namespace tcp {
         std::shared_ptr<encryption_device::EncrpytionDeviceFactoryInterface> hFactory_;
 
         boost::asio::io_service &io_service_;
+
     };
 
 }

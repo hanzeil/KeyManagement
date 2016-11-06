@@ -27,7 +27,8 @@ namespace database {
 
         //连接数据库
         // 连接成功则返回true
-        virtual void Connect(std::string username, std::string password)=0;
+        virtual void Connect(std::string url, std::string port,
+                             std::string username, std::string password)=0;
 
         virtual void OpenDatabase()=0;
 

@@ -18,6 +18,7 @@
 #include <boost/date_time.hpp>
 #include <string>
 #include "Logger.h"
+#include "../config/Config.h"
 
 class LoggerServer {
     typedef std::shared_ptr<boost::asio::ip::tcp::socket> socket_ptr;
@@ -28,7 +29,7 @@ public:
 
     /// Construct the server to listen on the specified TCP address and port, and
     /// serve up files from the given directory.
-    explicit LoggerServer(const std::string &address, const std::string &port, std::string user_config_path);
+    explicit LoggerServer(const std::string &address, const std::string &port);
 
     /// Run the server's io_service loop.
     void Run();
@@ -55,6 +56,11 @@ private:
 
     boost::asio::deadline_timer deadline_timer_;
 
+    std::size_t log_rotation_size_;
+
+    std::size_t log_scan_duration_;
+
+    std::size_t log_max_files_;
 
     std::string user_config_path_;
 

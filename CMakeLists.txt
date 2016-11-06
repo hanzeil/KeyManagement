@@ -7,6 +7,7 @@ set(PROJECT_SOURCE_DIR src/)
 set(PROJECT_BINARY_DIR bin/)
 
 # 宏参数设置
+set(CONFIG_FILE_NAME keymanagement.conf)
 # 默认编译选项
 set(SIMULATION ON)
 set(SJK_1238 OFF)

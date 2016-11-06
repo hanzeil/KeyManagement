@@ -18,7 +18,6 @@ namespace encryption_device {
 
 
     std::shared_ptr<EncryptionDeviceProductInterface> SimulationFactory::CreateProduct() {
-        LOG(INFO) << "Hardware:: Simulation selected";
         return std::make_shared<Simulation>();
     };
 }

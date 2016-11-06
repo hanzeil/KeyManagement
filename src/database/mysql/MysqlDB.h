@@ -54,7 +54,8 @@ namespace database {
 
         // 连接mysql
         // 连接成功则返回true
-        void Connect(std::string username, std::string password);
+        void Connect(std::string url, std::string port,
+                     std::string username, std::string password);
 
         void OpenDatabase();
 

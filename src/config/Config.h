@@ -10,11 +10,14 @@
 #ifndef KEYMANAGEMENT_CONFIG_H
 #define KEYMANAGEMENT_CONFIG_H
 
+#include "global_define.h"
+#include <stdexcept>
 #include <string>
 #include <map>
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <glog/logging.h>
 
 class Config {
     // Data
@@ -31,6 +34,8 @@ public:
     Config(std::string filename, std::string delimiter = "=", std::string comment = "#");
 
     Config();
+
+    std::string GetConifgPath(const std::string &config_file_name);
 
     template<class T>
     T
@@ -88,22 +93,6 @@ protected:
 
     static void Trim(std::string &inout_s);
 
-
-    // Exception types
-public:
-    struct File_not_found {
-        std::string filename;
-
-        File_not_found(const std::string &filename_ = std::string())
-                : filename(filename_) {}
-    };
-
-    struct Key_not_found {  // thrown only by T read(key) variant of read()
-        std::string key;
-
-        Key_not_found(const std::string &key_ = std::string())
-                : key(key_) {}
-    };
 };
 
 
@@ -161,7 +150,9 @@ template<class T>
 T Config::Read(const std::string key) const {
     // Read the value corresponding to key
     mapci p = m_Contents.find(key);
-    if (p == m_Contents.end()) throw Key_not_found(key);
+    if (p == m_Contents.end()) {
+        throw std::runtime_error("Config: key " + key + " is not found");
+    }
     return string_as_T<T>(p->second);
 }
 

@@ -16,7 +16,6 @@ namespace database {
     }
 
     std::shared_ptr<DBProductInterface> MysqlFactory::CreateProduct() {
-        LOG(INFO) << "Database:: sjk1238 card selected";
         return std::make_shared<MysqlDB>();
     }
 }

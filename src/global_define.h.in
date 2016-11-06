@@ -4,6 +4,8 @@
 //
 // These values are automatically set according to their cmake variables.
 //
+#include <string>
+#include <cstdlib>
 #cmakedefine MYSQL
 #cmakedefine SJK_1238
 #cmakedefine SIMULATION
@@ -11,5 +13,11 @@
 #define PROJECT_DIR "@CMAKE_SOURCE_DIR@"
 
 #define PROJECT_NAME "@PROJECT_NAME@"
+
+#define CONFIG_FILE_NAME "@CONFIG_FILE_NAME@"
+
+#define USER_CONFIG_PATH std::string (std::string(getenv("HOME")) + "/." + PROJECT_NAME + "/")
+
+#define GLOBAL_CONFIG_PATH std::string (std::string("/etc/") + PROJECT_NAME + "/")
 
 #endif //CONFIG_H

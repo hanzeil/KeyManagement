@@ -28,6 +28,7 @@ add_library(tcp STATIC ${TCP_SOURCE_FILES})
 target_link_libraries(tcp
         global
         handler
+        config
         ${BOOST_SYSTEM}
         ${BOOST_THREAD}
         ${PTHREAD}

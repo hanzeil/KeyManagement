@@ -35,11 +35,15 @@ void Logger::Init(std::string user_config_path) {
         fs::create_directories(log_path_);
     }
     FLAGS_log_dir = log_path_;
+    FLAGS_stop_logging_if_full_disk = true;
+    FLAGS_logbufsecs = 1;
+
     LOG(INFO) << "Initialization succeeded";
 }
 
 void Logger::ScanRotation() {
     // 该目录下有多少INFO日志文件
+    LOG(INFO) << "Logger:: Checking if the number of log files is overflowed";
     auto cnt = std::count_if(
             fs::directory_iterator(log_path_),
             fs::directory_iterator(),
@@ -65,6 +69,7 @@ void Logger::ScanRotation() {
         // 只留一半
         for (std::size_t i = 0; i < files.size() - log_max_files_ / 2; i++) {
             fs::remove(files[i].first);
+            LOG(INFO) << "Logger:: Removed log file: " << files[i].first;
         }
 
     }

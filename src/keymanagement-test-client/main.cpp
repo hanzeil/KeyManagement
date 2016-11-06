@@ -1,10 +1,8 @@
+#include "../config/Config.h"
+#include "global_define.h"
+#include <experimental/filesystem>
 #include <sys/types.h>
 #include <netdb.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <fcntl.h>
 #include <unistd.h>
 #include <cstdio>
 #include <cstdlib>
@@ -44,29 +42,49 @@ struct Request2 {
     unsigned char key_id[16];
 };
 
+
+namespace fs = std::experimental::filesystem;
+
 int main(int argc, char *argv[]) {
     DataPack1 data_pack1;
     DataPack2 data_pack2;
-    int sockfd, portno;
     ssize_t n;
 
-    struct sockaddr_in serv_addr;
-    struct hostent *server;
 
-    if (argc != 3) {
-        fprintf(stderr, "Usage: %s <address> <port>\n", argv[0]);
-        fprintf(stderr, "Example: keymanagement-test-client 127.0.0.1 6090\n", argv[0]);
+    //config
+    std::string user_config_path;
+    std::string global_config_path;
+
+#ifdef NDEBUG
+    user_config_path = std::string(getenv("HOME")) + "/." + PROJECT_NAME + "/";
+    global_config_path = std::string("/etc/") + PROJECT_NAME + "/";
+#else
+    user_config_path = std::string(PROJECT_DIR) + "/config/";
+    global_config_path = user_config_path;
+#endif
+
+    std::string config_path;
+    fs::path fs_user_config_path, fs_global_config_path;
+    fs_user_config_path.append(user_config_path + "keymanagement.conf");
+    fs_global_config_path.append(global_config_path + "keymanagement.conf");
+    if (fs::exists(fs_user_config_path)) {
+        config_path = user_config_path + "keymanagement.conf";
+    } else if (fs::exists(fs_global_config_path)) {
+        config_path = global_config_path + "keymanagement.conf";
+    } else {
+        perror("NO CONFIG FILE");
         return 1;
     }
-    portno = atoi(argv[2]);
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+    Config config_settings(config_path);
+
+    uint16_t portno = config_settings.Read<uint16_t>("PORT");
+
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)
         error("ERROR opening socket");
-    server = gethostbyname(argv[1]);
-    if (server == NULL) {
-        fprintf(stderr, "ERROR, no such host\n");
-        exit(0);
-    }
+    auto server = gethostbyname("127.0.0.1");
+    struct sockaddr_in serv_addr;
     bzero((char *) &serv_addr, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     bcopy((char *) server->h_addr,

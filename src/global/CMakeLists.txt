@@ -11,6 +11,7 @@ find_library(GLOG glog)
 find_library(BOOST_DATE_TIME boost_date_time)
 find_library(BOOST_THREAD boost_thread)
 find_library(PTHREAD pthread)
+find_library(STDC++FS stdc++fs)
 
 add_library(global STATIC ${GLOBAL_SOURCE_FILES})
 
@@ -19,4 +20,5 @@ target_link_libraries(global
         ${BOOST_DATE_TIME}
         ${BOOST_THREAD}
         ${PTHREAD}
+        ${STDC++FS}
         )

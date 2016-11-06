@@ -67,6 +67,7 @@ namespace tcp {
         std::size_t thread_pool_size_;
 
         std::map<boost::thread::id, std::shared_ptr<ThreadTask>> thread_tasks_;
+
     };
 
 } // namespace tcp

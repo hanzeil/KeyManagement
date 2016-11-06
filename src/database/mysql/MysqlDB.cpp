@@ -14,15 +14,17 @@ namespace database {
 
     MysqlDB::~MysqlDB() {
         delete con_;
-        LOG(INFO) << "Database:: Close mysql";
+        DLOG(INFO) << "Database:: Close mysql";
     }
 
 // 连接到Mysql后，使用数据库_db_name_
-    void MysqlDB::Connect(std::string username, std::string password) {
+    void MysqlDB::Connect(std::string url, std::string port,
+                          std::string username, std::string password) {
         static auto driver_ = sql::mysql::get_mysql_driver_instance();
         try {
-            con_ = driver_->connect("tcp://127.0.0.1:3306", username, password);
-            LOG(INFO) << "Database:: Connect Mysql";
+            auto host_name = std::string("tcp://") + url + ":" + port;
+            con_ = driver_->connect(host_name, username, password);
+            LOG(INFO) << "Database:: Mysql connected successfully";
         }
         catch (std::runtime_error e) {
             throw std::runtime_error(std::string("Database:: ")
@@ -33,7 +35,7 @@ namespace database {
     void MysqlDB::OpenDatabase() {
         try {
             con_->setSchema(db_name_);
-            LOG(INFO) << "Database:: Open database " << db_name_;
+            DLOG(INFO) << "Database:: Open database " << db_name_;
         }
         catch (std::runtime_error e) {
             throw std::runtime_error(std::string("Database:: ")
@@ -57,8 +59,8 @@ namespace database {
             stmt->execute("CREATE TABLE "
                           + key_table_name_
                           + sql);
-            LOG(INFO) << "Database:: Create a table named "
-                      << key_table_name_;
+            DLOG(INFO) << "Database:: Create a table named "
+                       << key_table_name_;
 
             delete stmt;
         }
@@ -120,7 +122,7 @@ namespace database {
             throw std::runtime_error(std::string("Database:: ")
                                      + e.what());
         }
-        LOG(INFO) << "Database:: Insert key";
+        DLOG(INFO) << "Database:: Insert key";
     }
 
     Key MysqlDB::GetKey(KeyIdType key_id) {
@@ -145,7 +147,7 @@ namespace database {
                 // new Key
                 Key key(std::move(key_id), std::move(key_value_enc_arr),
                         generated_time);
-                LOG(INFO) << "Database:: Get key from database by key id";
+                DLOG(INFO) << "Database:: Get key from database by key id";
                 delete res;
                 return key;
             } else {
@@ -172,7 +174,7 @@ namespace database {
             throw std::runtime_error(std::string("Database:: ")
                                      + e.what());
         }
-        LOG(INFO) << "Database:: Delete a line from database by key id";
+        DLOG(INFO) << "Database:: Delete a line from database by key id";
     }
 
 // 将time_t转换为tm格式，然后用strftime打印在字符串中

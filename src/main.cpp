@@ -12,52 +12,56 @@
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
-#include <experimental/filesystem>
+#include <glog/logging.h>
 #include "global/Logger.h"
 #include "global/LoggerServer.h"
-#include "Config.h"
 #include "tcp/Server.h"
 
 using namespace std;
 
-namespace fs = std::experimental::filesystem;
 
-#define MAX_BLOCK_LEN 100
+char getch() {
+    /*#include <unistd.h>   //_getch*/
+    /*#include <termios.h>  //_getch*/
+    char buf = 0;
+    struct termios old = {0};
+    fflush(stdout);
+    if (tcgetattr(0, &old) < 0)
+        perror("tcsetattr()");
+    old.c_lflag &= ~ICANON;
+    old.c_lflag &= ~ECHO;
+    old.c_cc[VMIN] = 1;
+    old.c_cc[VTIME] = 0;
+    if (tcsetattr(0, TCSANOW, &old) < 0)
+        perror("tcsetattr ICANON");
+    if (read(0, &buf, 1) < 0)
+        perror("read()");
+    old.c_lflag |= ICANON;
+    old.c_lflag |= ECHO;
+    if (tcsetattr(0, TCSADRAIN, &old) < 0)
+        perror("tcsetattr ~ICANON");
+    printf("*");
+    return buf;
+}
 
 int main() {
-    // need to do
-    // add config parameter, such as log-scan time, log-server port
-    // config as a module, for others executable program
-    // forbid remote connect for log-server port
 
-    std::string user_config_path = std::string(getenv("HOME")) + "/." + PROJECT_NAME + "/";
-    std::string global_config_path = std::string("/etc/") + PROJECT_NAME + "/";
-
-    std::string config_path;
-    fs::path fs_user_config_path, fs_global_config_path;
-    fs_user_config_path.append(user_config_path + "keymanagement.conf");
-    fs_global_config_path.append(global_config_path + "keymanagement.conf");
-    if (fs::exists(fs_user_config_path)) {
-        config_path = user_config_path + "keymanagement.conf";
-    } else if (fs::exists(fs_global_config_path)) {
-        config_path = global_config_path + "keymanagement.conf";
-    } else {
-        LOG(FATAL) << "NO CONFIG FILE";
-    }
-
-    Config config_settings(config_path);
-
-    std::string port = config_settings.Read<std::string>("PORT");
-    std::string address = config_settings.Read<std::string>("ADDRESS");
-    std::string threads = config_settings.Read<std::string>("THREADS");
-    std::size_t log_rotation_size = config_settings.Read<std::size_t>("LOG_ROTATION_SIZE");
-    std::size_t log_max_files = config_settings.Read<std::size_t>("LOG_MAX_FILES");
+    // Config 的异常处理
+    // 注释和代码优化
 
     try {
+
+        Config config_settings;
+
+        config_settings.ReadFile(config_settings.GetConifgPath(CONFIG_FILE_NAME));
+
+        std::string port = config_settings.Read<std::string>("PORT");
+        std::string address = config_settings.Read<std::string>("ADDRESS");
+        std::string threads = config_settings.Read<std::string>("THREADS");
+        std::string log_server_port = config_settings.Read<std::string>("LOG_SERVER_PORT");
+
         // Initialise the log server
-        LoggerServer ls(address, "6091", user_config_path);
-        Logger::GetInstance().SetLogRotationSize(log_rotation_size);
-        Logger::GetInstance().SetLogMaxFiles(log_max_files);
+        LoggerServer ls(address, log_server_port);
         ls.Run();
 
         // Initialise the tcp server.
@@ -68,7 +72,7 @@ int main() {
         s.Run();
     }
     catch (std::exception &e) {
-        std::cerr << "exception: " << e.what() << "\n";
+        LOG(FATAL) << e.what() << "\n";
     }
     return 0;
 }

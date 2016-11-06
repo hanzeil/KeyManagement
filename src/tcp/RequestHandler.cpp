@@ -50,7 +50,7 @@ namespace tcp {
                     HandleAuthentication1(req.data_alternate,
                                           req.data);
             if (!status) {
-                LOG(ERROR) << "TCP:: Bad authentication step 1";
+                LOG(WARNING) << "TCP:: Bad authentication step 1";
                 rep.ErrorContent();
                 status_ = error;
                 return;
@@ -62,7 +62,7 @@ namespace tcp {
             auto status = auth_handler->
                     HandleAuthentication2(req.data);
             if (!status) {
-                LOG(ERROR) << "TCP:: Bad authentication step 2";
+                LOG(WARNING) << "TCP:: Bad authentication step 2";
                 rep.ErrorContent();
                 status_ = error;
                 return;
@@ -74,7 +74,7 @@ namespace tcp {
     }
 
     void RequestHandler::ReplyError(Reply &rep) {
-        LOG(ERROR) << "TCP:: Bad Request";
+        LOG(WARNING) << "TCP:: Bad Request";
         rep.ErrorContent();
         status_ = error;
     }

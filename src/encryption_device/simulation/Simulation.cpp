@@ -16,7 +16,7 @@ namespace encryption_device {
         device_status = false;
         delete master_key_pri_;
         delete master_key_pub_;
-        LOG(INFO) << "Hardware:: Close the device";
+        LOG(INFO) << "Hardware:: Device closed successfully";
     }
 
     void Simulation::OpenDevice() {
@@ -28,14 +28,14 @@ namespace encryption_device {
         auto pri_file = fopen(master_key_pri_path, "r");
         master_key_pub_ = PEM_read_RSA_PUBKEY(pub_file, nullptr, nullptr, nullptr);
         master_key_pri_ = PEM_read_RSAPrivateKey(pri_file, nullptr, nullptr, nullptr);
-        LOG(INFO) << "Hardware:: Read the master key";
+        DLOG(INFO) << "Hardware:: Read the master key";
         if (master_key_pub_ != nullptr && master_key_pri_ != nullptr) {
             device_status = true;
-            LOG(INFO) << "Hardware:: Open device";
+            LOG(INFO) << "Hardware:: Device opened successfully";
         } else {
             device_status = false;
             std::stringstream ss;
-            ss << "Hardware:: Can't open the device. ";
+            ss << "Hardware:: Device opened failed";
             throw std::runtime_error(ss.str());
         }
         delete pub_file;
@@ -57,7 +57,7 @@ namespace encryption_device {
         for (auto i = 0; i < length; i++) {
             key_unc[i] = (unsigned char) rd();
         }
-        LOG(INFO) << "Hardware:: Generate a random key";
+        DLOG(INFO) << "Hardware:: Generate a random key";
         KeyValueType key;
         for (std::size_t i = 0; i < Key::kKeyValueLen; i++) {
             key[i] = key_unc[i];
@@ -87,7 +87,7 @@ namespace encryption_device {
 
         auto status = RSA_public_encrypt(rsa_len_, key_unc, key_unc_encrypted, master_key_pub_, RSA_NO_PADDING);
 
-        LOG(INFO) << "Hardware:: Encrypt the key using the master key";
+        DLOG(INFO) << "Hardware:: Encrypt the key using the master key";
         KeyValueEncType key_encrypted;
         for (std::size_t i = 0; i < rsa_len_; i++) {
             key_encrypted[i] = key_unc_encrypted[i];
@@ -115,7 +115,7 @@ namespace encryption_device {
 
         auto status = RSA_private_decrypt(rsa_len_, key_unc_encrypted, key_unc, master_key_pri_, RSA_NO_PADDING);
 
-        LOG(INFO) << "Hardware:: Decrypt the key using the master key";
+        DLOG(INFO) << "Hardware:: Decrypt the key using the master key";
         KeyValueType key;
         // copy && 取模变换
         for (std::size_t i = 0; i < length; i++) {
