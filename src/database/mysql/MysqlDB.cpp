@@ -14,7 +14,7 @@ namespace database {
 
     MysqlDB::~MysqlDB() {
         delete con_;
-        DLOG(INFO) << "Database:: Close mysql";
+        LOG(INFO) << "Database:: Mysql closed successfully";
     }
 
 // 连接到Mysql后，使用数据库_db_name_

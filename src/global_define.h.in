@@ -16,8 +16,12 @@
 
 #define CONFIG_FILE_NAME "@CONFIG_FILE_NAME@"
 
-#define USER_CONFIG_PATH std::string (std::string(getenv("HOME")) + "/." + PROJECT_NAME + "/")
+#define USER_CONFIG_PATH (std::string(getenv("HOME")) + "/." + PROJECT_NAME + "/")
 
-#define GLOBAL_CONFIG_PATH std::string (std::string("/etc/") + PROJECT_NAME + "/")
+#define GLOBAL_CONFIG_PATH (std::string("/etc/") + PROJECT_NAME + "/")
+
+#define DEBUG_LOG_PATH (std::string(PROJECT_DIR)+"/build/logs/")
+
+#define RELEASE_LOG_PATH (std::string(USER_CONFIG_PATH) + "/logs/")
 
 #endif //CONFIG_H

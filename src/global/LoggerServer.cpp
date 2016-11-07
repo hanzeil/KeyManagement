@@ -54,7 +54,12 @@ LoggerServer::LoggerServer(const std::string &address, const std::string &port)
 
 void LoggerServer::Run() {
 
-    Logger::GetInstance().Init(USER_CONFIG_PATH);
+#ifdef NDEBUG
+    Logger::GetInstance().Init(RELEASE_LOG_PATH);
+#else
+    Logger::GetInstance().Init(DEBUG_LOG_PATH);
+#endif
+
     Logger::GetInstance().SetLogRotationSize(log_rotation_size_);
     Logger::GetInstance().SetLogMaxFiles(log_max_files_);
 

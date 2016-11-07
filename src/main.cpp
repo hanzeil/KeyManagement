@@ -19,38 +19,13 @@
 
 using namespace std;
 
-
-char getch() {
-    /*#include <unistd.h>   //_getch*/
-    /*#include <termios.h>  //_getch*/
-    char buf = 0;
-    struct termios old = {0};
-    fflush(stdout);
-    if (tcgetattr(0, &old) < 0)
-        perror("tcsetattr()");
-    old.c_lflag &= ~ICANON;
-    old.c_lflag &= ~ECHO;
-    old.c_cc[VMIN] = 1;
-    old.c_cc[VTIME] = 0;
-    if (tcsetattr(0, TCSANOW, &old) < 0)
-        perror("tcsetattr ICANON");
-    if (read(0, &buf, 1) < 0)
-        perror("read()");
-    old.c_lflag |= ICANON;
-    old.c_lflag |= ECHO;
-    if (tcsetattr(0, TCSADRAIN, &old) < 0)
-        perror("tcsetattr ~ICANON");
-    printf("*");
-    return buf;
-}
-
 int main() {
 
-    // Config 的异常处理
     // 注释和代码优化
 
     try {
 
+        // 从配置文件中读取日志服务端地址、端口 以及 服务端地址、端口 、线程数
         Config config_settings;
 
         config_settings.ReadFile(config_settings.GetConifgPath(CONFIG_FILE_NAME));
@@ -60,11 +35,11 @@ int main() {
         std::string threads = config_settings.Read<std::string>("THREADS");
         std::string log_server_port = config_settings.Read<std::string>("LOG_SERVER_PORT");
 
-        // Initialise the log server
+        // 初始化log server
         LoggerServer ls(address, log_server_port);
         ls.Run();
 
-        // Initialise the tcp server.
+        // 初始化密钥管理server
         size_t num_threads = boost::lexical_cast<std::size_t>(threads);
         tcp::Server s(address, port, num_threads);
 

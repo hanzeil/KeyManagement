@@ -33,6 +33,6 @@ namespace tcp {
     }
 
     void Reply::ErrorContent() {
-        content.push_back(0);
+        content = "0";
     }
 }

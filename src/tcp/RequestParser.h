@@ -30,7 +30,7 @@ namespace tcp {
 
         /// Result of parse.
         enum ResultType {
-            good, bad, indeterminate
+            good, bad, indeterminate, failed
         };
 
         /// Parse some data. The enum return value is good when a complete request has
@@ -41,6 +41,10 @@ namespace tcp {
         std::tuple<ResultType, InputIterator> Parse(Request &req,
                                                     InputIterator begin,
                                                     InputIterator end) {
+            // 认证失败，客户端返回0请求关闭连接
+            if (end - begin == 1 && *begin == 0) {
+                return std::make_tuple(failed, begin);
+            }
             while (begin <= end) {
                 ResultType result = Consume(req, *begin++);
                 if (result == good || result == bad)

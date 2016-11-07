@@ -23,7 +23,6 @@
 
 namespace tcp {
 
-/// The top-level class of the HTTP server.
     class Server {
     public:
         Server(const Server &) = delete;
@@ -66,6 +65,7 @@ namespace tcp {
         /// the number of threads
         std::size_t thread_pool_size_;
 
+        /// 每个线程均要执行的任务指针
         std::map<boost::thread::id, std::shared_ptr<ThreadTask>> thread_tasks_;
 
     };

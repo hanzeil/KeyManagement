@@ -93,7 +93,6 @@ int main(int argc, char *argv[]) {
     serv_addr.sin_port = htons(portno);
     if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
         error("ERROR connecting");
-    printf("Please enter the message: ");
     char buffer[256] = {'c'};
 
     //Authentation1
@@ -121,6 +120,9 @@ int main(int argc, char *argv[]) {
         std::cout << (int) (unsigned char) buffer[i] << " ";
     }
     std::cout << std::endl;
+
+    buffer[0] = 0;
+    n = write(sockfd, buffer, 1);
 
     //Request1
     Request1 request1;

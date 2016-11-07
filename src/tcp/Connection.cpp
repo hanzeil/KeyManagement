@@ -27,6 +27,9 @@ namespace tcp {
     }
 
     void Connection::Stop() {
+        boost::system::error_code ignored_ec;
+        socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both,
+                         ignored_ec);
         socket_.close();
     }
 
@@ -45,6 +48,11 @@ namespace tcp {
                                         self->Reset();
                                         std::tie(result, std::ignore) = request_parser_.Parse(
                                                 request_, buffer_.data(), buffer_.data() + bytes_transferred);
+                                        if (result == RequestParser::failed) {
+                                            LOG(WARNING) << "Authentication Failed";
+                                            connection_manager_.Stop(shared_from_this());
+                                            return;
+                                        }
                                         if (request_handler_.status_ == RequestHandler::authentication_1) {
                                             if (request_.method != "Authentication1") {
                                                 result = RequestParser::bad;
@@ -66,6 +74,7 @@ namespace tcp {
                                         }
                                         DoWrite();
                                     } else if (ec != boost::asio::error::operation_aborted) {
+                                        LOG(ERROR) << "Connection closed unexpectedly";
                                         connection_manager_.Stop(shared_from_this());
                                     }
                                 });
@@ -76,12 +85,8 @@ namespace tcp {
         boost::asio::async_write(socket_, reply_.ToBuffers(),
                                  [this, self](boost::system::error_code ec, std::size_t len) {
                                      if (!ec) {
-                                         if (request_handler_.status_ == RequestHandler::error
-                                             //|| request_handler_.status_ == RequestHandler::key_handle) {
-                                                 ) {
-                                             boost::system::error_code ignored_ec;
-                                             socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both,
-                                                              ignored_ec);
+                                         if (request_handler_.status_ == RequestHandler::error ||
+                                             request_handler_.status_ == RequestHandler::key_handle) {
                                              connection_manager_.Stop(shared_from_this());
                                          } else {
                                              if (request_handler_.status_ == RequestHandler::authentication_1) {
@@ -91,6 +96,9 @@ namespace tcp {
                                              }
                                              DoRead();
                                          }
+                                     } else if (ec != boost::asio::error::operation_aborted) {
+                                         LOG(ERROR) << "Connection closed unexpectedly";
+                                         connection_manager_.Stop(shared_from_this());
                                      }
                                  });
     }

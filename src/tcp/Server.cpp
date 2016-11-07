@@ -42,7 +42,7 @@ namespace tcp {
     }
 
     void Server::Run() {
-        // Create a pool of threads to run all of the io_service
+        // Create a pool of threads to run all of the thread_task
         std::vector<std::shared_ptr<boost::thread> > threads;
         for (std::size_t i = 0; i < thread_pool_size_; i++) {
             auto thread_task = std::make_shared<ThreadTask>(io_service_);

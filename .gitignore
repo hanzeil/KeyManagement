@@ -1,4 +1,3 @@
 build/
 src/encryption_device/simulation/MasterKey
 .idea/
-config/logs/

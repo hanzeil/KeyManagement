@@ -27,7 +27,7 @@ void Logger::SetFilter(int level) {
 }
 
 void Logger::Init(std::string user_config_path) {
-    log_path_.assign(user_config_path + "/logs/");
+    log_path_.assign(user_config_path);
     google::InitGoogleLogging(PROJECT_NAME);
     FLAGS_max_log_size = (google::int32) log_rotation_size_;
     FLAGS_minloglevel = 0;
