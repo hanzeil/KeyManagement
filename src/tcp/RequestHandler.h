@@ -15,6 +15,7 @@
 #include "ThreadTask.h"
 #include "../handler/KeyHandler.h"
 #include "../handler/AuthenticationHandler.h"
+#include "DataPacket.h"
 
 namespace tcp {
 
@@ -49,6 +50,22 @@ namespace tcp {
 
 
     private:
+        template<typename InputIterator>
+        inline DataPacket MakeDataPacket(uint32_t flag,
+                                         InputIterator rand_begin,
+                                         InputIterator rand_end,
+                                         uint32_t len) {
+
+            DataPacket data_packet;
+            data_packet.flag = flag;
+            for (auto i = 0; i < 16 && rand_begin != rand_end; i++) {
+                data_packet.rand[i] = *rand_begin++;
+            }
+            data_packet.len = len;
+            data_packet.point_ignored;
+            return data_packet;
+        }
+
         std::shared_ptr<handler::AuthenticationHandler> auth_handler;
         std::shared_ptr<handler::KeyHandler> key_handler_;
     };

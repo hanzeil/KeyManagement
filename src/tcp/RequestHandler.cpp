@@ -22,7 +22,15 @@ namespace tcp {
         if (req.method == "CreateKey") {
             try {
                 auto key = key_handler_->CreateKey();
-                rep.ToContent(key);
+                auto data_packet =
+                        MakeDataPacket(
+                                0xccccdddd,
+                                key.key_id_.cbegin(),
+                                key.key_id_.cend(),
+                                (uint32_t) key.key_value_.size());
+                rep.ToContent(data_packet);
+                rep.ToContent(key.key_value_.cbegin(),
+                              key.key_value_.cend());
                 LOG(INFO) << "TCP:: A client requests to create a key";
             }
             catch (std::runtime_error e) {
@@ -33,11 +41,19 @@ namespace tcp {
         } else if (req.method == "FindKeyByID") {
             KeyIdType key_id;
             for (std::size_t i = 0; i < Key::kKeyIdLen; i++) {
-                key_id[i] = req.data[i];
+                key_id[i] = req.rand[i];
             }
             try {
                 auto key = key_handler_->FindKeyByID(key_id);
-                rep.ToContent(key);
+                auto data_packet =
+                        MakeDataPacket(
+                                0xccccdddd,
+                                key.key_id_.cbegin(),
+                                key.key_id_.cend(),
+                                (uint32_t) key.key_value_.size());
+                rep.ToContent(data_packet);
+                rep.ToContent(key.key_value_.cbegin(),
+                              key.key_value_.cend());
                 LOG(INFO) << "TCP:: A client requests to find a key by key id";
             }
             catch (std::runtime_error e) {
@@ -47,7 +63,7 @@ namespace tcp {
             }
         } else if (req.method == "Authentication1") {
             auto status = auth_handler->
-                    HandleAuthentication1(req.data_alternate,
+                    HandleAuthentication1(req.rand,
                                           req.data);
             if (!status) {
                 LOG(WARNING) << "TCP:: Bad authentication step 1";
@@ -55,8 +71,20 @@ namespace tcp {
                 status_ = error;
                 return;
             }
-            auto data_pack = auth_handler->GetAuthentication1();
-            rep.ToContent(data_pack);
+            std::vector<unsigned char> rand_server;
+            std::vector<unsigned char> cert_server;
+
+            std::tie(rand_server, cert_server) =
+                    auth_handler->GetAuthentication1();
+            auto data_packet =
+                    MakeDataPacket(
+                            0xaabb0000,
+                            rand_server.cbegin(),
+                            rand_server.cend(),
+                            (uint32_t) cert_server.size());
+            rep.ToContent(data_packet);
+            rep.ToContent(cert_server.cbegin(),
+                          cert_server.cend());
             LOG(INFO) << "TCP:: A client requests to authenticate for 1st step";
         } else if (req.method == "Authentication2") {
             auto status = auth_handler->
@@ -67,8 +95,16 @@ namespace tcp {
                 status_ = error;
                 return;
             }
-            auto data_pack = auth_handler->GetAuthentication2();
-            rep.ToContent(data_pack);
+            auto signed_data = auth_handler->GetAuthentication2();
+            auto data_packet =
+                    MakeDataPacket(
+                            0xaabbccdd,
+                            signed_data.cbegin(), //暂时不用数据,临时填充
+                            signed_data.cbegin() + 16, //暂时不用数据,临时填充
+                            (uint32_t) signed_data.size());
+            rep.ToContent(data_packet);
+            rep.ToContent(signed_data.cbegin(),
+                          signed_data.cend());
             LOG(INFO) << "TCP:: A client requests to authenticate for 2nd step";
         }
     }
@@ -80,7 +116,7 @@ namespace tcp {
     }
 
     void RequestHandler::BindThreadTask(std::shared_ptr<ThreadTask> task) {
-        auth_handler = std::make_shared<handler::AuthenticationHandler>();
+        auth_handler = std::make_shared<handler::AuthenticationHandler>(task->hardware_);
         key_handler_ = std::make_shared<handler::KeyHandler>(task->db_, task->hardware_);
     }
 

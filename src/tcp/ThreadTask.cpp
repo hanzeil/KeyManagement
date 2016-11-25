@@ -41,8 +41,7 @@ namespace tcp {
 
 #ifdef SJK_1238
         hFactory_ = std::make_shared<encryption_device::SJK1238Factory>();
-            LOG(INFO) << "Hardware:: SJK_1238 cryptographic card selected";
-        hardware_log_count++;
+        LOG(INFO) << "Hardware:: SJK_1238 cryptographic card selected";
 #endif
 
 #ifdef SIMULATION

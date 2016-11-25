@@ -11,7 +11,8 @@
 #define KEYMANAGEMENT_REQUESTPARSER_H
 
 #include <iostream>
-#include "../handler/AuthenticationHandler.h"
+#include <cstring>
+#include "DataPacket.h"
 #include <tuple>
 #include "Request.h"
 
@@ -25,12 +26,9 @@ namespace tcp {
         /// Construct ready to parse the request method.
         RequestParser();
 
-        /// Reset to initial parser state.
-        void Reset();
-
         /// Result of parse.
         enum ResultType {
-            good, bad, indeterminate, failed
+            good, bad
         };
 
         /// Parse some data. The enum return value is good when a complete request has
@@ -41,34 +39,49 @@ namespace tcp {
         std::tuple<ResultType, InputIterator> Parse(Request &req,
                                                     InputIterator begin,
                                                     InputIterator end) {
-            // 认证失败，客户端返回0请求关闭连接
-            if (end - begin == 1 && *begin == 0) {
-                return std::make_tuple(failed, begin);
+
+            std::size_t len = end - begin;
+            DataPacket data_packet;
+            if (len < sizeof(data_packet)) {
+                return std::make_tuple(bad, begin);
             }
-            while (begin <= end) {
-                ResultType result = Consume(req, *begin++);
-                if (result == good || result == bad)
-                    return std::make_tuple(result, begin);
+            std::memcpy(&data_packet, begin, sizeof(data_packet));
+            //判断请求包的类型
+            if (data_packet.flag != 0xaaaabbbb) {
+                if (len - sizeof(data_packet) != data_packet.len ||
+                    data_packet.len == 0) {
+                    return std::make_tuple(bad, begin);
+                }
+                for (std::size_t i = sizeof(data_packet); i < len; i++) {
+                    req.data.push_back(begin[i]);
+                }
             }
-            return std::make_tuple(indeterminate, begin);
+            if (data_packet.flag == 0xaa000000) {
+                req.method = "Authentication1";
+            }
+            else if (data_packet.flag == 0xaabbcc00) {
+                req.method = "Authentication2";
+            }
+            else if (data_packet.flag == 0xaaaabbbb) {
+                if (data_packet.len == 1) {
+                    req.method = "CreateKey";
+                }
+                else if (data_packet.len == 2) {
+                    req.method = "FindKeyByID";
+                }
+                else {
+                    return std::make_tuple(bad, begin);
+                }
+            }
+            else {
+                return std::make_tuple(bad, begin);
+            }
+            req.rand = std::vector<unsigned char>
+                    (data_packet.rand, data_packet.rand + 16);
+            req.length = data_packet.len;
+            return std::make_tuple(good, begin);
         };
 
-    private:
-        /// Handle the next character of input.
-        ResultType Consume(Request &req, unsigned char input);
-
-        /// The current state of the parser.
-        enum State {
-            method_1,
-            method_2,
-            length_1,
-            length_2,
-            data,
-            data_alternate,
-        } state_;
-
-        /// 暂存解析的字符结果
-        uint8_t tmp_c_;
     };
 }
 #endif //KEYMANAGEMENT_REQUESTPARSER_H

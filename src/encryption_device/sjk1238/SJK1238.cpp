@@ -9,6 +9,7 @@
 //
 
 #include "SJK1238.h"
+#include "server_authen.cpp"
 
 namespace encryption_device {
 
@@ -169,6 +170,59 @@ namespace encryption_device {
         delete key_unc;
         delete key_unc_encrypted;
         return key;
+    }
+
+    bool
+    SJK1238::VerifySignedData(std::vector<unsigned char> &cert,
+                              std::vector<unsigned char> &data,
+                              std::vector<unsigned char> &signed_data) {
+
+        // 证书的指针形式
+        auto cert_point = new unsigned char[cert.size()];
+        for (std::size_t i = 0; i < cert.size(); i++) {
+            cert_point[i] = cert[i];
+        }
+        // 数据的指针形式
+        auto data_point = new unsigned char[data.size()];
+        for (std::size_t i = 0; i < data.size(); i++) {
+            data_point[i] = data[i];
+        }
+        // 签名数据的skf标准格式
+        ECCSIGNATUREBLOB signed_data_skf;
+        for (std::size_t i = 0; i < signed_data.size(); i++) {
+            ((unsigned char *) &signed_data_skf)[i] =
+                    signed_data[i];
+        }
+        // 证书的公钥 skf标准格式
+        ECCPUBLICKEYBLOB public_key_skf;
+        parce_cer(cert_point, (int) cert.size(),
+                  (unsigned char *) &public_key_skf);
+        // 将签名数据的skf标准格式转换为sdf标准格式
+        ECCSignature signed_data_sdf;
+        for (std::size_t i = 0; i < 32; i++) {
+            signed_data_sdf.r[i] = signed_data_skf.r[i + 32];
+        }
+        for (std::size_t i = 0; i < 32; i++) {
+            signed_data_sdf.s[i] = signed_data_skf.s[i + 32];
+        }
+        // 将证书公钥的skf标准格式转换为sdf标准格式
+        ECCrefPublicKey_st public_key_sdf;
+        for (std::size_t i = 0; i < 32; i++) {
+            public_key_sdf.x[i] = public_key_skf.x[i + 32];
+        }
+        for (std::size_t i = 0; i < 32; i++) {
+            public_key_sdf.y[i] = public_key_skf.y[i + 32];
+        }
+        public_key_sdf.bits = public_key_skf.bit_len;
+        int result = SDF_ExternalVerify_ECC(p_ses_handle_,
+                                            SGD_SM2_3,
+                                            &public_key_sdf,
+                                            data_point,
+                                            data.size(),
+                                            &signed_data_sdf);
+        delete cert_point;
+        delete data_point;
+        return true;
     }
 }
 

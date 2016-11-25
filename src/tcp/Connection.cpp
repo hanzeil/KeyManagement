@@ -34,7 +34,6 @@ namespace tcp {
     }
 
     void Connection::Reset() {
-        request_parser_.Reset();
         request_.Reset();
         reply_.Reset();
     }
@@ -48,11 +47,6 @@ namespace tcp {
                                         self->Reset();
                                         std::tie(result, std::ignore) = request_parser_.Parse(
                                                 request_, buffer_.data(), buffer_.data() + bytes_transferred);
-                                        if (result == RequestParser::failed) {
-                                            LOG(WARNING) << "Authentication Failed";
-                                            connection_manager_.Stop(shared_from_this());
-                                            return;
-                                        }
                                         if (request_handler_.status_ == RequestHandler::authentication_1) {
                                             if (request_.method != "Authentication1") {
                                                 result = RequestParser::bad;

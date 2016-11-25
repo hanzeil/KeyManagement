@@ -39,6 +39,11 @@ namespace encryption_device {
         //如果解密失败，返回NULL
         virtual KeyValueType KeyDecryption(
                 KeyValueEncType &)=0;
+
+        virtual bool VerifySignedData(
+                std::vector<unsigned char> &cert,
+                std::vector<unsigned char> &data,
+                std::vector<unsigned char> &signed_data)=0;
     };
 }
 

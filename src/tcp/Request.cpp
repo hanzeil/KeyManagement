@@ -10,6 +10,7 @@ namespace tcp {
     void Request::Reset() {
         method.clear();
         length = 0;
+        rand.clear();
         data.clear();
     }
 }

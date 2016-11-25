@@ -67,6 +67,13 @@ namespace encryption_device {
         KeyValueType KeyDecryption(
                 KeyValueEncType &);
 
+        // 使用给定的证书中的公钥对给定的随机数进行验签, 并返回签名值
+        bool VerifySignedData(
+                std::vector<unsigned char> &cert,
+                std::vector<unsigned char> &data,
+                std::vector<unsigned char> &signed_data);
+
+
     private:
 
         //SJK1238设备句柄，用法见SJK1238 API文档
@@ -81,6 +88,16 @@ namespace encryption_device {
         const unsigned int rsa_len_ = Key::kKeyValueEncLen;
 
         ECCCipher key_encrypted_ecc;
+
+        struct ECCPUBLICKEYBLOB {
+            u_int32_t bit_len;
+            unsigned char x[64];
+            unsigned char y[64];
+        };
+        typedef struct ECCSIGNATUREBLOB {
+            unsigned char r[64];
+            unsigned char s[64];
+        };
     };
 }
 

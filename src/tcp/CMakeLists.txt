@@ -15,6 +15,7 @@ set(TCP_SOURCE_FILES
         RequestParser.h
         Server.cpp
         Server.h
+        DataPacket.h
         )
 
 find_library(BOOST_SYSTEM boost_system)

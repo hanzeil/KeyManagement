@@ -16,16 +16,11 @@ namespace tcp {
         content.clear();
     }
 
-    void Reply::ToContent(Key &key) {
-        content += std::string(key.key_id_.cbegin(),
-                               key.key_id_.cend());
-        content += std::string(key.key_value_.cbegin(),
-                               key.key_value_.cend());
+    void Reply::ToContent(DataPacket &data_packet) {
+        auto begin = (unsigned char *) &data_packet;
+        auto end = begin + sizeof(data_packet);
+        content += std::string(begin, end);
 
-    }
-
-    void Reply::ToContent(std::string &str) {
-        content += str;
     }
 
     boost::asio::const_buffers_1 Reply::ToBuffers() {
@@ -33,6 +28,9 @@ namespace tcp {
     }
 
     void Reply::ErrorContent() {
-        content = "0";
+        Reset();
+        for (size_t i = 0; i < sizeof(DataPacket); i++) {
+            content += (char)0;
+        }
     }
 }

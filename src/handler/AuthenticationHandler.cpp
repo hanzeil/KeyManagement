@@ -13,7 +13,9 @@
 
 namespace handler {
 
-    AuthenticationHandler::AuthenticationHandler() {
+    AuthenticationHandler::AuthenticationHandler(
+            std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware)
+            : hardware_(hardware) {
 
     }
 
@@ -22,46 +24,37 @@ namespace handler {
             std::vector<unsigned char> cert_client) {
         cert_client_ = cert_client;
         rand_client_ = rand_client;
-        // 解析证书
-        // 加密rand_client_
-        rand_client_en_ = rand_client_;
+        // 使用私钥将rand_client_签名
+        // 暂时不需要
+        rand_signed_client_ = rand_client_;
         return true;
     }
 
     bool AuthenticationHandler::HandleAuthentication2(
-            std::vector<unsigned char> rand_server_en) {
-        rand_server_en_ = rand_server_en;
-        // 解密rand_server_en
-        // 与rand_server对比
+            std::vector<unsigned char> rand_signed_server) {
+        rand_signed_server_ = rand_signed_server;
+        // 验签rand_signed_server
         return true;
+        return hardware_->VerifySignedData(
+                cert_client_,
+                rand_server_,
+                rand_signed_server);
     }
 
-    std::string AuthenticationHandler::GetAuthentication1() {
+
+    std::tuple<std::vector<unsigned char>, std::vector<unsigned char>>
+    AuthenticationHandler::GetAuthentication1() {
         std::random_device rd;
         for (std::size_t i = 0; i < kRandLen; i++) {
             rand_server_.push_back((unsigned char) rd());
-            data_pack1_.rand[i] = rand_server_.back();
         }
         // 模拟证书
-        data_pack1_.length = 50;
-        std::string result;
-        for (std::size_t i = 0; i < sizeof(data_pack1_); i++) {
-            result.push_back(*((unsigned char *) &data_pack1_ + i));
-        }
-        std::string cert(50, 0);
-        result += cert;
-        return result;
+        cert_server_.push_back(0);
+        return std::make_tuple(rand_server_, cert_server_);
     }
 
-    std::string AuthenticationHandler::GetAuthentication2() {
-        for (std::size_t i = 0; i < kRandLen; i++) {
-            data_pack2_.rand_en[i] = rand_client_en_[i];
-        }
-        std::string result;
-        for (std::size_t i = 0; i < sizeof(data_pack2_); i++) {
-            result.push_back(*((unsigned char *) &data_pack2_ + i));
-        }
-        return result;
+    std::vector<unsigned char> AuthenticationHandler::GetAuthentication2() {
+        return rand_signed_client_;
     }
 
 }

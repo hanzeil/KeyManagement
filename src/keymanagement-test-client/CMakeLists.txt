@@ -11,6 +11,7 @@ add_executable(keymanagement-test-client
 target_link_libraries(keymanagement-test-client
         config
         ${STDC++FS}
+        global
         )
 
 install(TARGETS keymanagement-test-client

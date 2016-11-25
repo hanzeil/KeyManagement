@@ -12,17 +12,20 @@
 
 #include <string>
 #include <vector>
+#include <array>
 
 namespace tcp {
 
 /// A request received from a client.
-    struct Request {
+    class Request {
+    public:
         std::string method;
+        std::vector<unsigned char> rand;
         size_t length;
         std::vector<unsigned char> data;
-        std::vector<unsigned char> data_alternate;
 
         void Reset();
+
     };
 
 } // namespace tcp

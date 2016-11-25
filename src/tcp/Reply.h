@@ -15,11 +15,13 @@
 #include <vector>
 #include <boost/asio.hpp>
 #include "../global/Key.h"
+#include "DataPacket.h"
 
 namespace tcp {
 
 
-    struct Reply {
+    class Reply {
+    public:
         /// The content to be sent in the reply.
         std::string content;
 
@@ -28,11 +30,16 @@ namespace tcp {
         /// Convert the reply into buffer.
         boost::asio::const_buffers_1 ToBuffers();
 
-        /// Conver the Key reply into string
-        void ToContent(Key &);
+        /// Conver the DataPacket reply into string
+        void ToContent(DataPacket &);
 
-        /// Conver the string reply into string
-        void ToContent(std::string &);
+        /// Conver the InputIterator reply into string
+        template<typename InputIterator>
+        void ToContent(InputIterator begin,
+                       InputIterator end) {
+            content += std::string(begin, end);
+        }
+
 
         /// Conver the error reply into string
         void ErrorContent();
