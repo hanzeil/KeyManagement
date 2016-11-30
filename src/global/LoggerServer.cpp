@@ -54,14 +54,15 @@ LoggerServer::LoggerServer(const std::string &address, const std::string &port)
 
 void LoggerServer::Run() {
 
+    Logger::GetInstance().SetLogRotationSize(log_rotation_size_);
+    Logger::GetInstance().SetLogMaxFiles(log_max_files_);
+
 #ifdef NDEBUG
     Logger::GetInstance().Init(RELEASE_LOG_PATH);
 #else
     Logger::GetInstance().Init(DEBUG_LOG_PATH);
 #endif
 
-    Logger::GetInstance().SetLogRotationSize(log_rotation_size_);
-    Logger::GetInstance().SetLogMaxFiles(log_max_files_);
 
     std::shared_ptr<boost::thread> thread(new boost::thread(
             boost::bind(&boost::asio::io_service::run,

@@ -46,13 +46,9 @@ namespace tcp {
 
         void Run();
 
-        std::shared_ptr<database::DBProductInterface> db_;
-
         std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware_;
 
     private:
-
-        std::shared_ptr<database::DBFactoryInterface> dbfactory_;
 
         std::shared_ptr<encryption_device::EncrpytionDeviceFactoryInterface> hFactory_;
 

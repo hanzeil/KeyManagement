@@ -11,8 +11,11 @@
 #define KEYMANAGEMENT_KEYHANDLER_H
 
 #include <memory>
+#include "global_define.h"
 #include "../global/Key.h"
 #include "../database/DBProductInterface.h"
+#include "../database/mysql/MysqlFactory.h"
+#include "../config/Config.h"
 #include "../encryption_device/EncryptionDeviceProductInterface.h"
 #include <glog/logging.h>
 
@@ -24,8 +27,7 @@ namespace handler {
 
         KeyHandler &operator=(const KeyHandler &)= delete;
 
-        KeyHandler(std::shared_ptr<database::DBProductInterface> db,
-                   std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware);
+        KeyHandler(std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware);
 
         Key CreateKey();
 

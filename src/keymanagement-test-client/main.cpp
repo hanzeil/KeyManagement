@@ -96,11 +96,12 @@ int main(int argc, char *argv[]) {
     Config config_settings(config_path);
 
     uint16_t portno = config_settings.Read<uint16_t>("PORT");
+    std::string address = config_settings.Read<std::string>("ADDRESS");
 
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)
         error("ERROR opening socket");
-    auto server = gethostbyname("127.0.0.1");
+    auto server = gethostbyname(address.c_str());
     struct sockaddr_in serv_addr;
     bzero((char *) &serv_addr, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;

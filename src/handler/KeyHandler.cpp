@@ -14,10 +14,23 @@
 namespace handler {
 
 
-    KeyHandler::KeyHandler(std::shared_ptr<database::DBProductInterface> db,
-                           std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware)
-            : db_(db),
-              hardware_(hardware) {
+    KeyHandler::KeyHandler(std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware)
+            : hardware_(hardware) {
+        Config config_settings;
+
+        config_settings.ReadFile(config_settings.GetConifgPath(CONFIG_FILE_NAME));
+
+        auto db_url = config_settings.Read<std::string>("DATABASE_URL");
+        auto db_port = config_settings.Read<std::string>("DATABASE_PORT");
+        auto db_user = config_settings.Read<std::string>("DATABASE_USER_NAME");
+        auto db_password = config_settings.Read<std::string>("DATABASE_PASSWORD");
+#ifdef MYSQL
+        auto db_factory = std::make_shared<database::MysqlFactory>();
+        LOG(INFO) << "Database:: Mysql selected";
+#endif
+        db_ = db_factory->CreateProduct();
+        db_->Connect(db_url, db_port, db_user, db_password);
+        db_->OpenDatabase();
     }
 
     Key KeyHandler::CreateKey() {
