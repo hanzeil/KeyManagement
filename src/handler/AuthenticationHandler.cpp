@@ -34,11 +34,16 @@ namespace handler {
             std::vector<unsigned char> rand_signed_server) {
         rand_signed_server_ = rand_signed_server;
         // 验签rand_signed_server
-        return true;
+        return signature_.VerifySignedData(
+                cert_client_,
+                rand_server_,
+                rand_signed_server);
+        /*
         hardware_->VerifySignedData(
                 cert_client_,
                 rand_server_,
                 rand_signed_server);
+        */
     }
 
 

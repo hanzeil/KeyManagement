@@ -5,10 +5,13 @@ set(HANDLER_SOURCE_FILES
         AuthenticationHandler.h
         )
 
+add_subdirectory(usb_key)
+
 add_library(handler STATIC ${HANDLER_SOURCE_FILES})
 
 target_link_libraries(handler
         database
         encryption_device
         global
+        usb_key
         )

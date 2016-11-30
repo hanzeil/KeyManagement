@@ -1,0 +1,18 @@
+set(USB_KEY_SOURCE_FILES
+        base_type.h
+        server_authen.cpp
+        server_authen.h
+        SKF.h
+        skf_type.h
+        Signature.cpp
+        Signature.h
+        )
+
+
+find_library(SKF SKF)
+
+add_library(usb_key STATIC ${USB_KEY_SOURCE_FILES})
+
+target_link_libraries(usb_key
+        SKF
+        )

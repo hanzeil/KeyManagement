@@ -16,6 +16,7 @@
 #include <random>
 #include <array>
 #include "../encryption_device/EncryptionDeviceProductInterface.h"
+#include "usb_key/Signature.h"
 
 namespace handler {
 
@@ -50,6 +51,7 @@ namespace handler {
         std::vector<unsigned char> rand_signed_client_;
         std::vector<unsigned char> rand_server_;
         std::vector<unsigned char> rand_signed_server_;
+        usb_key::Signature signature_;
         std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware_;
     };
 

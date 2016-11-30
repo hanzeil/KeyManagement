@@ -9,7 +9,9 @@
 //
 
 #include "SJK1238.h"
+/*
 #include "server_authen.cpp"
+*/
 
 namespace encryption_device {
 
@@ -183,6 +185,8 @@ namespace encryption_device {
             cert_point[i] = cert[i];
         }
         // 数据的指针形式
+        // debug用的测试数据
+        unsigned char data_debug[16] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
         auto data_point = new unsigned char[data.size()];
         for (std::size_t i = 0; i < data.size(); i++) {
             data_point[i] = data[i];
@@ -195,8 +199,9 @@ namespace encryption_device {
         }
         // 证书的公钥 skf标准格式
         ECCPUBLICKEYBLOB public_key_skf;
-        parce_cer(cert_point, (int) cert.size(),
-                  (unsigned char *) &public_key_skf);
+        //parce_cer(cert_point, (int) cert.size(),
+        //          (unsigned char *) &public_key_skf);
+
         // 将签名数据的skf标准格式转换为sdf标准格式
         ECCSignature signed_data_sdf;
         for (std::size_t i = 0; i < 32; i++) {
@@ -217,7 +222,7 @@ namespace encryption_device {
         int result = SDF_ExternalVerify_ECC(p_ses_handle_,
                                             SGD_SM2_1,
                                             &public_key_sdf,
-                                            data_point,
+                                            data_debug,
                                             data.size(),
                                             &signed_data_sdf);
         delete cert_point;

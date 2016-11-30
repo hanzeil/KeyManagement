@@ -13,7 +13,6 @@ if (SJK_1238)
             sjk1238/SJK1238Factory.cpp
             sjk1238/SJK1238.h
             sjk1238/SJK1238.cpp
-            sjk1238/server_authen.cpp
             )
 endif (SJK_1238)
 
