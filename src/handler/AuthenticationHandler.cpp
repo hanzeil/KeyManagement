@@ -35,7 +35,7 @@ namespace handler {
         rand_signed_server_ = rand_signed_server;
         // 验签rand_signed_server
         return true;
-        return hardware_->VerifySignedData(
+        hardware_->VerifySignedData(
                 cert_client_,
                 rand_server_,
                 rand_signed_server);

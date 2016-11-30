@@ -215,7 +215,7 @@ namespace encryption_device {
         }
         public_key_sdf.bits = public_key_skf.bit_len;
         int result = SDF_ExternalVerify_ECC(p_ses_handle_,
-                                            SGD_SM2_3,
+                                            SGD_SM2_1,
                                             &public_key_sdf,
                                             data_point,
                                             data.size(),

@@ -28,7 +28,7 @@ namespace tcp {
         ConnectionManager();
 
         /// Add the specified connection to the manager and start it.
-        void Start(ConnectionPtr c);
+        void Start(ConnectionPtr c, std::shared_ptr<ThreadTask> task);
 
         /// Stop the specified connection.
         void Stop(ConnectionPtr c);

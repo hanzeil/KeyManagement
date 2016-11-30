@@ -24,21 +24,21 @@ struct DataPack1 {
     uint32_t flag = 0xaa000000;
     char rand[16] = "123456789abcdef";
     uint32_t length = 717;
-    uint32_t data = NULL;
+    uint32_t data;
 };
 
 struct DataPack2 {
     uint32_t flag = 0xaabbcc00;
     char rand[16] = {0};
     uint16_t length = 128;
-    uint32_t data = NULL;
+    uint32_t data;
 };
 
 struct Request1 {
     uint32_t flag = 0xaaaabbbb;
     char rand[16] = {0};
     uint32_t length = 1;
-    uint32_t data = NULL;
+    uint32_t data;
 };
 
 struct Request2 {
@@ -50,7 +50,7 @@ struct Request2 {
                      (char) 0x2d, (char) 0x72, (char) 0x18,
                      (char) 0x6d};
     uint32_t length = 2;
-    uint32_t data = NULL;
+    uint32_t data;
 };
 
 struct ECCPUBLICKEYBLOB {

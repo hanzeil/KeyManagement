@@ -59,9 +59,6 @@ namespace tcp {
         /// The next connection.
         ConnectionPtr new_connection_;
 
-        /// The handler for all incoming requests.
-        RequestHandler request_handler_;
-
         /// the number of threads
         std::size_t thread_pool_size_;
 

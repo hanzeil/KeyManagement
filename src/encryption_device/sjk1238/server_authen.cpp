@@ -413,7 +413,6 @@ void fill(int n){
              strcpy(ca_cer.cat.subjectPublicKeyInfo.PKey.s2, s);
 
 			publen = datalen;
-			printf("pubkey len = %d\n",publen);
 
 			memcpy(pubkey, s, publen);	/// out
              break;

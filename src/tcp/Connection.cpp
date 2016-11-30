@@ -14,15 +14,13 @@
 namespace tcp {
 
     Connection::Connection(boost::asio::io_service &io_service,
-                           ConnectionManager &manager, RequestHandler &handler)
+                           ConnectionManager &manager)
             : socket_(io_service),
-              connection_manager_(manager),
-              request_handler_(handler) {
+              connection_manager_(manager) {
     }
 
-    void Connection::Start() {
-        Reset();
-        request_handler_.Reset();
+    void Connection::Start(std::shared_ptr<ThreadTask> task) {
+        request_handler_.BindThreadTask(task);
         DoRead();
     }
 

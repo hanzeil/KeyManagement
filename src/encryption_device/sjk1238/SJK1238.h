@@ -94,7 +94,7 @@ namespace encryption_device {
             unsigned char x[64];
             unsigned char y[64];
         };
-        typedef struct ECCSIGNATUREBLOB {
+        struct ECCSIGNATUREBLOB {
             unsigned char r[64];
             unsigned char s[64];
         };

@@ -67,7 +67,6 @@ void LoggerServer::Run() {
             boost::bind(&boost::asio::io_service::run,
                         &io_service_)
     ));
-    thread->join();
 }
 
 void LoggerServer::DoDeadlineTimer() {
