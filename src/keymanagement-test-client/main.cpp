@@ -1,4 +1,4 @@
-#include "../config/Config.h"
+#include "../config/ConfigSingleton.h"
 #include "global_define.h"
 #include <experimental/filesystem>
 #include <sys/types.h>
@@ -93,10 +93,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    Config config_settings(config_path);
-
-    uint16_t portno = config_settings.Read<uint16_t>("PORT");
-    std::string address = config_settings.Read<std::string>("ADDRESS");
+    uint16_t portno = (uint16_t) config::ConfigSingleton::GetInstance().port_int_;
+    std::string address = config::ConfigSingleton::GetInstance().address_;
 
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)

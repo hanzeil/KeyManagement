@@ -15,7 +15,7 @@
 #include "../global/Key.h"
 #include "../database/DBProductInterface.h"
 #include "../database/mysql/MysqlFactory.h"
-#include "../config/Config.h"
+#include "../config/ConfigSingleton.h"
 #include "../encryption_device/EncryptionDeviceProductInterface.h"
 #include <glog/logging.h>
 

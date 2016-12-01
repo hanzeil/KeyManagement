@@ -16,13 +16,9 @@ LoggerServer::LoggerServer(const std::string &address, const std::string &port)
           deadline_timer_(io_service_) {
 
     try {
-        Config config_settings;
-
-        config_settings.ReadFile(config_settings.GetConifgPath(CONFIG_FILE_NAME));
-
-        log_rotation_size_ = config_settings.Read<std::size_t>("LOG_ROTATION_SIZE");
-        log_max_files_ = config_settings.Read<std::size_t>("LOG_MAX_FILES");
-        log_scan_duration_ = config_settings.Read<std::size_t>("LOG_SCAN_DURATION");
+        log_rotation_size_ = config::ConfigSingleton::GetInstance().log_rotation_size_;
+        log_max_files_ = config::ConfigSingleton::GetInstance().log_max_files_;
+        log_scan_duration_ = config::ConfigSingleton::GetInstance().log_scan_duration_;
     }
     catch (std::exception &e) {
         LOG(FATAL) << e.what() << "\n";

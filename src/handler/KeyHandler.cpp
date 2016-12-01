@@ -16,14 +16,10 @@ namespace handler {
 
     KeyHandler::KeyHandler(std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware)
             : hardware_(hardware) {
-        Config config_settings;
-
-        config_settings.ReadFile(config_settings.GetConifgPath(CONFIG_FILE_NAME));
-
-        auto db_url = config_settings.Read<std::string>("DATABASE_URL");
-        auto db_port = config_settings.Read<std::string>("DATABASE_PORT");
-        auto db_user = config_settings.Read<std::string>("DATABASE_USER_NAME");
-        auto db_password = config_settings.Read<std::string>("DATABASE_PASSWORD");
+        auto db_url = config::ConfigSingleton::GetInstance().db_url_;
+        auto db_port = config::ConfigSingleton::GetInstance().db_port_;
+        auto db_user = config::ConfigSingleton::GetInstance().db_user_name_;
+        auto db_password = config::ConfigSingleton::GetInstance().db_user_password_;
 #ifdef MYSQL
         auto db_factory = std::make_shared<database::MysqlFactory>();
         LOG(INFO) << "Database:: Mysql selected";

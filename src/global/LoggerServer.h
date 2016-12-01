@@ -18,7 +18,7 @@
 #include <boost/date_time.hpp>
 #include <string>
 #include "Logger.h"
-#include "../config/Config.h"
+#include "../config/ConfigSingleton.h"
 
 class LoggerServer {
     typedef std::shared_ptr<boost::asio::ip::tcp::socket> socket_ptr;

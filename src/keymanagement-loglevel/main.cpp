@@ -9,7 +9,7 @@
 #include "global_define.h"
 #include <experimental/filesystem>
 #include <iostream>
-#include "../config/Config.h"
+#include "../config/ConfigSingleton.h"
 #include <boost/asio.hpp>
 
 namespace fs = std::experimental::filesystem;
@@ -45,9 +45,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    Config config_settings(config_path);
-
-    std::size_t log_server_port = config_settings.Read<std::size_t>("LOG_SERVER_PORT");
+    std::size_t log_server_port = config::ConfigSingleton::GetInstance().log_server_port_int_;
 
     std::array<char, 1> buffer;
     buffer[0] = argv[1][0];
