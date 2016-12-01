@@ -15,6 +15,7 @@ namespace tcp {
     }
 
     void ConnectionManager::Start(ConnectionPtr c, std::shared_ptr<ThreadTask> task) {
+        auto a = connections_.size();
         connections_.insert(c);
         c->Start(task);
     }

@@ -13,6 +13,7 @@
 namespace database {
 
     MysqlDB::~MysqlDB() {
+        con_->close();
         delete con_;
         LOG(INFO) << "Database:: Mysql closed successfully";
     }

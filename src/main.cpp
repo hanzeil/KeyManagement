@@ -16,6 +16,7 @@
 #include "global/Logger.h"
 #include "global/LoggerServer.h"
 #include "tcp/Server.h"
+#include "config/ConfigSingleton.h"
 
 using namespace std;
 
@@ -26,21 +27,16 @@ int main() {
     try {
 
         // 从配置文件中读取日志服务端地址、端口 以及 服务端地址、端口 、线程数
-        Config config_settings;
-
-        config_settings.ReadFile(config_settings.GetConifgPath(CONFIG_FILE_NAME));
-
-        std::string port = config_settings.Read<std::string>("PORT");
-        std::string address = config_settings.Read<std::string>("ADDRESS");
-        std::string threads = config_settings.Read<std::string>("THREADS");
-        std::string log_server_port = config_settings.Read<std::string>("LOG_SERVER_PORT");
+        std::string port = config::ConfigSingleton::GetInstance().port_;
+        std::string address = config::ConfigSingleton::GetInstance().address_;
+        std::size_t num_threads = config::ConfigSingleton::GetInstance().num_threads_;
+        std::string log_server_port = config::ConfigSingleton::GetInstance().log_server_port_;
 
         // 初始化log server
         LoggerServer ls(address, log_server_port);
         ls.Run();
 
         // 初始化密钥管理server
-        size_t num_threads = boost::lexical_cast<std::size_t>(threads);
         tcp::Server s(address, port, num_threads);
 
         // Run the server until stopped.
