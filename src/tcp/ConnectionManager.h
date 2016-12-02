@@ -11,7 +11,7 @@
 #define KEYMANAGEMENT_CONNECTIONMANAGER_H
 
 
-#include <set>
+#include <unordered_set>
 #include "Connection.h"
 
 namespace tcp {
@@ -38,7 +38,7 @@ namespace tcp {
 
     private:
         /// The managed connections.
-        std::set<ConnectionPtr> connections_;
+        std::unordered_set<ConnectionPtr> connections_;
     };
 
 } // namespace tcp

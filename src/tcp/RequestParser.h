@@ -43,9 +43,16 @@ namespace tcp {
             std::size_t len = end - begin;
             DataPacket data_packet;
             if (len < sizeof(data_packet)) {
+                printf("len error");
                 return std::make_tuple(bad, begin);
             }
             std::memcpy(&data_packet, begin, sizeof(data_packet));
+            printf("Totallen: %d\n", len);
+            printf("DataPacket: len: %d \n", sizeof(data_packet));
+            for (auto i = 0; i < sizeof(data_packet); i++) {
+                printf("%0x ", *((unsigned char *) &data_packet + i));
+            }
+            printf("\n");
             //判断请求包的类型
             if (data_packet.flag != 0xaaaabbbb) {
                 if (len - sizeof(data_packet) != data_packet.len ||
@@ -55,6 +62,11 @@ namespace tcp {
                 for (std::size_t i = sizeof(data_packet); i < len; i++) {
                     req.data.push_back(begin[i]);
                 }
+                printf("DATA: len: %d\n", req.data.size());
+                for (auto i = 0; i < req.data.size(); i++) {
+                    printf("%0x ", req.data[i]);
+                }
+                printf("\n");
             }
             if (data_packet.flag == 0xaa000000) {
                 req.method = "Authentication1";
