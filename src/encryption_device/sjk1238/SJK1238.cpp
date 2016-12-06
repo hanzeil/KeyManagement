@@ -34,7 +34,7 @@ namespace encryption_device {
                 ss << "Error code 0x" << std::hex << status;
                 _exit(status);
             }
-            LOG(INFO) << "Hardware:: Device closed successfully";
+            DLOG(INFO) << "Hardware:: Device closed successfully";
         }
     }
 
@@ -46,7 +46,7 @@ namespace encryption_device {
             ss << "Error code: 0x" << std::hex << status;
             throw std::runtime_error(ss.str());
         }
-        LOG(INFO) << "Hardware:: Device opened successfully";
+        DLOG(INFO) << "Hardware:: Device opened successfully";
 
         status = SDF_OpenSession(p_dev_handle_,
                                  &p_ses_handle_);  //打开会话句柄
