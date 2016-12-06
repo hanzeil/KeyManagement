@@ -157,7 +157,6 @@ int main(int argc, char *argv[]) {
     }
     std::cout << std::endl;
 
-    /*
     //Request1
     Request1 request1;
     n = write(sockfd, &request1, sizeof(request1));
@@ -178,8 +177,8 @@ int main(int argc, char *argv[]) {
         printf("%0x ", buffer[i]);
     }
     std::cout << std::endl;
-     */
 
+    /*
     //Request2
     Request2 request2;
     //memcpy(request2.rand, buffer + 4, 16);
@@ -194,5 +193,6 @@ int main(int argc, char *argv[]) {
         std::cout << (int) buffer[i] << " ";
     }
     std::cout << std::endl;
+    */
     return 0;
 }

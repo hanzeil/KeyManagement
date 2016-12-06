@@ -53,9 +53,6 @@ namespace tcp {
         /// Acceptor used to listen for incoming connections.
         boost::asio::ip::tcp::acceptor acceptor_;
 
-        /// The connection manager which owns all live connections.
-        ConnectionManager connection_manager_;
-
         /// The next connection.
         ConnectionPtr new_connection_;
 
