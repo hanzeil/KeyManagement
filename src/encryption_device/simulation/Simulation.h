@@ -67,6 +67,10 @@ namespace encryption_device {
         //如果解密失败，返回NULL
         KeyValueType KeyDecryption(KeyValueEncType &key);
 
+        bool VerifySignedData(
+                std::vector<unsigned char> &cert,
+                std::vector<unsigned char> &data,
+                std::vector<unsigned char> &signed_data);
     private:
 
         RSA *master_key_pub_ = nullptr;

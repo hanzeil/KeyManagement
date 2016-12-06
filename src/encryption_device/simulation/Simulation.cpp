@@ -126,4 +126,10 @@ namespace encryption_device {
         delete key_unc;
         return key;
     }
+
+    bool Simulation::VerifySignedData(std::vector<unsigned char> &cert, std::vector<unsigned char> &data,
+                                      std::vector<unsigned char> &signed_data) {
+        return true;
+    }
 }
+
