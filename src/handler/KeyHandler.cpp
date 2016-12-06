@@ -22,7 +22,7 @@ namespace handler {
         auto db_password = config::ConfigSingleton::GetInstance().db_user_password_;
 #ifdef MYSQL
         auto db_factory = std::make_shared<database::MysqlFactory>();
-        LOG(INFO) << "Database:: Mysql selected";
+        DLOG(INFO) << "Database:: Mysql selected";
 #endif
         db_ = db_factory->CreateProduct();
         db_->Connect(db_url, db_port, db_user, db_password);
@@ -35,7 +35,7 @@ namespace handler {
             Key key(key_value);
             key.key_value_enc_ = hardware_->KeyEncryption(key_value);
             db_->InsertKey(key);
-            LOG(INFO) << "Created a key and encrypt it and insert this key-encrypted into the Database";
+            LOG(INFO) << "Handler:: Created a key and encrypt it and insert this key-encrypted into the Database";
             return key;
         }
         catch (std::runtime_error e) {
@@ -47,7 +47,7 @@ namespace handler {
         try {
             auto key = db_->GetKey(key_id);
             key.key_value_ = hardware_->KeyDecryption(key.key_value_enc_);
-            LOG(INFO) << "Find a key-encrypted by key-id and decrypt it";
+            LOG(INFO) << "Handler:: Find a key-encrypted by key-id and decrypt it";
             return key;
         }
         catch (std::runtime_error e) {

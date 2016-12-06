@@ -20,12 +20,12 @@ namespace tcp {
 
 #ifdef SJK_1238
         hFactory_ = std::make_shared<encryption_device::SJK1238Factory>();
-        LOG(INFO) << "Hardware:: SJK_1238 cryptographic card selected";
+        DLOG(INFO) << "Hardware:: SJK_1238 cryptographic card selected";
 #endif
 
 #ifdef SIMULATION
         hFactory_ = std::make_shared<encryption_device::SimulationFactory>();
-        LOG(INFO) << "Hardware:: Software simulation selected";
+        DLOG(INFO) << "Hardware:: Software simulation selected";
 #endif
         hardware_ = hFactory_->CreateProduct();
 

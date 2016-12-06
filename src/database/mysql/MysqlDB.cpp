@@ -15,7 +15,7 @@ namespace database {
     MysqlDB::~MysqlDB() {
         con_->close();
         delete con_;
-        LOG(INFO) << "Database:: Mysql closed successfully";
+        DLOG(INFO) << "Database:: Mysql closed successfully";
     }
 
 // 连接到Mysql后，使用数据库_db_name_
@@ -25,7 +25,7 @@ namespace database {
         try {
             auto host_name = std::string("tcp://") + url + ":" + port;
             con_ = driver_->connect(host_name, username, password);
-            LOG(INFO) << "Database:: Mysql connected successfully";
+            DLOG(INFO) << "Database:: Mysql connected successfully";
         }
         catch (std::runtime_error e) {
             throw std::runtime_error(std::string("Database:: ")
