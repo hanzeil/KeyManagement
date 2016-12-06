@@ -58,22 +58,17 @@ namespace tcp {
             }
             if (data_packet.flag == 0xaa000000) {
                 req.method = "Authentication1";
-            }
-            else if (data_packet.flag == 0xaabbcc00) {
+            } else if (data_packet.flag == 0xaabbcc00) {
                 req.method = "Authentication2";
-            }
-            else if (data_packet.flag == 0xaaaabbbb) {
+            } else if (data_packet.flag == 0xaaaabbbb) {
                 if (data_packet.len == 1) {
                     req.method = "CreateKey";
-                }
-                else if (data_packet.len == 2) {
+                } else if (data_packet.len == 2) {
                     req.method = "FindKeyByID";
-                }
-                else {
+                } else {
                     return std::make_tuple(bad, begin);
                 }
-            }
-            else {
+            } else {
                 return std::make_tuple(bad, begin);
             }
             req.rand = std::vector<unsigned char>

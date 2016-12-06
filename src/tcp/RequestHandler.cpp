@@ -31,10 +31,11 @@ namespace tcp {
                 rep.ToContent(data_packet);
                 rep.ToContent(key.key_value_.cbegin(),
                               key.key_value_.cend());
-                LOG(INFO) << "TCP:: A client requests to create a key";
+                LOG(INFO) << "TCP:: CreateKey request is successful";
             }
             catch (std::runtime_error e) {
-                LOG(ERROR) << e.what();
+                LOG(WARNING) << "TCP:: CreateKey request is failed";
+                LOG(WARNING) << e.what();
                 rep.ErrorContent();
                 status_ = error;
             }
@@ -54,10 +55,11 @@ namespace tcp {
                 rep.ToContent(data_packet);
                 rep.ToContent(key.key_value_.cbegin(),
                               key.key_value_.cend());
-                LOG(INFO) << "TCP:: A client requests to find a key by key id";
+                LOG(INFO) << "TCP:: FindKeyByID request is successful";
             }
             catch (std::runtime_error e) {
-                LOG(ERROR) << e.what();
+                LOG(WARNING) << "TCP:: FindKeyByID request is failed";
+                LOG(WARNING) << e.what();
                 rep.ErrorContent();
                 status_ = error;
             }
@@ -66,7 +68,7 @@ namespace tcp {
                     HandleAuthentication1(req.rand,
                                           req.data);
             if (!status) {
-                LOG(WARNING) << "TCP:: Bad authentication step 1";
+                LOG(WARNING) << "TCP:: 1st-authentication is failed";
                 rep.ErrorContent();
                 status_ = error;
                 return;
@@ -85,12 +87,12 @@ namespace tcp {
             rep.ToContent(data_packet);
             rep.ToContent(cert_server.cbegin(),
                           cert_server.cend());
-            LOG(INFO) << "TCP:: A client requests to authenticate for 1st step";
+            LOG(INFO) << "1st-authenticate is successful";
         } else if (req.method == "Authentication2") {
             auto status = auth_handler->
                     HandleAuthentication2(req.data);
             if (!status) {
-                LOG(WARNING) << "TCP:: Bad authentication step 2";
+                LOG(WARNING) << "TCP:: 2nd-authentication is failed";
                 rep.ErrorContent();
                 status_ = error;
                 return;
@@ -105,7 +107,7 @@ namespace tcp {
             rep.ToContent(data_packet);
             rep.ToContent(signed_data.cbegin(),
                           signed_data.cend());
-            LOG(INFO) << "TCP:: A client requests to authenticate for 2nd step";
+            LOG(INFO) << "TCP:: 2nd-authenticate is successful";
         }
     }
 

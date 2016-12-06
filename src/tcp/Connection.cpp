@@ -80,6 +80,7 @@ namespace tcp {
                                          if (request_handler_.status_ == RequestHandler::error ||
                                              request_handler_.status_ == RequestHandler::key_handle) {
                                              connection_manager_.Stop(shared_from_this());
+                                             LOG(INFO) << "Connection closed successfully";
                                          } else {
                                              if (request_handler_.status_ == RequestHandler::authentication_1) {
                                                  request_handler_.status_ = RequestHandler::authentication_2;
