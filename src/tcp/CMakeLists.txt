@@ -3,8 +3,6 @@ set(TCP_SOURCE_FILES
         ThreadTask.h
         Connection.cpp
         Connection.h
-        ConnectionManager.cpp
-        ConnectionManager.h
         Request.cpp
         Request.h
         Reply.cpp
