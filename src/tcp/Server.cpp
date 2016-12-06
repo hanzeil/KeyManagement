@@ -16,7 +16,6 @@ namespace tcp {
             : io_service_(),
               signals_(io_service_),
               acceptor_(io_service_),
-              connection_manager_(),
               thread_pool_size_(thread_pool_size) {
         // Register to handle the signals that indicate when the server should exit.
         // It is safe to register for the same signal multiple times in a program,
@@ -60,7 +59,7 @@ namespace tcp {
     }
 
     void Server::DoAccept() {
-        new_connection_ = std::make_shared<Connection>(io_service_, connection_manager_);
+        new_connection_ = std::make_shared<Connection>(io_service_);
         acceptor_.async_accept(new_connection_->socket_,
                                [this](boost::system::error_code ec) {
                                    // Check whether the server was stopped by a signal before this
@@ -72,7 +71,7 @@ namespace tcp {
                                    if (!ec) {
                                        auto thread_task = thread_tasks_.at(
                                                boost::this_thread::get_id());
-                                       connection_manager_.Start(new_connection_, thread_task);
+                                       new_connection_->Start(thread_task);
                                    }
 
                                    DoAccept();
@@ -86,7 +85,7 @@ namespace tcp {
                     // operations. Once all operations have finished the io_service::run()
                     // call will exit.
                     acceptor_.close();
-                    connection_manager_.StopAll();
+                    io_service_.stop();
                 });
     }
 

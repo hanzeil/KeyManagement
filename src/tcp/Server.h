@@ -17,7 +17,6 @@
 #include <string>
 #include <map>
 #include "Connection.h"
-#include "ConnectionManager.h"
 #include "RequestHandler.h"
 #include "ThreadTask.h"
 

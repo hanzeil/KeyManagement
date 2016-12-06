@@ -21,8 +21,6 @@
 
 namespace tcp {
 
-    class ConnectionManager;
-
 /// Represents a single connection from a client.
     class Connection
             : public std::enable_shared_from_this<Connection> {
@@ -32,15 +30,10 @@ namespace tcp {
         Connection &operator=(const Connection &) = delete;
 
         /// Construct a connection with the given socket.
-        explicit Connection(boost::asio::io_service &io_service,
-                            ConnectionManager &manager);
+        explicit Connection(boost::asio::io_service &io_service);
 
         /// Start the first asynchronous operation for the connection.
         void Start(std::shared_ptr<ThreadTask> task);
-
-        /// Stop all asynchronous operations associated with the connection.
-        void Stop();
-
 
         /// Socket for the connection.
         boost::asio::ip::tcp::socket socket_;
@@ -54,9 +47,6 @@ namespace tcp {
 
         /// Reset Request and Reply object
         void Reset();
-
-        /// The manager for this connection.
-        ConnectionManager &connection_manager_;
 
         /// The handler used to process the incoming request.
         RequestHandler request_handler_;
