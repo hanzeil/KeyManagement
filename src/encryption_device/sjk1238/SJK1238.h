@@ -25,7 +25,7 @@ namespace encryption_device {
 // 此类继承并实现了EncryptionDeviceProductInterface接口
 // 通过密码卡SJK1238和相关驱动以及API接口实现
 // sample usage:
-// EncryptionDeviceProductInterface *device=new SJK1238();
+// auto device=std::make_shared<encryption_device::SJK1238>();
 // device.OpenDevice();
 // auto key = device.GenerateKey(16);
 // delete device;
@@ -34,60 +34,52 @@ namespace encryption_device {
 
         SJK1238() = default;
 
-        //拷贝构造函数
-        //阻止拷贝
+        /// 拷贝构造函数
+        /// 阻止拷贝
         SJK1238(const SJK1238 &) = delete;
 
-        //拷贝赋值函数
-        //阻止拷贝
+        /// 拷贝赋值函数
+        /// 阻止拷贝
         SJK1238 &operator=(const SJK1238 &)= delete;
 
         ~SJK1238();
 
-        //打开SJK1238设备
-        //如果打开成功，返回true
+        /// 打开硬件设备
+        /// 打开失败会抛出异常
         void OpenDevice();
 
-        //随机产生一个unsigned char* 类型的密钥，并返回
-        //密钥的空间由该函数产生，需要调用者管理
-        //如果产生失败，返回NULL
+        /// 随机产生一个KeyValueType类型的密钥，并返回
+        /// 如果产生失败，会抛出异常
         KeyValueType GenerateKey();
 
-        //给定一个密钥key和密钥长度length, 用主密钥将密钥加密并返回
-        //加密结果为unsigned char *,大小与加密前的长度相同，
-        //加密后的密钥的空间由该函数产生，需要调用者管理
-        //如果加密失败，返回NULL
+        /// 给定一个密钥key, 用主密钥将密钥加密
+        /// 如果加密失败，会抛出异常
         KeyValueEncType KeyEncryption(
                 KeyValueType &);
 
-        //给定一个密钥key和密钥长度length, 用主密钥将密钥解密并返回
-        //解密结果为unsigned char *,大小与解密前的长度相同，
-        //解密后的密钥的空间由该函数产生，需要调用者管理
-        //如果解密失败，返回NULL
+        /// 给定一个密钥key, 用主密钥将密钥解密
+        /// 如果解密失败，会抛出异常
         KeyValueType KeyDecryption(
                 KeyValueEncType &);
 
-        // 使用给定的证书中的公钥对给定的随机数进行验签, 并返回签名值
+        /// 验签操作，cert存放证书，data存放待验签数据，singed_data属于签名值
+        /// 如果验签失败，会抛出异常
         bool VerifySignedData(
-                std::vector<unsigned char> &cert,
-                std::vector<unsigned char> &data,
-                std::vector<unsigned char> &signed_data);
+                const std::vector<unsigned char> &cert,
+                const std::vector<unsigned char> &data,
+                const std::vector<unsigned char> &signed_data);
 
 
     private:
 
-        //SJK1238设备句柄，用法见SJK1238 API文档
+        /// SJK1238设备句柄，用法见SJK1238 API文档
         void *p_dev_handle_ = nullptr;
 
+        /// SJK1238会话句柄
         void *p_ses_handle_ = nullptr;
 
-        //定义加密算法，可以选择SM1或者SM4两种对称算法
-        unsigned int ui_alg_id_ = SGD_SMS4_CBC; //加密算法
-
-        // RSA密钥长度
+        /// RSA密钥长度
         const unsigned int rsa_len_ = Key::kKeyValueEncLen;
-
-        ECCCipher key_encrypted_ecc;
 
         struct ECCPUBLICKEYBLOB {
             u_int32_t bit_len;

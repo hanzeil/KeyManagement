@@ -25,32 +25,33 @@ namespace database {
 
         virtual ~DBProductInterface();
 
-        //连接数据库
-        // 连接成功则返回true
+        /// 连接DBMS
+        /// 连接失败会抛出异常
         virtual void Connect(std::string url, std::string port,
                              std::string username, std::string password)=0;
 
+        /// 打开名为db_name_的数据库
+        /// 打开失败会抛出异常
         virtual void OpenDatabase()=0;
 
-        // 新建Key表
-        // 如果新建成功则返回true
+        /// 新建Key表
+        /// 新建失败会抛出异常
         virtual void Init()=0;
 
+        /// 创建一个具有访问数据库db_name_所有权限的用户
+        /// 创建失败会抛出异常
         virtual void CreateUser(std::string user, std::string password)=0;
 
-        //插入一个Key到数据库
-        //插入成功则返回true
+        /// 插入一个Key到数据库
+        /// 插入失败会抛出异常
         virtual void InsertKey(Key &key)=0;
 
-        //根据Key id从Mysql查找key并以Key类型的指针返回.
-        //Key类型和其中的key_value, key_id的空间均在该函数中分配
-        //参数key_id的空间没有释放，需要调用者继续管理
-        //如果查找失败，返回NULL
+        /// 根据Key id从Mysql查找key并以Key类型的指针返回.
+        /// 查找失败会抛出异常
         virtual Key GetKey(KeyValueType key_id)=0;
 
-        //根据Key id从Mysql删除该字段.
-        //参数key_id的空间没有释放，需要调用者继续管理
-        //如果删除成功，返回true
+        /// 根据Key id从Mysql删除该字段.
+        /// 删除失败会抛出异常
         virtual void DeleteKey(unsigned char *key_id)=0;
 
     };

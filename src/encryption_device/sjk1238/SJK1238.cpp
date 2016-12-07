@@ -173,9 +173,9 @@ namespace encryption_device {
     }
 
     bool
-    SJK1238::VerifySignedData(std::vector<unsigned char> &cert,
-                              std::vector<unsigned char> &data,
-                              std::vector<unsigned char> &signed_data) {
+    SJK1238::VerifySignedData(const std::vector<unsigned char> &cert,
+                              const std::vector<unsigned char> &data,
+                              const std::vector<unsigned char> &signed_data) {
 
         // 证书的指针形式
         auto cert_point = new unsigned char[cert.size()];

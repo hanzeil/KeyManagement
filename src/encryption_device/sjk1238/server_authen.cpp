@@ -1,5 +1,15 @@
-#ifndef SERVER_AUTHEN_H
-#define SERVER_AUTHEN_H
+//
+// Created by Hanzeil on 16-8-15.
+//
+// Copyright (c) 2016 航天二院爱威公司. All rights reserved.
+//
+// Author Hanzeil.
+//
+// SJK1238产品类，实现了密钥与Mysql数据库之间的操作
+//
+
+#ifndef KEYMANAGEMENT_AUTHEN_H
+#define KEYMANAGEMENT_AUTHEN_H
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

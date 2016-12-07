@@ -5,6 +5,8 @@
 //
 // Author Hanzeil.
 //
+// 该类负责读取配置文件中的参数
+//
 
 
 #ifndef KEYMANAGEMENT_CONFIG_H

@@ -38,8 +38,6 @@ int main() {
 
         // 初始化密钥管理server
         tcp::Server s(address, port, num_threads);
-
-        // Run the server until stopped.
         s.Run();
     }
     catch (std::exception &e) {

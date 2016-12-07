@@ -5,6 +5,8 @@
 //
 // Author Hanzeil.
 //
+// 该类提供读取配置文件中所有参数的接口
+//
 
 
 #ifndef KEYMANAGEMENT_CONFIGSINGLETON_H
@@ -15,8 +17,22 @@
 
 namespace config {
 
+    /// 该类使用单例模式保证只有一个实例的存在
+    /// 保证只在第一次实例化此类的时候访问配置文件
+    /// sample usage:
+    /// auto port = ConfigSingleton::GetInstance().port_;
     class ConfigSingleton {
     public:
+
+        /// 拷贝构造函数
+        /// 阻止拷贝
+        ConfigSingleton(ConfigSingleton &) = delete;
+
+        /// 拷贝赋值函数
+        /// 阻止赋值
+        ConfigSingleton &operator=(ConfigSingleton &)= delete;
+
+        /// 获取实例
         static ConfigSingleton &GetInstance();
 
         std::string address_;
@@ -35,12 +51,6 @@ namespace config {
         std::string db_user_password_;
     private:
         ConfigSingleton();
-
-        ConfigSingleton(ConfigSingleton &) = default;
-
-        ConfigSingleton &operator=(ConfigSingleton &)= default;
-
-        Config config_settings_;
 
     };
 

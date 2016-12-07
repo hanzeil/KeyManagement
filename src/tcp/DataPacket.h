@@ -1,7 +1,11 @@
 //
 // Created by root on 16-11-24.
 //
-// Author root.
+// Copyright (c) 2016 航天二院爱威公司. All rights reserved.
+//
+// Author Hanzeil.
+//
+// 通信数据包格式
 //
 #ifndef KEYMANAGEMENT_DATA_PACKET_H_H
 #define KEYMANAGEMENT_DATA_PACKET_H_H

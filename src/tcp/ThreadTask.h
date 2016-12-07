@@ -5,6 +5,8 @@
 //
 // Author Hanzeil.
 //
+// 每个线程均需要开启的任务，包括数据库模块的接口和硬件模块的接口
+//
 
 
 #ifndef KEYMANAGEMENT_MYIOSERVICE_H

@@ -5,6 +5,8 @@
 //
 // Author Hanzeil.
 //
+// 日志模块的客户端，0/1/2/3表示INFO, WARNING, ERROR, FATAL
+//
 
 #include "global_define.h"
 #include <experimental/filesystem>

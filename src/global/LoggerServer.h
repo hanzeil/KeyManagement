@@ -5,6 +5,8 @@
 //
 // Author Hanzeil.
 //
+// 日志服务器类，用于程序运行时动态修改日志的部分设置(filter)
+//
 
 
 #ifndef KEYMANAGEMENT_LOGGERSERVER_H
@@ -20,6 +22,13 @@
 #include "Logger.h"
 #include "../config/ConfigSingleton.h"
 
+/// 该服务在一个子线程中运行
+/// 负责接收客户端发来的请求, 从而修改日志属性
+/// 另外设置了定时器，定时器的时间在配置文件中给出
+/// 定时器的作用是定时检测日志文件的个数是否超过上限
+/// Sample usage:
+/// LoggerServer ls(address, log_server_port);
+/// ls.Run();
 class LoggerServer {
     typedef std::shared_ptr<boost::asio::ip::tcp::socket> socket_ptr;
 public:

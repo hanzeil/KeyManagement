@@ -5,6 +5,9 @@
 //
 // Author Hanzeil.
 //
+// 处理每次接收到的客户端请求，例如认证或者密钥请求，
+// 从而调用相应的业务处理对象进行处理并产生回复流
+//
 
 
 #ifndef KEYMANAGEMENT_REQUESTHANDLER_H
@@ -35,12 +38,16 @@ namespace tcp {
         /// Handle a request and produce a reply.
         void HandleRequest(const Request &req, Reply &rep);
 
+        /// 如果出错，回复全0
         void ReplyError(Reply &rep);
 
+        /// 加载每个线程开启的任务
         void BindThreadTask(std::shared_ptr<ThreadTask> task);
 
+        /// 重置状态
         void Reset();
 
+        /// 当前需要接收的请求的类型
         enum Status {
             authentication_1,
             authentication_2,
@@ -50,6 +57,7 @@ namespace tcp {
 
 
     private:
+        /// 将数据封装成通信数据包
         template<typename InputIterator>
         inline DataPacket MakeDataPacket(uint32_t flag,
                                          InputIterator rand_begin,
@@ -66,7 +74,9 @@ namespace tcp {
             return data_packet;
         }
 
+        /// 认证处理对象
         std::shared_ptr<handler::AuthenticationHandler> auth_handler;
+        /// 密钥处理对象
         std::shared_ptr<handler::KeyHandler> key_handler_;
     };
 

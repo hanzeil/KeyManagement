@@ -5,6 +5,8 @@
 //
 // Author Hanzeil.
 //
+// 回复的处理类
+//
 
 
 #ifndef KEYMANAGEMENT_REPLY_H
