@@ -5,6 +5,8 @@
 //
 // Author Hanzeil.
 //
+// 接收请求流后的数据流的解析
+//
 
 
 #ifndef KEYMANAGEMENT_REQUESTPARSER_H
@@ -32,8 +34,8 @@ namespace tcp {
         };
 
         /// Parse some data. The enum return value is good when a complete request has
-        /// been parsed, bad if the data is invalid, indeterminate when more data is
-        /// required. The InputIterator return value indicates how much of the input
+        /// been parsed, bad if the data is invalid.
+        /// The InputIterator return value indicates how much of the input
         /// has been consumed.
         template<typename InputIterator>
         std::tuple<ResultType, InputIterator> Parse(Request &req,

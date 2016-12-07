@@ -5,6 +5,8 @@
 //
 // Author Hanzeil.
 //
+// 每个连接的处理类
+//
 
 
 #ifndef KEYMANAGEMENT_CONNECTION_H
@@ -21,7 +23,7 @@
 
 namespace tcp {
 
-/// Represents a single connection from a client.
+    /// Represents a single connection from a client.
     class Connection
             : public std::enable_shared_from_this<Connection> {
     public:

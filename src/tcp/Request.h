@@ -5,6 +5,8 @@
 //
 // Author Hanzeil.
 //
+// 客户端请求包的c++ class表示
+//
 
 
 #ifndef KEYMANAGEMENT_REQUEST_H

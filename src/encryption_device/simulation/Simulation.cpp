@@ -127,8 +127,9 @@ namespace encryption_device {
         return key;
     }
 
-    bool Simulation::VerifySignedData(std::vector<unsigned char> &cert, std::vector<unsigned char> &data,
-                                      std::vector<unsigned char> &signed_data) {
+    bool Simulation::VerifySignedData(const std::vector<unsigned char> &cert,
+                                      const std::vector<unsigned char> &data,
+                                      const std::vector<unsigned char> &signed_data) {
         return true;
     }
 }

@@ -1,3 +1,13 @@
+//
+// Created by Hanzeil on 16-10-31.
+//
+// Copyright (c) 2016 航天二院爱威公司. All rights reserved.
+//
+// Author Hanzeil.
+//
+// 测试客户端
+//
+
 #include "../config/ConfigSingleton.h"
 #include "global_define.h"
 #include <experimental/filesystem>

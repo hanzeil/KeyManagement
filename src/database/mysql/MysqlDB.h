@@ -31,71 +31,72 @@
 
 namespace database {
 
-// 此类继承并实现了DBProductInterface接口
-// 通过mysql-connector-cpp-1.7.0库实现
-// sample usage:
-// DBProductInterface *db=new MysqlDB()
-// db->Connect(user,password);
-// db->InsertKey(k);
-// delete db;
+    /// 此类继承并实现了DBProductInterface接口
+    /// 通过mysql-connector-cpp-1.7.0库实现
+    /// sample usage:
+    /// auto db=std::make_shared<database::MysqlDB>();
+    /// db->Connect(user,password);
+    /// db->InsertKey(k);
+    /// delete db;
     class MysqlDB : public DBProductInterface {
     public:
         MysqlDB() = default;
 
-        //拷贝构造函数
-        //阻止拷贝
+        /// 拷贝构造函数
+        /// 阻止拷贝
         MysqlDB(const MysqlDB &) = delete;
 
-        //拷贝赋值函数
-        //阻止赋值
+        /// 拷贝赋值函数
+        /// 阻止赋值
         MysqlDB &operator=(MysqlDB &)= delete;
 
         ~MysqlDB();
 
-        // 连接mysql
-        // 连接成功则返回true
+        /// 连接DBMS
+        /// 连接失败会抛出异常
         void Connect(std::string url, std::string port,
                      std::string username, std::string password);
 
+        /// 打开名为db_name_的数据库
+        /// 打开失败会抛出异常
         void OpenDatabase();
 
-        // 新建Key表
-        // 如果新建成功则返回true
+        /// 新建Key表
+        /// 新建失败会抛出异常
         void Init();
 
+        /// 创建一个具有访问数据库db_name_所有权限的用户
+        /// 创建失败会抛出异常
         void CreateUser(std::string user, std::string password);
 
-        //插入一个Key到Mysql
-        //插入成功则返回true
+        /// 插入一个Key到数据库
+        /// 插入失败会抛出异常
         void InsertKey(Key &key);
 
-        //根据Key id从Mysql查找key并以Key类型的指针返回.
-        //Key类型和其中的key_value, key_id的空间均在该函数中分配
-        //参数key_id的空间没有释放，需要调用者继续管理
-        //如果查找失败，返回NULL
+        /// 根据Key id从Mysql查找key并以Key类型的指针返回.
+        /// 查找失败会抛出异常
         Key GetKey(KeyIdType key_id);
 
-        //根据Key id从Mysql删除该字段.
-        //参数key_id的空间没有释放，需要调用者继续管理
-        //如果删除成功，返回true
+        /// 根据Key id从Mysql删除该字段.
+        /// 删除失败会抛出异常
         void DeleteKey(unsigned char *key_id);
 
     private:
-        //将time_t格式的时间戳转换为Mysql的DateTime类型的时间格式
-        //返回格式为 %Y/%m/%d %H:%M:%S
+        /// 将time_t格式的时间戳转换为Mysql的DateTime类型的时间格式
+        /// 返回格式为 %Y/%m/%d %H:%M:%S
         static std::string UnixTime2MysqlTime(time_t unix_timestamp);
 
-        //将Mysql的DateTime类型的时间格式转换为time_t格式的时间戳
+        /// 将Mysql的DateTime类型的时间格式转换为time_t格式的时间戳
         static std::time_t MysqlTime2UnixTime(std::string mysql_time);
 
-        //driver_->connector()返回的连接对象
-        //默认为NULL
+        /// driver_->connector()返回的连接对象
+        /// 默认为nullptr
         sql::Connection *con_ = nullptr;
 
-        //数据所在的数据库名称
+        /// 数据所在的数据库名称
         std::string db_name_ = "symmetric_key";
 
-        //key所在的数据表名称
+        /// key所在的数据表名称
         std::string key_table_name_ = "tb_key";
 
     };

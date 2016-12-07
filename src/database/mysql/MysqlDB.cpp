@@ -18,7 +18,6 @@ namespace database {
         DLOG(INFO) << "Database:: Mysql closed successfully";
     }
 
-// 连接到Mysql后，使用数据库_db_name_
     void MysqlDB::Connect(std::string url, std::string port,
                           std::string username, std::string password) {
         static auto driver_ = sql::mysql::get_mysql_driver_instance();
@@ -115,7 +114,7 @@ namespace database {
             p_stmt->setString(2, key_value_enc);
             // 为了减少计算，暂定直接保存time_t格式的时间戳
             p_stmt->setInt(3, (int) key.generated_time_);
-            //p_stmt->setString(3, unixTime2MysqlTime(k.generated_time_));
+            // p_stmt->setString(3, unixTime2MysqlTime(k.generated_time_));
             p_stmt->execute();
             delete p_stmt;
         }

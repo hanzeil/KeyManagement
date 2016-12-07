@@ -23,27 +23,30 @@ namespace encryption_device {
 
         virtual ~EncryptionDeviceProductInterface();
 
-        //打开硬件设备
+        /// 打开硬件设备
+        /// 打开失败会抛出异常
         virtual void OpenDevice()=0;
 
-        //随机产生一个unsigned char* 类型的密钥，并返回
-        //如果产生失败，返回NULL
+        /// 随机产生一个KeyValueType类型的密钥，并返回
+        /// 如果产生失败，会抛出异常
         virtual KeyValueType GenerateKey()=0;
 
-        //给定一个密钥key和密钥长度length, 用主密钥将密钥加密
-        //如果加密失败，返回NULL
+        /// 给定一个密钥key, 用主密钥将密钥加密
+        /// 如果加密失败，会抛出异常
         virtual KeyValueEncType KeyEncryption(
                 KeyValueType &)=0;
 
-        //给定一个密钥key和密钥长度length, 用主密钥将密钥解密
-        //如果解密失败，返回NULL
+        /// 给定一个密钥key, 用主密钥将密钥解密
+        /// 如果解密失败，会抛出异常
         virtual KeyValueType KeyDecryption(
                 KeyValueEncType &)=0;
 
+        /// 验签操作，cert存放证书，data存放待验签数据，singed_data属于签名值
+        /// 如果验签失败，会抛出异常
         virtual bool VerifySignedData(
-                std::vector<unsigned char> &cert,
-                std::vector<unsigned char> &data,
-                std::vector<unsigned char> &signed_data)=0;
+                const std::vector<unsigned char> &cert,
+                const std::vector<unsigned char> &data,
+                const std::vector<unsigned char> &signed_data)=0;
     };
 }
 

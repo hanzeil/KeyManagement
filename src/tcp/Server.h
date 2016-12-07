@@ -5,6 +5,8 @@
 //
 // Author Hanzeil.
 //
+// 密钥服务类
+//
 
 
 #ifndef KEYMANAGEMENT_SERVER_H

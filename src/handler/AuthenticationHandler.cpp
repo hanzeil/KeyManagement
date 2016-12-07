@@ -20,8 +20,8 @@ namespace handler {
     }
 
     bool AuthenticationHandler::HandleAuthentication1(
-            std::vector<unsigned char> rand_client,
-            std::vector<unsigned char> cert_client) {
+            const std::vector<unsigned char> &rand_client,
+            const std::vector<unsigned char> &cert_client) {
         cert_client_ = cert_client;
         rand_client_ = rand_client;
         // 使用私钥将rand_client_签名
@@ -31,7 +31,7 @@ namespace handler {
     }
 
     bool AuthenticationHandler::HandleAuthentication2(
-            std::vector<unsigned char> rand_signed_server) {
+            const std::vector<unsigned char> &rand_signed_server) {
         rand_signed_server_ = rand_signed_server;
         // 验签rand_signed_server
         return signature_.VerifySignedData(
