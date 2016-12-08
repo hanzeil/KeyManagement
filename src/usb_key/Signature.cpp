@@ -88,7 +88,7 @@ namespace usb_key {
 
         // 调试用数据
         BYTE pbData[16] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
-        auto r = SKF_ExtECCVerify(hDev_, &public_key_skf, pbData, data.size(), &signed_data_skf);
+        auto r = SKF_ExtECCVerify(hDev_, &public_key_skf, data_point, data.size(), &signed_data_skf);
 
         delete cert_point;
         delete data_point;
