@@ -21,6 +21,7 @@ add_subdirectory(config)
 add_subdirectory(keymanagement-test-client)
 add_subdirectory(keymanagement-init)
 add_subdirectory(keymanagement-loglevel)
+add_subdirectory(usb_key)
 
 #For linking libraries.
 target_link_libraries(keymanagement

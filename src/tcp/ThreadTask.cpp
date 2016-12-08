@@ -36,6 +36,7 @@ namespace tcp {
             LOG(FATAL) << e.what();
         }
 
+        signature_ = std::make_shared<usb_key::Signature>();
 
         io_service_.run();
     }

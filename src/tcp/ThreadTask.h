@@ -20,6 +20,7 @@
 #include "../database/DBFactoryInterface.h"
 #include "../encryption_device/EncryptionDeviceFactoryInterface.h"
 #include "../config/Config.h"
+#include "../usb_key/Signature.h"
 
 #ifdef MYSQL
 
@@ -46,15 +47,20 @@ namespace tcp {
 
         ThreadTask(boost::asio::io_service &io_service);
 
+        /// 运行io_service
         void Run();
 
+        /// 加密硬件的接口
         std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware_;
 
+        ///　usb_key 的接口
+        std::shared_ptr<usb_key::Signature> signature_;
     private:
 
         std::shared_ptr<encryption_device::EncrpytionDeviceFactoryInterface> hFactory_;
 
         boost::asio::io_service &io_service_;
+
 
     };
 

@@ -18,7 +18,7 @@
 #include <random>
 #include <array>
 #include "../encryption_device/EncryptionDeviceProductInterface.h"
-#include "usb_key/Signature.h"
+#include "../usb_key/Signature.h"
 
 namespace handler {
 
@@ -39,9 +39,14 @@ namespace handler {
         AuthenticationHandler &operator=(const AuthenticationHandler &)= delete;
 
         /// 构造函数
-        /// 参数是硬件的接口
+        /// 参数是硬件和usb_key的接口
         AuthenticationHandler(
-                std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware);
+                std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware,
+                std::shared_ptr<usb_key::Signature> signature
+        );
+
+        /// 析构函数
+        ~AuthenticationHandler();
 
         /// 处理客户端发来的第一次认证请求
         bool HandleAuthentication1(const std::vector<unsigned char> &rand_client,
@@ -70,12 +75,10 @@ namespace handler {
         std::vector<unsigned char> rand_server_;
         /// 服务端随机数的签名数据
         std::vector<unsigned char> rand_signed_server_;
-<<<<<<< HEAD
-        usb_key::Signature signature_;
-=======
         /// 硬件模块的接口
->>>>>>> master
         std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware_;
+        /// usb_key的接口
+        std::shared_ptr<usb_key::Signature> signature_;
     };
 
 }
