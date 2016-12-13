@@ -37,6 +37,7 @@ namespace usb_key {
             return;
         }
 
+        /*
         r = OpenApp(hDev_, NULL, &hApp_, "111111");
         if (r) {
             SKF_DisconnectDev(hDev_);
@@ -50,11 +51,12 @@ namespace usb_key {
             std::cout << "Open Container ERROR" << std::endl;
             return;
         }
+        */
     }
 
     void Signature::DisConnect() {
-        SKF_CloseContainer(hCtn_);
-        SKF_CloseApplication(hApp_);
+        // SKF_CloseContainer(hCtn_);
+        // SKF_CloseApplication(hApp_);
         SKF_DisconnectDev(hDev_);
     }
 
