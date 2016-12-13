@@ -11,6 +11,7 @@
 #ifndef KEYMANAGEMENT_SJK1238_H
 #define KEYMANAGEMENT_SJK1238_H
 
+#include "server_authen.h"
 #include "../EncryptionDeviceFactoryInterface.h"
 #include <swsds.h>
 #include <glog/logging.h>

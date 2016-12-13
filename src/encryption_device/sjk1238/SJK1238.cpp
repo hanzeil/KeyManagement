@@ -9,7 +9,6 @@
 //
 
 #include "SJK1238.h"
-#include "server_authen.cpp"
 
 namespace encryption_device {
 
