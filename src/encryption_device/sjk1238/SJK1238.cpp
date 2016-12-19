@@ -213,12 +213,30 @@ namespace encryption_device {
             public_key_sdf.y[i] = public_key_skf.y[i + 32];
         }
         public_key_sdf.bits = public_key_skf.bit_len;
-        int result = SDF_ExternalVerify_ECC(p_ses_handle_,
-                                            SGD_SM2_1,
-                                            &public_key_sdf,
-                                            data_point,
-                                            data.size(),
-                                            &signed_data_sdf);
+        unsigned char pbData[32] = {1, 2, 3, 4, 5, 6, 7, 8, 7, 0};
+        for (unsigned char i = 0; i < 32; i++) {
+            pbData[i] = i;
+        }
+        ECCSignature test_pub_sig;
+        auto result = SDF_InternalSign_ECC(p_ses_handle_,
+                                           1,
+                                           pbData,
+                                           32,
+                                           &test_pub_sig);
+        printf("%0x\n", result);
+        auto result1 = SDF_InternalVerify_ECC(p_ses_handle_,
+                                              1,
+                                              pbData,
+                                              32,
+                                              &test_pub_sig);
+        printf("%0x\n", result1);
+        auto result2 = SDF_ExternalVerify_ECC(p_ses_handle_,
+                                              SGD_SM2_1,
+                                              &public_key_sdf,
+                                              pbData,
+                                              32,
+                                              &signed_data_sdf);
+        printf("%0x\n", result2);
         delete cert_point;
         delete data_point;
         return true;

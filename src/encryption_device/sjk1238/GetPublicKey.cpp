@@ -5,7 +5,7 @@
 //
 
 
-#include "server_authen.h"
+#include "GetPublicKey.h"
 
 namespace encryption_device {
 

@@ -13,8 +13,8 @@ if (SJK_1238)
             sjk1238/SJK1238Factory.cpp
             sjk1238/SJK1238.h
             sjk1238/SJK1238.cpp
-            sjk1238/server_authen.cpp
-            sjk1238/server_authen.h
+            sjk1238/GetPublicKey.cpp
+            sjk1238/GetPublicKey.h
             )
 endif (SJK_1238)
 
