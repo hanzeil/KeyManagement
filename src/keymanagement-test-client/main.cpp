@@ -9,74 +9,29 @@
 //
 
 #include "../config/ConfigSingleton.h"
-#include "global_define.h"
+#include "Signature.h"
+#include "Reply.h"
+#include "DataPacket.h"
 #include <experimental/filesystem>
-#include <sys/types.h>
-#include <netdb.h>
-#include <string>
-#include <unistd.h>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
 #include <string>
 #include <iostream>
-
-enum {
-    max_length = 1024
-};
-
-void dostuff(int); /* function prototype */
-void error(std::string msg) {
-    std::cout << msg << std::endl;
-}
-
-struct DataPack1 {
-    uint32_t flag = 0xaa000000;
-    char rand[16] = "123456789abcdef";
-    uint32_t length = 717;
-    uint32_t data;
-};
-
-struct DataPack2 {
-    uint32_t flag = 0xaabbcc00;
-    char rand[16] = {0};
-    uint16_t length = 128;
-    uint32_t data;
-};
-
-struct Request1 {
-    uint32_t flag = 0xaaaabbbb;
-    char rand[16] = {0};
-    uint32_t length = 1;
-    uint32_t data;
-};
-
-struct Request2 {
-    uint32_t flag = 0xaaaabbbb;
-    char rand[16] = {(char) 0x46, (char) 0x0b, (char) 0x91,
-                     (char) 0x38, (char) 0x36, (char) 0x30,
-                     (char) 0x41, (char) 0x7f, (char) 0xb9,
-                     (char) 0x99, (char) 0x0c, (char) 0x40,
-                     (char) 0x2d, (char) 0x72, (char) 0x18,
-                     (char) 0x6d};
-    uint32_t length = 2;
-    uint32_t data;
-};
-
-struct ECCPUBLICKEYBLOB {
-    u_int32_t bit_len;
-    unsigned char x[64];
-    unsigned char y[64];
-};
-
+#include <random>
+#include <boost/asio.hpp>
 
 namespace fs = std::experimental::filesystem;
 
-int main(int argc, char *argv[]) {
-    DataPack1 data_pack1;
-    DataPack2 data_pack2;
-    ssize_t n;
+void TestCreateKey(boost::asio::io_service &service, boost::asio::ip::tcp::endpoint &ep);
 
+void TestGetKeyById(boost::asio::io_service &service, boost::asio::ip::tcp::endpoint &ep);
+
+/// 将数据封装成通信数据包
+template<typename InputIterator>
+inline DataPacket MakeDataPacket(uint32_t flag,
+                                 InputIterator rand_begin,
+                                 InputIterator rand_end,
+                                 uint32_t len);
+
+int main(int argc, char *argv[]) {
 
     //config
     std::string user_config_path;
@@ -99,110 +54,67 @@ int main(int argc, char *argv[]) {
     } else if (fs::exists(fs_global_config_path)) {
         config_path = global_config_path + "keymanagement.conf";
     } else {
-        perror("NO CONFIG FILE");
+        std::cout << "NO CONFIG FILE" << std::endl;
         return 1;
     }
 
-    uint16_t portno = (uint16_t) config::ConfigSingleton::GetInstance().port_int_;
+    std::size_t portno = config::ConfigSingleton::GetInstance().port_int_;
     std::string address = config::ConfigSingleton::GetInstance().address_;
 
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0)
-        error("ERROR opening socket");
-    auto server = gethostbyname(address.c_str());
-    struct sockaddr_in serv_addr;
-    bzero((char *) &serv_addr, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    bcopy((char *) server->h_addr,
-          (char *) &serv_addr.sin_addr.s_addr,
-          server->h_length);
-    serv_addr.sin_port = htons(portno);
-    if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
-        error("ERROR connecting");
-    unsigned char buffer[8196] = {0};
+    boost::asio::io_service service;
+    boost::asio::ip::tcp::endpoint ep(boost::asio::ip::address::from_string(address),
+                                      (unsigned short) portno);
+    TestCreateKey(service, ep);
+    TestGetKeyById(service, ep);
+}
 
-    //Authentation1
-    std::string path = std::string(PROJECT_DIR) +
-                       "/src/keymanagement-test-client/cert.cer";
-    FILE *file = fopen(path.c_str(), "rb");
-    auto data = new unsigned char[data_pack1.length];
-    fread(data, data_pack1.length, 1, file);
-    fclose(file);
-    memcpy(buffer, &data_pack1, sizeof(data_pack1));
-    for (int i = 0; i < data_pack1.length; i++) {
-        buffer[i + sizeof(data_pack1)] = data[i];
+void TestCreateKey(boost::asio::io_service &service, boost::asio::ip::tcp::endpoint &ep) {
+    boost::asio::ip::tcp::socket sock(service);
+    sock.connect(ep);
+    Reply reply;
+    Signature signature;
+    std::array<unsigned char, 8192> buffer;
+    // 获取证书
+    auto cert = signature.GetSignCert();
+    std::vector<unsigned char> rand_client;
+    // 客户端随机数
+    std::random_device rd;
+    for (std::size_t i = 0; i < 16; i++) {
+        rand_client.push_back((unsigned char) rd());
     }
-    n = write(sockfd, buffer, sizeof(data_pack1) + data_pack1.length);
-    if (n < 0)
-        error("ERROR writing to socket");
-    bzero(buffer, 8196);
-    n = read(sockfd, buffer, 8195);
-    if (n < 0)
-        error("ERROR reading from socket");
-    for (size_t i = 0; i < n; i++) {
-        std::cout << std::hex << (int) buffer[i] << " ";
-    }
-    std::cout << std::endl;
+    auto data_packet_1 = MakeDataPacket(
+            0xaa000000,
+            rand_client.cbegin(),
+            rand_client.cend(),
+            (uint32_t) cert.size());
+    reply.ToContent(data_packet_1);
+    reply.ToContent(cert.cbegin(),
+                    cert.cend());
+    sock.write_some(reply.ToBuffers());
 
-    //Authentation2
-    path = std::string(PROJECT_DIR) +
-           "/src/keymanagement-test-client/data.signed";
-    file = fopen(path.c_str(), "rb");
-    data = new unsigned char[data_pack2.length];
-    memcpy(buffer, &data_pack2, sizeof(data_pack2));
-    fread(data, data_pack2.length, 1, file);
-    fclose(file);
-    for (int i = 0; i < data_pack2.length; i++) {
-        buffer[i + sizeof(data_pack2)] = data[i];
-    }
-    n = write(sockfd, buffer, sizeof(data_pack2) + data_pack2.length);
-    if (n < 0)
-        error("ERROR writing to socket");
-    bzero(buffer, 8196);
-    n = read(sockfd, buffer, 8195);
-    if (n < 0)
-        error("ERROR reading from socket");
-    for (size_t i = 0; i < n; i++) {
-        std::cout << (int) buffer[i] << " ";
-    }
-    std::cout << std::endl;
+    std::size_t len = sock.read_some(boost::asio::buffer(buffer));
+    sock.close();
+}
 
-    //Request1
-    Request1 request1;
-    n = write(sockfd, &request1, sizeof(request1));
-    if (n < 0)
-        error("ERROR writing to socket");
-    bzero(buffer, 8196);
-    n = read(sockfd, buffer, 8195);
-    if (n < 0)
-        error("ERROR reading from socket");
+void TestGetKeyById(boost::asio::io_service &service, boost::asio::ip::tcp::endpoint &ep) {
+    boost::asio::ip::tcp::socket sock(service);
+    sock.connect(ep);
+    sock.close();
+}
 
-    printf("ID:\n");
-    for (size_t i = 4; i < 4 + 16; i++) {
-        printf("%0x ", buffer[i]);
-    }
-    printf("\n");
+/// 将数据封装成通信数据包
+template<typename InputIterator>
+inline DataPacket MakeDataPacket(uint32_t flag,
+                                 InputIterator rand_begin,
+                                 InputIterator rand_end,
+                                 uint32_t len) {
 
-    for (size_t i = 28; i < n; i++) {
-        printf("%0x ", buffer[i]);
+    DataPacket data_packet;
+    data_packet.flag = flag;
+    for (auto i = 0; i < 16 && rand_begin != rand_end; i++) {
+        data_packet.rand[i] = *rand_begin++;
     }
-    std::cout << std::endl;
-
-    /*
-    //Request2
-    Request2 request2;
-    //memcpy(request2.rand, buffer + 4, 16);
-    n = write(sockfd, &request2, sizeof(request2));
-    if (n < 0)
-        error("ERROR writing to socket");
-    bzero(buffer, 8196);
-    n = read(sockfd, buffer, 8195);
-    if (n < 0)
-        error("ERROR reading from socket");
-    for (size_t i = 28; i < n; i++) {
-        std::cout << (int) buffer[i] << " ";
-    }
-    std::cout << std::endl;
-    */
-    return 0;
+    data_packet.len = len;
+    data_packet.point_ignored;
+    return data_packet;
 }

@@ -43,7 +43,7 @@ namespace encryption_device {
 
         /// 验签操作，cert存放证书，data存放待验签数据，singed_data属于签名值
         /// 如果验签失败，会抛出异常
-        virtual bool VerifySignedData(
+        virtual void VerifySignedData(
                 const std::vector<unsigned char> &cert,
                 const std::vector<unsigned char> &data,
                 const std::vector<unsigned char> &signed_data)=0;

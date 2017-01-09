@@ -43,11 +43,11 @@ namespace handler {
                 std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware);
 
         /// 处理客户端发来的第一次认证请求
-        bool HandleAuthentication1(const std::vector<unsigned char> &rand_client,
+        void HandleAuthentication1(const std::vector<unsigned char> &rand_client,
                                    const std::vector<unsigned char> &cert_client);
 
         /// 处理客户端发来的第二次认证请求
-        bool HandleAuthentication2(const std::vector<unsigned char> &rand_signed_server);
+        void HandleAuthentication2(const std::vector<unsigned char> &rand_signed_server);
 
         /// 产生服务端第一次认证回复
         std::tuple<std::vector<unsigned char>, std::vector<unsigned char>>

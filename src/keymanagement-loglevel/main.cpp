@@ -19,7 +19,7 @@ namespace fs = std::experimental::filesystem;
 int main(int argc, char *argv[]) {
     if (argc != 2) {
         fprintf(stderr, "Usage: %s <loglevel [0/1/2/3]>\n", argv[0]);
-        fprintf(stderr, "Example: keymanagement-loglevel 1\n");
+        fprintf(stderr, "Example: %s 1\n", argv[0]);
         return 1;
     }
 

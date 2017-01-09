@@ -1,35 +1,37 @@
-#ifndef SERVER_AUTHEN_H
-#define SERVER_AUTHEN_H
+#ifndef KEYMANAGEMENT_TEST_CLIENT_SERVER_AUTHEN_H
+#define KEYMANAGEMENT_TEST_CLIENT_SERVER_AUTHEN_H
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "skf_type.h"
 
-namespace encryption_device {
+
+extern DEVHANDLE hDev;
 
 
-    typedef struct L {
-        int len, tag;
-    } Len;
+typedef struct L {
+    int len, tag;
+} Len;
 
-    typedef struct authen_data {
-        unsigned short randlen;
-        unsigned short devIDlen;
-        unsigned short siglen;
-        unsigned short cerlen;
-        unsigned char devID[32];
-        unsigned char rand[20];
-        unsigned char signature[256];
-        unsigned char sender_cer[2048];
-    } AUTHEN_DATA;
+typedef struct authen_data {
+    unsigned short randlen;
+    unsigned short devIDlen;
+    unsigned short siglen;
+    unsigned short cerlen;
+    unsigned char devID[32];
+    unsigned char rand[20];
+    unsigned char signature[256];
+    unsigned char sender_cer[2048];
+} AUTHEN_DATA;
 
-    void sAfill();//绑定OID
-    void isFill();//绑定RDN
-    void fill(int);//switch结构，把证书结构的各字段调用tlv函数的序号与证书结构内容绑定一起，对ca_cer结构进行填充
-    Len tlv();//TLV匹配的递归
-    void bitfill(int);//从文件里获取连续字节码(字符串)，赋给字符串s
-    void output();//依次输出ca_cer内容
+void sAfill();//绑定OID
+void isFill();//绑定RDN
+void fill(int);//switch结构，把证书结构的各字段调用tlv函数的序号与证书结构内容绑定一起，对ca_cer结构进行填充
+Len tlv();//TLV匹配的递归
+void bitfill(int);//从文件里获取连续字节码(字符串)，赋给字符串s
+void output();//依次输出ca_cer内容
 
 
 /*
@@ -37,7 +39,7 @@ namespace encryption_device {
 	[ret]:
 			struct Len 
 */
-    Len L_init(int len, int tag);
+Len L_init(int len, int tag);
 
 /*
 	[pos]:	parse certificate to get public key
@@ -51,40 +53,40 @@ namespace encryption_device {
 			signkey:  (format: offset-length )
 					  0-4, 36-32, 100-32
 */
-    int parce_cer(unsigned char *cerdata, int cerlen, unsigned char *signkey);
+int parce_cer(unsigned char *cerdata, int cerlen, unsigned char *signkey);
 
 #if 0
-    void sAfill(){
-         strcpy(sA[0].s1,"1.2.840.10040.4.1");
-         strcpy(sA[0].s2,"DSA");
-         strcpy(sA[1].s1,"1.2.840.10040.4.3");
-         strcpy(sA[1].s2,"sha1DSA");
-         strcpy(sA[2].s1,"1.2.840.113549.1.1.1");
-         strcpy(sA[2].s2,"RSA");
-         strcpy(sA[3].s1,"1.2.840.113549.1.1.2");
-         strcpy(sA[3].s2,"md2RSA");
-         strcpy(sA[4].s1,"1.2.840.113549.1.1.3");
-         strcpy(sA[4].s2,"md4RSA");
-         strcpy(sA[5].s1,"1.2.840.113549.1.1.4");
-         strcpy(sA[5].s2,"md5RSA");
-         strcpy(sA[6].s1,"1.2.840.113549.1.1.5");
-         strcpy(sA[6].s2,"sha1RSA");
-    }
+void sAfill(){
+     strcpy(sA[0].s1,"1.2.840.10040.4.1");
+     strcpy(sA[0].s2,"DSA");
+     strcpy(sA[1].s1,"1.2.840.10040.4.3");
+     strcpy(sA[1].s2,"sha1DSA");
+     strcpy(sA[2].s1,"1.2.840.113549.1.1.1");
+     strcpy(sA[2].s2,"RSA");
+     strcpy(sA[3].s1,"1.2.840.113549.1.1.2");
+     strcpy(sA[3].s2,"md2RSA");
+     strcpy(sA[4].s1,"1.2.840.113549.1.1.3");
+     strcpy(sA[4].s2,"md4RSA");
+     strcpy(sA[5].s1,"1.2.840.113549.1.1.4");
+     strcpy(sA[5].s2,"md5RSA");
+     strcpy(sA[6].s1,"1.2.840.113549.1.1.5");
+     strcpy(sA[6].s2,"sha1RSA");
+}
 
-    void isFill(){
-         strcpy(is[0].s1,"2.5.4.6");
-         strcpy(is[0].s2,"Country ");
-         strcpy(is[1].s1,"2.5.4.8");
-         strcpy(is[1].s2,"Sate or province name ");
-         strcpy(is[2].s1,"2.5.4.7");
-         strcpy(is[2].s2,"Locality ");
-         strcpy(is[3].s1,"2.5.4.10");
-         strcpy(is[3].s2,"Organization name ");
-         strcpy(is[4].s1,"2.5.4.11");
-         strcpy(is[4].s2,"Organizational Unit name ");
-         strcpy(is[5].s1,"2.5.4.3");
-         strcpy(is[5].s2,"Common Name ");
-    }
+void isFill(){
+     strcpy(is[0].s1,"2.5.4.6");
+     strcpy(is[0].s2,"Country ");
+     strcpy(is[1].s1,"2.5.4.8");
+     strcpy(is[1].s2,"Sate or province name ");
+     strcpy(is[2].s1,"2.5.4.7");
+     strcpy(is[2].s2,"Locality ");
+     strcpy(is[3].s1,"2.5.4.10");
+     strcpy(is[3].s2,"Organization name ");
+     strcpy(is[4].s1,"2.5.4.11");
+     strcpy(is[4].s2,"Organizational Unit name ");
+     strcpy(is[5].s1,"2.5.4.3");
+     strcpy(is[5].s2,"Common Name ");
+}
 #endif
 
 /*
@@ -122,17 +124,17 @@ namespace encryption_device {
 */
 
 #if 0
-    void bitfill(int dd){
-         int i=0;
-         strcpy(s,"");
-         for(i=0;i<dd;i++){
-             unsigned char tl=filearray[myindex++];//fgetc(fp);
-             int d=tl;
-             char ts2[10];
-             sprintf(ts2,"%02x",d);
-             strcat(s,ts2);
-         }
-    }
+void bitfill(int dd){
+     int i=0;
+     strcpy(s,"");
+     for(i=0;i<dd;i++){
+         unsigned char tl=filearray[myindex++];//fgetc(fp);
+         int d=tl;
+         char ts2[10];
+         sprintf(ts2,"%02x",d);
+         strcat(s,ts2);
+     }
+}
 #endif
 
 
@@ -148,7 +150,7 @@ namespace encryption_device {
 						 len3(2), sign(len3), 
 						 len4(2), cer(len4)
 */
-    int Parser_cmd(unsigned char *cmd, int cmdlen, AUTHEN_DATA *auth_data);
+int Parser_cmd(unsigned char *cmd, int cmdlen, AUTHEN_DATA *auth_data);
 
 /*
 	[pos]:	DevID auth	
@@ -256,7 +258,6 @@ int DevID_auth(unsigned char *cmdin,int *cmdout_len)
 }
 */
 
-}
 #if 0
 void output(){
      puts("ca.cer解析如下：");

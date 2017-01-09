@@ -38,6 +38,7 @@ namespace tcp {
                 LOG(WARNING) << e.what();
                 rep.ErrorContent();
                 status_ = error;
+                return;
             }
         } else if (req.method == "FindKeyByID") {
             KeyIdType key_id;
@@ -62,13 +63,17 @@ namespace tcp {
                 LOG(WARNING) << e.what();
                 rep.ErrorContent();
                 status_ = error;
+                return;
             }
         } else if (req.method == "Authentication1") {
-            auto status = auth_handler->
-                    HandleAuthentication1(req.rand,
-                                          req.data);
-            if (!status) {
+            try {
+                auth_handler->
+                        HandleAuthentication1(req.rand,
+                                              req.data);
+            }
+            catch (std::runtime_error e) {
                 LOG(WARNING) << "TCP:: 1st-authentication is failed";
+                LOG(WARNING) << e.what();
                 rep.ErrorContent();
                 status_ = error;
                 return;
@@ -89,10 +94,13 @@ namespace tcp {
                           cert_server.cend());
             LOG(INFO) << "1st-authenticate is successful";
         } else if (req.method == "Authentication2") {
-            auto status = auth_handler->
-                    HandleAuthentication2(req.data);
-            if (!status) {
+            try {
+                auth_handler->
+                        HandleAuthentication2(req.data);
+            }
+            catch (std::runtime_error e) {
                 LOG(WARNING) << "TCP:: 2nd-authentication is failed";
+                LOG(WARNING) << e.what();
                 rep.ErrorContent();
                 status_ = error;
                 return;
