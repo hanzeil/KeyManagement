@@ -12,27 +12,32 @@
 typedef HANDLE	HDEV;
 
 #else /* linux */
+
 #include <stdbool.h>
 #include <stddef.h>
 
 #ifdef DRIVER_SDKEY
 typedef int        HDEV;
 #endif
-typedef void*	   HANDLE;
+typedef void *HANDLE;
 
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
+#ifndef __USE_GNU
 #define __USE_GNU
+#endif
 
 #endif
 
-typedef unsigned char	 u8;
-typedef unsigned short   u16;
-typedef unsigned int	 u32;
-typedef unsigned long    ULONG;
-typedef unsigned char    BYTE;
-typedef char * LPSTR;
-typedef unsigned long    DWORD;
-typedef unsigned char*   PBYTE;
+typedef unsigned char u8;
+typedef unsigned short u16;
+typedef unsigned int u32;
+typedef unsigned long ULONG;
+typedef unsigned char BYTE;
+typedef char *LPSTR;
+typedef unsigned long DWORD;
+typedef unsigned char *PBYTE;
 typedef bool BOOL;
 typedef int INT_PTR;
 

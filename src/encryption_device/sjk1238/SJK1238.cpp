@@ -89,28 +89,20 @@ namespace encryption_device {
     KeyValueEncType SJK1238::KeyEncryption(
             KeyValueType &key) {
         unsigned int length = Key::kKeyValueLen;
-        unsigned int length_out;
-        unsigned char puc_iv[16] = {0};
         //密钥的unsigned char* 形式
-        unsigned char *key_unc = new unsigned char[rsa_len_];
-        unsigned char *key_unc_encrypted = new unsigned char[rsa_len_];
-        std::fill_n(key_unc, rsa_len_, 1);
-        std::fill_n(key_unc_encrypted, rsa_len_, 0);
-        // copy && 取模变换
+        unsigned char *key_unc = new unsigned char[length];
+        // copy
         for (std::size_t i = 0; i < length; i++) {
             key_unc[i] = key[i];
-            key_unc[i + length] = (unsigned char) (key_unc[i] / 128);
-            key_unc[i] = (unsigned char) (key_unc[i] % 128);
         }
-
-        auto status = SDF_InternalPublicKeyOperation_RSA(
+        ECCCipher ecc_cipher;
+        auto status = SDF_InternalEncrypt_ECC(
                 p_ses_handle_,
                 1,
-                SGD_RSA_ENC,
+                SGD_SM2_3,
                 key_unc,
-                rsa_len_,
-                key_unc_encrypted,
-                &length_out
+                length,
+                &ecc_cipher
         );
 
         if (status) {
@@ -120,12 +112,15 @@ namespace encryption_device {
             throw std::runtime_error(ss.str());
         }
         DLOG(INFO) << "Hardware:: Encrypt the key using the master key";
+        // ECCCipher to KeyValueEncType
         KeyValueEncType key_encrypted;
-        for (std::size_t i = 0; i < rsa_len_; i++) {
-            key_encrypted[i] = key_unc_encrypted[i];
+        for (std::size_t i = 0; i < 96; i++) {
+            key_encrypted[i] = *((unsigned char *) &ecc_cipher + 4 + i);
+        }
+        for (std::size_t i = 96; i < 128; i++) {
+            key_encrypted[i] = ecc_cipher.M[i - 96];
         }
         delete key_unc;
-        delete key_unc_encrypted;
         return key_encrypted;
     }
 
@@ -134,21 +129,24 @@ namespace encryption_device {
         unsigned int length = Key::kKeyValueLen;
         unsigned int length_out;
         //密钥的unsigned char* 形式
-        unsigned char *key_unc_encrypted = new unsigned char[rsa_len_];
-        unsigned char *key_unc = new unsigned char[rsa_len_];
-        std::fill_n(key_unc, rsa_len_, 0);
-        std::fill_n(key_unc_encrypted, rsa_len_, 0);
-        for (std::size_t i = 0; i < rsa_len_; i++) {
-            key_unc_encrypted[i] = key_encrypted[i];
+        unsigned char *key_unc = new unsigned char[length];
+        ECCCipher ecc_cipher;
+        std::fill_n((unsigned char *) &ecc_cipher, sizeof(ecc_cipher), 0);
+        // KeyValueEncType to ECCCipher
+        ecc_cipher.clength = length;
+        for (std::size_t i = 0; i < 96; i++) {
+            *((unsigned char *) &ecc_cipher + 4 + i) = key_encrypted[i];
+        }
+        for (std::size_t i = 96; i < 128; i++) {
+            ecc_cipher.M[i - 96] = key_encrypted[i];
         }
         DLOG(INFO) << "Hardware: Open a session";
 
-        auto status = SDF_InternalPrivateKeyOperation_RSA(
+        auto status = SDF_InternalDecrypt_ECC(
                 p_ses_handle_,
                 1,
-                SGD_RSA_ENC,
-                key_unc_encrypted,
-                rsa_len_,
+                SGD_SM2_3,
+                &ecc_cipher,
                 key_unc,
                 &length_out
         );
@@ -161,13 +159,11 @@ namespace encryption_device {
         }
         DLOG(INFO) << "Hardware:: Decrypt the key using the master key";
         KeyValueType key;
-        // copy && 取模变换
+        // copy
         for (std::size_t i = 0; i < length; i++) {
             key[i] = key_unc[i];
-            key[i] = (unsigned char) (key_unc[i + length] * 128 + key[i]);
         }
         delete key_unc;
-        delete key_unc_encrypted;
         return key;
     }
 
@@ -213,12 +209,10 @@ namespace encryption_device {
             public_key_sdf.y[i] = public_key_skf.y[i + 32];
         }
         public_key_sdf.bits = public_key_skf.bit_len;
-        unsigned char pbData[32] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
         auto result = SDF_ExternalVerify_ECC(p_ses_handle_,
                                              SGD_SM2_1,
                                              &public_key_sdf,
                                              data_point,
-                //pbData,
                                              32,
                                              &signed_data_sdf);
         delete cert_point;

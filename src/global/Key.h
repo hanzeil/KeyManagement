@@ -38,7 +38,7 @@ public:
     /// Key_value的长度，对称密钥的默认长度，16个字节
     static const size_t kKeyValueLen = 16;
 
-    /// 加密后的密文长度，由于主密钥是128字节RSA，所以密文也是128个字节
+    /// 加密后的密文长度
     static const size_t kKeyValueEncLen = 128;
 
     /// Master Key Value的长度，对称密钥的默认长度，16个字节

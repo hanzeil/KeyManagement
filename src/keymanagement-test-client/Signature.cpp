@@ -11,9 +11,11 @@
 
 #include "Signature.h"
 
+char *Signature::sz_name_ = NULL;
+
 Signature::Signature() {
 
-    auto r = OpenDev(NULL, &hDev_);
+    auto r = OpenDev(&hDev_);
     if (r) {
         SKF_CloseContainer(hCtn_);
         SKF_CloseApplication(hApp_);
@@ -21,7 +23,7 @@ Signature::Signature() {
         std::cout << "USB_KEY ERROR" << std::endl;
     }
 
-    r = OpenApp(hDev_, NULL, &hApp_, "111111");
+    r = OpenApp(hDev_, NULL, &hApp_, sz_pin_);
     if (r) {
         SKF_CloseContainer(hCtn_);
         SKF_CloseApplication(hApp_);
@@ -80,6 +82,20 @@ bool Signature::VerifySignedData(std::vector<unsigned char> &cert, std::vector<u
     return true;
 }
 
+std::vector<unsigned char> Signature::SignData(std::vector<unsigned char> &data) {
+    unsigned char rand[32] = {0};
+    for (size_t i = 0; i < 16; i++) {
+        rand[i] = data[i];
+    }
+    ECCSIGNATUREBLOB pSignature;
+    SKF_ECCSignData(hCtn_, rand, 32, &pSignature);
+    std::vector<unsigned char> result(sizeof(pSignature));
+    for (std::size_t i = 0; i < sizeof(pSignature); i++) {
+        result[i] = *((unsigned char *) &pSignature + i);
+    }
+    return result;
+}
+
 std::vector<unsigned char> Signature::GetSignCert() {
     return GetCert(hCtn_, 1);
 }
@@ -87,13 +103,13 @@ std::vector<unsigned char> Signature::GetSignCert() {
 std::vector<unsigned char> Signature::GetEncCert() {
 }
 
-u32 Signature::OpenDev(char *szName, DEVHANDLE *phDev) {
+u32 Signature::OpenDev(DEVHANDLE *phDev) {
     char *szList = NULL;
     u32 r, len;
     DEVHANDLE hDev;
     DEVINFO info;
 
-    if (szName == NULL) {
+    if (Signature::sz_name_ == NULL) {
         r = SKF_EnumDev(1, szList, &len);
         if (r) {
             return r;
@@ -109,10 +125,10 @@ u32 Signature::OpenDev(char *szName, DEVHANDLE *phDev) {
             free(szList);
             return r;
         }
-        szName = szList;
+        Signature::sz_name_ = strdup(szList);
     }
 
-    r = SKF_ConnectDev(szName, &hDev);
+    r = SKF_ConnectDev(Signature::sz_name_, &hDev);
     if (szList) free(szList);
     if (r) {
         return r;
@@ -275,7 +291,7 @@ std::vector<unsigned char> Signature::GetCert(HCONTAINER hCon, int bFlag) {
         throw (e);
     }
     else {
-        auto data = (u8*) malloc(len);
+        auto data = (u8 *) malloc(len);
         ret = SKF_ExportCertificate(hCon, bFlag, data, &len);
         std::vector<unsigned char> result(data,
                                           data + len);

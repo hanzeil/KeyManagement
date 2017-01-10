@@ -79,8 +79,6 @@ namespace encryption_device {
         /// SJK1238会话句柄
         void *p_ses_handle_ = nullptr;
 
-        /// RSA密钥长度
-        const unsigned int rsa_len_ = Key::kKeyValueEncLen;
 
         struct ECCPUBLICKEYBLOB {
             u_int32_t bit_len;

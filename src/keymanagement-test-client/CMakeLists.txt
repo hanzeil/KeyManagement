@@ -12,22 +12,25 @@ set(SOURCE_FILES
         base_type.h
         Reply.cpp
         Reply.h
+        DataPacket.h
         )
 find_library(STDC++FS stdc++fs)
-
 find_library(SKF SKF)
+find_library(BOOST_SYSTEM boost_system)
+find_library(BOOST_THREAD boost_thread)
+find_library(PTHREAD pthread)
 
 add_executable(keymanagement-test-client
         ${SOURCE_FILES}
         )
 
-find_library(BOOST_SYSTEM boost_system)
-
 target_link_libraries(keymanagement-test-client
-        config
         ${BOOST_SYSTEM}
         ${STDC++FS}
         ${SKF}
+        ${BOOST_THREAD}
+        ${PTHREAD}
+        config
         global
         )
 

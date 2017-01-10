@@ -35,6 +35,8 @@ public:
             std::vector<unsigned char> &data,
             std::vector<unsigned char> &signed_data);
 
+    std::vector<unsigned char> SignData(std::vector<unsigned char> &data);
+
     std::vector<unsigned char> GetSignCert();
 
     std::vector<unsigned char> GetEncCert();
@@ -50,11 +52,13 @@ private:
 
     u32 Enum_App(DEVHANDLE *hDev, char **pszList);
 
-    u32 OpenDev(char *szName, DEVHANDLE *phDev);
+    u32 OpenDev(DEVHANDLE *phDev);
 
     DEVHANDLE hDev_;
     HAPPLICATION hApp_;
     HCONTAINER hCtn_;
+    char *sz_pin_ = const_cast<char *>("111111");
+    static char *sz_name_;
 };
 
 
