@@ -28,7 +28,6 @@ target_link_libraries(tcp
         global
         handler
         config
-        usb_key
         ${BOOST_SYSTEM}
         ${BOOST_THREAD}
         ${PTHREAD}

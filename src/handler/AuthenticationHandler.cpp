@@ -14,15 +14,11 @@
 namespace handler {
 
     AuthenticationHandler::AuthenticationHandler(
-            std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware,
-            std::shared_ptr<usb_key::Signature> signature)
-            : hardware_(hardware),
-              signature_(signature) {
-        signature_->Connect();
+            std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware)
+            : hardware_(hardware) {
     }
 
     AuthenticationHandler::~AuthenticationHandler() {
-        signature_->DisConnect();
     }
 
     bool AuthenticationHandler::HandleAuthentication1(
@@ -40,16 +36,10 @@ namespace handler {
             const std::vector<unsigned char> &rand_signed_server) {
         rand_signed_server_ = rand_signed_server;
         // 验签rand_signed_server
-        return signature_->VerifySignedData(
-                cert_client_,
-                rand_server_,
-                rand_signed_server);
-        /*
         hardware_->VerifySignedData(
                 cert_client_,
                 rand_server_,
                 rand_signed_server);
-        */
     }
 
 

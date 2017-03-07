@@ -22,5 +22,5 @@ target_link_libraries(global
         ${BOOST_THREAD}
         ${PTHREAD}
         ${STDC++FS}
-	${UUID}
+        ${UUID}
         )

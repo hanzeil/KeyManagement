@@ -12,5 +12,4 @@ target_link_libraries(handler
         database
         encryption_device
         global
-        usb_key
         )

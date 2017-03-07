@@ -9,8 +9,8 @@ set(PROJECT_BINARY_DIR bin/)
 # 宏参数设置
 set(CONFIG_FILE_NAME keymanagement.conf)
 # 默认编译选项
-set(SIMULATION OFF)
-set(SJK_1238 ON)
+set(SIMULATION ON)
+set(SJK_1238 OFF)
 if (ENCRYPTION_DEVICE MATCHES SIMULATION)
     set(SIMULATION ON)
     set(SJK_1238 OFF)

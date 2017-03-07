@@ -18,7 +18,6 @@
 #include <random>
 #include <array>
 #include "../encryption_device/EncryptionDeviceProductInterface.h"
-#include "../usb_key/Signature.h"
 
 namespace handler {
 
@@ -41,8 +40,7 @@ namespace handler {
         /// 构造函数
         /// 参数是硬件和usb_key的接口
         AuthenticationHandler(
-                std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware,
-                std::shared_ptr<usb_key::Signature> signature
+                std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware
         );
 
         /// 析构函数
@@ -77,8 +75,6 @@ namespace handler {
         std::vector<unsigned char> rand_signed_server_;
         /// 硬件模块的接口
         std::shared_ptr<encryption_device::EncryptionDeviceProductInterface> hardware_;
-        /// usb_key的接口
-        std::shared_ptr<usb_key::Signature> signature_;
     };
 
 }

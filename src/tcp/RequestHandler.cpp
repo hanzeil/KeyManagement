@@ -118,7 +118,7 @@ namespace tcp {
     }
 
     void RequestHandler::BindThreadTask(std::shared_ptr<ThreadTask> task) {
-        auth_handler = std::make_shared<handler::AuthenticationHandler>(task->hardware_, task->signature_);
+        auth_handler = std::make_shared<handler::AuthenticationHandler>(task->hardware_);
         key_handler_ = std::make_shared<handler::KeyHandler>(task->hardware_);
     }
 
