@@ -18,7 +18,7 @@ add_library(database STATIC ${DATABASE_SOURCE_FILES})
 # library
 if (MYSQL)
     # Mysql connector
-    find_library(MYSQLCPPCONN mysqlcppconn-static)
+    find_library(MYSQLCPPCONN mysqlcppconn)
     find_library(MYSQLCLIENT mysqlclient)
 
     target_link_libraries(database

@@ -20,10 +20,8 @@ namespace encryption_device {
     }
 
     void Simulation::OpenDevice() {
-        char master_key_pub_path[256] = PROJECT_DIR;
-        char master_key_pri_path[256] = PROJECT_DIR;
-        strcat(master_key_pub_path, "/src/encryption_device/simulation/MasterKey.pub");
-        strcat(master_key_pri_path, "/src/encryption_device/simulation/MasterKey");
+        char master_key_pub_path[256] = "/etc/keymanagement/MasterKey.pub";
+        char master_key_pri_path[256] = "/etc/keymanagement/MasterKey";
         auto pub_file = fopen(master_key_pub_path, "r");
         auto pri_file = fopen(master_key_pri_path, "r");
         master_key_pub_ = PEM_read_RSA_PUBKEY(pub_file, nullptr, nullptr, nullptr);

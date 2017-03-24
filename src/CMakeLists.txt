@@ -35,3 +35,9 @@ install(TARGETS keymanagement
 install(FILES ${CMAKE_SOURCE_DIR}/config/keymanagement.conf
         DESTINATION /etc/keymanagement/
         COMPONENT config)
+install(FILES ${CMAKE_SOURCE_DIR}/config/MasterKey.pub
+        DESTINATION /etc/keymanagement/
+        COMPONENT config)
+install(FILES ${CMAKE_SOURCE_DIR}/config/MasterKey
+        DESTINATION /etc/keymanagement/
+        COMPONENT config)

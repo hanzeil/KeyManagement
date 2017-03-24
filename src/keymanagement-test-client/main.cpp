@@ -20,6 +20,7 @@
 #include <cstring>
 #include <string>
 #include <iostream>
+#include <algorithm>
 
 enum {
     max_length = 1024
@@ -117,92 +118,94 @@ int main(int argc, char *argv[]) {
           (char *) &serv_addr.sin_addr.s_addr,
           server->h_length);
     serv_addr.sin_port = htons(portno);
-    if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
+    if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0){
         error("ERROR connecting");
+	return 1;
+    }
+    std::cout<<"Connect OK"<<std::endl;
     unsigned char buffer[8196] = {0};
 
     //Authentation1
     std::string path = std::string(PROJECT_DIR) +
                        "/src/keymanagement-test-client/cert.cer";
-    FILE *file = fopen(path.c_str(), "rb");
+    // FILE *file = fopen(path.c_str(), "rb");
     auto data = new unsigned char[data_pack1.length];
-    fread(data, data_pack1.length, 1, file);
-    fclose(file);
+    std::fill(data,data+data_pack1.length,0);
+    // fread(data, data_pack1.length, 1, file);
+    // fclose(file);
     memcpy(buffer, &data_pack1, sizeof(data_pack1));
     for (int i = 0; i < data_pack1.length; i++) {
         buffer[i + sizeof(data_pack1)] = data[i];
     }
     n = write(sockfd, buffer, sizeof(data_pack1) + data_pack1.length);
-    if (n < 0)
+    if (n < 0){
         error("ERROR writing to socket");
+	return 1;
+    }
     bzero(buffer, 8196);
     n = read(sockfd, buffer, 8195);
-    if (n < 0)
+    if (n < 0){
         error("ERROR reading from socket");
-    for (size_t i = 0; i < n; i++) {
-        std::cout << std::hex << (int) buffer[i] << " ";
+	return 1;
     }
-    std::cout << std::endl;
+    std::cout<<"Authentation1 OK"<<std::endl;
 
     //Authentation2
-    path = std::string(PROJECT_DIR) +
-           "/src/keymanagement-test-client/data.signed";
-    file = fopen(path.c_str(), "rb");
+    // path = std::string(PROJECT_DIR) +
+    //       "/src/keymanagement-test-client/data.signed";
+    // file = fopen(path.c_str(), "rb");
     data = new unsigned char[data_pack2.length];
+    std::fill(data,data+data_pack2.length,0);
     memcpy(buffer, &data_pack2, sizeof(data_pack2));
-    fread(data, data_pack2.length, 1, file);
-    fclose(file);
+    // fread(data, data_pack2.length, 1, file);
+    // fclose(file);
     for (int i = 0; i < data_pack2.length; i++) {
         buffer[i + sizeof(data_pack2)] = data[i];
     }
     n = write(sockfd, buffer, sizeof(data_pack2) + data_pack2.length);
-    if (n < 0)
+    if (n < 0){
         error("ERROR writing to socket");
+	return 1;
+    }
     bzero(buffer, 8196);
     n = read(sockfd, buffer, 8195);
-    if (n < 0)
+    if (n < 0){
         error("ERROR reading from socket");
-    for (size_t i = 0; i < n; i++) {
-        std::cout << (int) buffer[i] << " ";
+	return 1;
     }
-    std::cout << std::endl;
+    std::cout<<"Authentation2 OK"<<std::endl;
 
     //Request1
     Request1 request1;
     n = write(sockfd, &request1, sizeof(request1));
-    if (n < 0)
+    if (n < 0){
         error("ERROR writing to socket");
+	return 1;
+    }
     bzero(buffer, 8196);
     n = read(sockfd, buffer, 8195);
-    if (n < 0)
+    if (n < 0){
         error("ERROR reading from socket");
-
-    printf("ID:\n");
-    for (size_t i = 4; i < 4 + 16; i++) {
-        printf("%0x ", buffer[i]);
+	return 1;
     }
-    printf("\n");
-
-    for (size_t i = 28; i < n; i++) {
-        printf("%0x ", buffer[i]);
-    }
-    std::cout << std::endl;
+    std::cout<<"CreateKey OK"<<std::endl;
 
     /*
     //Request2
     Request2 request2;
-    //memcpy(request2.rand, buffer + 4, 16);
+    memcpy(request2.rand, buffer + 4, 16);
     n = write(sockfd, &request2, sizeof(request2));
-    if (n < 0)
+    if (n < 0){
         error("ERROR writing to socket");
+	return 1;
+    }
     bzero(buffer, 8196);
     n = read(sockfd, buffer, 8195);
-    if (n < 0)
+    if (n < 0){
         error("ERROR reading from socket");
-    for (size_t i = 28; i < n; i++) {
-        std::cout << (int) buffer[i] << " ";
+	return 1;
     }
-    std::cout << std::endl;
+    std::cout<<"FindKeyById OK"<<std::endl;
     */
     return 0;
 }
